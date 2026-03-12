@@ -149,7 +149,7 @@ export default function AppShell() {
   if (!data) return null;
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#F8F9FB]">
+    <div className="flex h-screen bg-[#F8F9FB]">
       {/* Desktop Sidebar */}
       <Sidebar
         view={view}
@@ -205,7 +205,7 @@ export default function AppShell() {
       <MobileBottomNav view={view} setView={setView} inboxCount={data.inbox.length} />
 
       {/* Main Content */}
-      <main className="flex-1 overflow-auto pt-12 pb-16 md:pt-0 md:pb-0">
+      <main className="flex-1 min-w-0 overflow-auto pt-12 pb-16 md:pt-0 md:pb-0">
         <div className="max-w-[1100px] mx-auto px-8 sm:px-12 lg:px-16 py-10 lg:py-12">
           {view === "today" && (
             <TodayView data={data} user={user} update={update} setView={setView} setExpRock={setExpRock} />
