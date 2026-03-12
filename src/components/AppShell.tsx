@@ -122,11 +122,8 @@ export default function AppShell() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen bg-[#FAFAFA]">
-        <div className="text-center">
-          <div className="w-10 h-10 border-[3px] border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-gray-400 text-sm font-medium">Loading your focus system...</p>
-        </div>
+      <div className="flex items-center justify-center h-screen bg-white">
+        <div className="w-5 h-5 border-2 border-gray-300 border-t-gray-900 rounded-full animate-spin" />
       </div>
     );
   }
@@ -134,7 +131,7 @@ export default function AppShell() {
   if (!data) return null;
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#FAFAFA]">
+    <div className="flex h-screen overflow-hidden bg-[#F9FAFB]">
       {/* Desktop Sidebar */}
       <Sidebar
         view={view}
@@ -160,14 +157,11 @@ export default function AppShell() {
       {/* Mobile Nav Overlay */}
       {mobileNav && (
         <div className="fixed inset-0 z-[200] flex md:hidden">
-          <div className="w-[280px] bg-[#0F172A] p-5 shadow-2xl animate-slideIn">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-emerald-400" />
-                <span className="text-sm font-bold text-white">EOS Focus</span>
-              </div>
-              <button onClick={() => setMobileNav(false)} className="text-gray-500 hover:text-white cursor-pointer">
-                <IconX className="w-5 h-5" />
+          <div className="w-64 bg-white border-r border-gray-200 p-4 animate-slideIn">
+            <div className="flex items-center justify-between mb-5">
+              <span className="text-sm font-semibold text-gray-900">Navigation</span>
+              <button onClick={() => setMobileNav(false)} className="text-gray-400 hover:text-gray-600 cursor-pointer">
+                <IconX className="w-4 h-4" />
               </button>
             </div>
             {(["today", "rocks", "inbox", "seats", "growth", "vto"] as View[]).map((k) => (
@@ -175,17 +169,17 @@ export default function AppShell() {
                 key={k}
                 onClick={() => { setView(k); setMobileNav(false); }}
                 className={[
-                  "w-full text-left px-4 py-3 rounded-xl text-sm mb-1 cursor-pointer transition-all duration-150",
+                  "w-full text-left px-3 py-2 rounded-lg text-sm mb-0.5 cursor-pointer transition-colors duration-100",
                   view === k
-                    ? "bg-white/[0.08] text-white font-semibold"
-                    : "text-gray-500 hover:text-gray-300 hover:bg-white/[0.04]",
+                    ? "bg-gray-100 text-gray-900 font-semibold"
+                    : "text-gray-500 hover:text-gray-700 hover:bg-gray-50",
                 ].join(" ")}
               >
                 {k === "vto" ? "V/TO" : k.charAt(0).toUpperCase() + k.slice(1)}
               </button>
             ))}
           </div>
-          <div className="flex-1 bg-black/50 backdrop-blur-sm" onClick={() => setMobileNav(false)} />
+          <div className="flex-1 bg-black/20 animate-fadeOverlay" onClick={() => setMobileNav(false)} />
         </div>
       )}
 
@@ -193,8 +187,8 @@ export default function AppShell() {
       <MobileBottomNav view={view} setView={setView} inboxCount={data.inbox.length} />
 
       {/* Main Content */}
-      <main className="flex-1 overflow-auto pt-[56px] pb-[76px] md:pt-0 md:pb-0">
-        <div className="max-w-[1100px] mx-auto px-4 sm:px-6 md:px-10 lg:px-12 py-8 md:py-10">
+      <main className="flex-1 overflow-auto pt-12 pb-16 md:pt-0 md:pb-0">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
           {view === "today" && (
             <TodayView data={data} user={user} update={update} setView={setView} setExpRock={setExpRock} />
           )}

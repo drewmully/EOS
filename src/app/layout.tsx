@@ -25,7 +25,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className="bg-[#FAFAFA] text-gray-800 antialiased"
+        className="bg-[#F9FAFB] text-gray-800 antialiased"
         style={{ fontFamily: "'Inter', system-ui, -apple-system, sans-serif" }}
       >
         {children}

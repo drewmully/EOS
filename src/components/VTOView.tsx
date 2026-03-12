@@ -2,24 +2,21 @@
 
 import { Card } from "./ui/Card";
 
-function Section({ title, color, children }: { title: string; color: string; children: React.ReactNode }) {
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="mb-6">
-      <div
-        className="text-[12px] font-bold tracking-[0.12em] uppercase text-white px-6 py-3.5 rounded-t-2xl"
-        style={{ background: color }}
-      >
+    <div className="mb-3">
+      <div className="text-[11px] font-medium text-gray-400 uppercase tracking-wider px-1 mb-2">
         {title}
       </div>
-      <Card className="!rounded-t-none !border-t-0" padding="lg">{children}</Card>
+      <Card padding="md">{children}</Card>
     </div>
   );
 }
 
 function Row({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex gap-4 mb-3 text-[15px] leading-relaxed">
-      <span className="font-semibold text-gray-500 min-w-[90px] flex-shrink-0">{label}</span>
+    <div className="flex gap-3 py-1.5 text-sm">
+      <span className="font-medium text-gray-400 min-w-[72px] flex-shrink-0">{label}</span>
       <span className="text-gray-700">{value}</span>
     </div>
   );
@@ -27,14 +24,14 @@ function Row({ label, value }: { label: string; value: string }) {
 
 export function VTOView() {
   return (
-    <div className="animate-fadeSlideUp">
-      <div className="mb-10">
-        <h1 className="text-[32px] font-bold text-gray-900 tracking-tight">V/TO Reference</h1>
-        <p className="text-[16px] text-gray-400 mt-2">Your north star. Vision, Traction, Organizing.</p>
+    <div className="animate-fadeIn">
+      <div className="mb-6">
+        <h1 className="text-2xl font-semibold text-gray-900 tracking-tight">V/TO</h1>
+        <p className="text-sm text-gray-400 mt-1">Vision, Traction, Organizing.</p>
       </div>
 
-      <Section title="Core Values (Shared)" color="#10B981">
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+      <Section title="Core Values">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
           {[
             "Serve First",
             "Move the Mission",
@@ -45,17 +42,17 @@ export function VTOView() {
           ].map((v) => (
             <div
               key={v}
-              className="flex items-center gap-2.5 text-[15px] text-gray-700 bg-emerald-50/50 rounded-xl px-4 py-3"
+              className="flex items-center gap-2 text-sm text-gray-700 bg-gray-50 rounded-lg px-3 py-2"
             >
-              <div className="w-2 h-2 rounded-full bg-emerald-400 flex-shrink-0" />
+              <span className="w-1 h-1 rounded-full bg-emerald-400 flex-shrink-0" />
               {v}
             </div>
           ))}
         </div>
       </Section>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Section title="MFS (3PL)" color="#0F766E">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+        <Section title="MFS (3PL)">
           <Row label="Purpose" value="Making it simple for entrepreneurs to realize their dream, worry-free." />
           <Row label="Niche" value="Solopreneurs & small teams, post-revenue eComm." />
           <Row label="10-Year" value="5M orders/month" />
@@ -65,7 +62,7 @@ export function VTOView() {
           <Row label="Guarantee" value="Order free if SLA missed" />
         </Section>
 
-        <Section title="Mully (eComm)" color="#B45309">
+        <Section title="Mully (eComm)">
           <Row label="Purpose" value="Helping people feel comfortable, included, access a gated community." />
           <Row label="Niche" value="Driven adults seeking golf community access." />
           <Row label="10-Year" value="$250M revenue" />

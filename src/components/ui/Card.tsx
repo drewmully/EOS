@@ -5,10 +5,10 @@ interface CardProps {
   className?: string;
   onClick?: () => void;
   hoverable?: boolean;
-  padding?: "sm" | "md" | "lg" | "xl";
+  padding?: "none" | "sm" | "md" | "lg";
 }
 
-const paddings = { sm: "p-5", md: "p-7", lg: "p-8", xl: "p-10" };
+const pad = { none: "", sm: "p-4", md: "p-5", lg: "p-6" };
 
 export function Card({ children, className = "", onClick, hoverable, padding = "md" }: CardProps) {
   const interactive = hoverable || !!onClick;
@@ -16,11 +16,11 @@ export function Card({ children, className = "", onClick, hoverable, padding = "
     <div
       onClick={onClick}
       className={[
-        "bg-white rounded-2xl border border-gray-200/70",
-        "shadow-[0_1px_3px_rgba(0,0,0,0.04),0_1px_2px_rgba(0,0,0,0.06)]",
-        paddings[padding],
+        "bg-white rounded-xl border border-gray-200",
+        "shadow-[0_1px_2px_rgba(0,0,0,0.04)]",
+        pad[padding],
         interactive
-          ? "cursor-pointer transition-all duration-200 hover:shadow-[0_16px_48px_rgba(0,0,0,0.09),0_6px_16px_rgba(0,0,0,0.04)] hover:-translate-y-1 hover:border-gray-300 active:translate-y-0 active:shadow-[0_4px_12px_rgba(0,0,0,0.06)]"
+          ? "cursor-pointer transition-shadow duration-150 hover:shadow-md hover:border-gray-300"
           : "",
         className,
       ]

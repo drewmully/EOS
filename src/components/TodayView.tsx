@@ -11,16 +11,11 @@ import { Button } from "./ui/Button";
 import { IconPlus } from "./ui/Icons";
 import { View } from "./Sidebar";
 
-const STATUS_RING: Record<string, string> = {
-  "On Track": "#22C55E",
+const STATUS_COLOR: Record<string, string> = {
+  "On Track": "#10B981",
   "At Risk": "#F59E0B",
   "Off Track": "#EF4444",
   Done: "#6366F1",
-};
-
-const BIZ_VARIANT: Record<string, "teal" | "orange"> = {
-  MFS: "teal",
-  Mully: "orange",
 };
 
 const URG_VARIANT: Record<string, "red" | "amber" | "emerald" | "blue"> = {
@@ -48,25 +43,18 @@ export function TodayView({ data, user, update, setView, setExpRock }: Props) {
   const sorted = [...data.rocks].sort((a, b) => urgencyScore(b) - urgencyScore(a));
 
   return (
-    <div className="animate-fadeSlideUp">
+    <div className="animate-fadeIn">
       {/* Header */}
       <div className="mb-8">
-        <div className="flex items-center gap-3 flex-wrap">
-          <h1 className="text-[28px] sm:text-[32px] font-bold text-gray-900 tracking-tight leading-tight">
-            Good {greeting}, {user.name}
-          </h1>
-          {data.streakDays > 1 && (
-            <Badge variant="amber" size="md" dot>
-              {data.streakDays} day streak
-            </Badge>
-          )}
-        </div>
-        <p className="text-[15px] text-gray-400 mt-1.5">Here&apos;s what matters today.</p>
+        <h1 className="text-2xl font-semibold text-gray-900 tracking-tight">
+          Good {greeting}, {user.name}
+        </h1>
+        <p className="text-sm text-gray-400 mt-1">Here&apos;s what needs your attention.</p>
       </div>
 
-      {/* Rock Urgency Cards */}
-      <div className="mb-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+      {/* Rock Cards */}
+      <section className="mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {sorted.map((rock) => {
             const p = pct(rock);
             const days = daysUntil(rock.due);
@@ -76,84 +64,53 @@ export function TodayView({ data, user, update, setView, setExpRock }: Props) {
               <Card
                 key={rock.id}
                 hoverable
-                onClick={() => {
-                  setExpRock(rock.id);
-                  setView("rocks");
-                }}
+                onClick={() => { setExpRock(rock.id); setView("rocks"); }}
                 padding="md"
               >
-                {/* Top badges */}
                 <div className="flex items-center justify-between mb-3">
-                  <Badge variant={BIZ_VARIANT[rock.biz] || "gray"} size="sm">{rock.biz}</Badge>
+                  <span className="text-[11px] font-medium text-gray-400">{rock.biz}</span>
                   <Badge variant={URG_VARIANT[urg.text] || "gray"} size="sm">{urg.text}</Badge>
                 </div>
 
-                {/* Name */}
-                <h3 className="text-[15px] font-semibold text-gray-900 leading-snug mb-4 min-h-[40px] line-clamp-2">
+                <h3 className="text-sm font-medium text-gray-900 leading-snug mb-3 min-h-[36px] line-clamp-2">
                   {rock.name || "(unnamed)"}
                 </h3>
 
-                {/* Progress */}
-                <ProgressBar
-                  value={p}
-                  color={STATUS_RING[rock.status] || "#22C55E"}
-                  size="sm"
-                  showLabel
-                />
+                <ProgressBar value={p} color={STATUS_COLOR[rock.status] || "#10B981"} size="sm" showLabel />
 
-                {/* Footer */}
                 <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
-                  <Badge
-                    variant={
-                      rock.status === "On Track"
-                        ? "emerald"
-                        : rock.status === "At Risk"
-                        ? "amber"
-                        : rock.status === "Off Track"
-                        ? "red"
-                        : "indigo"
-                    }
-                    size="sm"
-                    dot
-                  >
-                    {rock.status}
-                  </Badge>
+                  <div className="flex items-center gap-1.5">
+                    <span
+                      className="w-1.5 h-1.5 rounded-full"
+                      style={{ backgroundColor: STATUS_COLOR[rock.status] || "#10B981" }}
+                    />
+                    <span className="text-[11px] text-gray-400">{rock.status}</span>
+                  </div>
                   <span
-                    className={`text-[12px] font-medium ${
-                      days < 0
-                        ? "text-red-500"
-                        : days <= 7
-                        ? "text-amber-500"
-                        : "text-gray-400"
+                    className={`text-[11px] font-medium ${
+                      days < 0 ? "text-red-500" : days <= 7 ? "text-amber-500" : "text-gray-400"
                     }`}
                   >
-                    {days > 0 ? `${days}d left` : days === 0 ? "Due today" : `${Math.abs(days)}d overdue`}
+                    {days > 0 ? `${days}d left` : days === 0 ? "Due today" : `${Math.abs(days)}d over`}
                   </span>
                 </div>
               </Card>
             );
           })}
         </div>
-      </div>
+      </section>
 
-      {/* Two-column layout for priorities and todos */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+      {/* Priorities + To-dos side by side */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
         {/* Top 3 Priorities */}
         <Card padding="lg">
-          <div className="flex items-center gap-3 mb-5">
-            <div className="w-8 h-8 rounded-xl bg-amber-50 flex items-center justify-center flex-shrink-0">
-              <svg className="w-4 h-4 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-              </svg>
-            </div>
-            <h3 className="text-[16px] font-bold text-gray-800">Top 3 Priorities</h3>
-          </div>
-          <div className="space-y-0.5">
+          <h3 className="text-sm font-semibold text-gray-900 mb-4">Top 3 Priorities</h3>
+          <div className="space-y-0">
             {data.todayPriorities.map((p: Priority, i: number) => (
               <div
                 key={i}
-                className="flex items-center gap-3 py-3"
-                style={{ borderTop: i > 0 ? "1px solid #F1F5F9" : "none" }}
+                className="flex items-center gap-3 py-2.5"
+                style={{ borderTop: i > 0 ? "1px solid #F3F4F6" : "none" }}
               >
                 <Checkbox
                   checked={p.done}
@@ -163,7 +120,7 @@ export function TodayView({ data, user, update, setView, setExpRock }: Props) {
                     if (!wasDone && p.text) fireMini();
                   }}
                 />
-                <span className="text-[14px] font-bold text-gray-300 w-5 text-center select-none flex-shrink-0">
+                <span className="text-xs font-semibold text-gray-300 w-4 text-center select-none flex-shrink-0">
                   {i + 1}
                 </span>
                 <input
@@ -172,12 +129,11 @@ export function TodayView({ data, user, update, setView, setExpRock }: Props) {
                     const v = e.target.value;
                     update((d) => { d.todayPriorities[i].text = v; });
                   }}
-                  placeholder="What's most important?"
+                  placeholder="What matters most?"
                   className={[
-                    "flex-1 min-w-0 bg-transparent text-[15px] py-1 transition-all duration-150",
-                    "border-b-2 border-transparent focus:border-emerald-500 focus:outline-none",
-                    "placeholder:text-gray-300",
-                    p.done ? "line-through text-gray-400" : "text-gray-800",
+                    "flex-1 min-w-0 bg-transparent text-sm py-0.5",
+                    "focus:outline-none placeholder:text-gray-300",
+                    p.done ? "line-through text-gray-400" : "text-gray-700",
                   ].join(" ")}
                 />
               </div>
@@ -187,45 +143,35 @@ export function TodayView({ data, user, update, setView, setExpRock }: Props) {
 
         {/* To-Do List */}
         <Card padding="lg">
-          <div className="flex items-center justify-between mb-5">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-xl bg-emerald-50 flex items-center justify-center flex-shrink-0">
-                <svg className="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4" />
-                  <rect x="3" y="3" width="18" height="18" rx="4" strokeLinecap="round" />
-                </svg>
-              </div>
-              <h3 className="text-[16px] font-bold text-gray-800">To-Do List</h3>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <h3 className="text-sm font-semibold text-gray-900">To-Do</h3>
               {data.todos.length > 0 && (
-                <span className="text-[13px] text-gray-400 font-medium">
+                <span className="text-xs text-gray-400">
                   {data.todos.filter((t) => t.done).length}/{data.todos.length}
                 </span>
               )}
             </div>
             <Button
+              variant="secondary"
               size="sm"
               onClick={() => update((d) => { d.todos.push({ id: uid(), text: "", due: "", done: false }); })}
-              icon={<IconPlus className="w-4 h-4" />}
+              icon={<IconPlus className="w-3 h-3" />}
             >
               Add
             </Button>
           </div>
 
           {data.todos.length === 0 ? (
-            <div className="text-center py-10">
-              <div className="w-12 h-12 mx-auto mb-3 rounded-2xl bg-gray-50 flex items-center justify-center">
-                <svg className="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <p className="text-[14px] text-gray-400">No to-dos yet.</p>
+            <div className="text-center py-8">
+              <p className="text-sm text-gray-400">No to-dos yet.</p>
             </div>
           ) : (
-            <div className="space-y-0.5">
+            <div className="space-y-0">
               {data.todos.map((todo, i) => (
                 <div
                   key={todo.id}
-                  className="flex items-center gap-3 py-2.5 px-2 -mx-2 rounded-lg group hover:bg-gray-50 transition-colors duration-150"
+                  className="flex items-center gap-2.5 py-2 group"
                   style={{ opacity: todo.done ? 0.5 : 1 }}
                 >
                   <Checkbox
@@ -242,7 +188,7 @@ export function TodayView({ data, user, update, setView, setExpRock }: Props) {
                     onChange={(e) => { const v = e.target.value; update((d) => { d.todos[i].text = v; }); }}
                     placeholder="To-do..."
                     className={[
-                      "flex-1 min-w-0 bg-transparent text-[14px] py-0.5 focus:outline-none",
+                      "flex-1 min-w-0 bg-transparent text-sm py-0.5 focus:outline-none",
                       "placeholder:text-gray-300",
                       todo.done ? "line-through text-gray-400" : "text-gray-700",
                     ].join(" ")}
@@ -251,13 +197,13 @@ export function TodayView({ data, user, update, setView, setExpRock }: Props) {
                     type="date"
                     value={todo.due}
                     onChange={(e) => { const v = e.target.value; update((d) => { d.todos[i].due = v; }); }}
-                    className="hidden sm:block w-28 bg-transparent text-[12px] text-gray-400 py-0.5 focus:outline-none cursor-pointer"
+                    className="hidden sm:block w-24 bg-transparent text-[11px] text-gray-400 focus:outline-none cursor-pointer"
                   />
                   <button
                     onClick={() => update((d) => { d.todos.splice(i, 1); })}
-                    className="w-7 h-7 rounded-md flex items-center justify-center text-gray-300 hover:text-red-500 hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-all duration-150 cursor-pointer flex-shrink-0"
+                    className="w-6 h-6 rounded flex items-center justify-center text-gray-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity duration-100 cursor-pointer flex-shrink-0"
                   >
-                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                       <path strokeLinecap="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </button>

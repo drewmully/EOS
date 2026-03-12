@@ -6,21 +6,20 @@ interface ProgressBarProps {
 }
 
 export function ProgressBar({ value, color = "#10B981", size = "sm", showLabel }: ProgressBarProps) {
-  const h = size === "sm" ? "h-2" : "h-3";
+  const h = size === "sm" ? "h-1.5" : "h-2";
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-2.5">
       <div className={`flex-1 ${h} bg-gray-100 rounded-full overflow-hidden`}>
         <div
-          className={`${h} rounded-full transition-all duration-700 ease-out`}
+          className={`${h} rounded-full transition-all duration-500 ease-out`}
           style={{
             width: `${Math.max(value, 0)}%`,
-            background: `linear-gradient(90deg, ${color}, ${color}cc)`,
-            boxShadow: value > 0 ? `0 0 10px ${color}40` : "none",
+            backgroundColor: color,
           }}
         />
       </div>
       {showLabel && (
-        <span className="text-sm font-bold text-gray-500 tabular-nums min-w-[36px] text-right">{value}%</span>
+        <span className="text-xs font-medium text-gray-400 tabular-nums min-w-[32px] text-right">{value}%</span>
       )}
     </div>
   );

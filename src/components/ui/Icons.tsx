@@ -1,18 +1,18 @@
 import React from "react";
 
 const I = (d: string) =>
-  function Icon({ className = "w-5 h-5" }: { className?: string }) {
+  function Icon({ className = "w-4 h-4" }: { className?: string }) {
     return (
-      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
         <path d={d} />
       </svg>
     );
   };
 
 const IF = (paths: React.ReactNode) =>
-  function Icon({ className = "w-5 h-5" }: { className?: string }) {
+  function Icon({ className = "w-4 h-4" }: { className?: string }) {
     return (
-      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
         {paths}
       </svg>
     );
