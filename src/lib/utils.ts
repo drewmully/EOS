@@ -89,6 +89,8 @@ export function getRecommendations(data: { rocks: Rock[]; todos: { text: string;
     if (rock.status === "Done") continue;
     const days = daysUntil(rock.due);
     const completion = pct(rock);
+    const total = rock.subtasks.length;
+    const remaining = rock.subtasks.filter((s) => !s.done).length;
 
     // Overdue rock
     if (days < 0) {
@@ -99,11 +101,11 @@ export function getRecommendations(data: { rocks: Rock[]; todos: { text: string;
         rockName: rock.name,
       });
     }
-    // Due within 2 weeks with low completion
-    else if (days <= 14 && completion < 80) {
+    // Due within 2 weeks with work remaining
+    else if (days <= 14 && remaining > 0) {
       recs.push({
-        text: `Push "${rock.name}" — due in ${days}d, only ${completion}% done`,
-        reason: `${100 - completion}% remaining with ${days} days left`,
+        text: `Push "${rock.name}" — due in ${days}d, ${remaining} subtask${remaining > 1 ? "s" : ""} left`,
+        reason: `${completion}% done with ${days} days remaining`,
         urgency: days <= 7 ? "high" : "medium",
         rockName: rock.name,
       });
@@ -126,14 +128,14 @@ export function getRecommendations(data: { rocks: Rock[]; todos: { text: string;
         rockName: rock.name,
       });
     }
-    // Behind pace — completion gap analysis
-    else {
-      const expectedCompletion = Math.max(0, Math.min(100, 100 - (days / 90) * 100));
-      if (completion < expectedCompletion - 10 && expectedCompletion > 15) {
+    // Pace check: not enough days per remaining subtask
+    else if (total > 0 && remaining > 0 && days > 0) {
+      const daysPerTask = days / remaining;
+      if (daysPerTask < 5 && days <= 45) {
         recs.push({
-          text: `"${rock.name}" is behind pace — ${completion}% done, should be ~${Math.round(expectedCompletion)}%`,
-          reason: "Falling behind expected progress",
-          urgency: completion < expectedCompletion - 25 ? "high" : "medium",
+          text: `"${rock.name}" — ${remaining} subtasks in ${days}d (~${Math.round(daysPerTask)}d each)`,
+          reason: "Tight timeline to complete remaining work",
+          urgency: daysPerTask < 3 ? "high" : "medium",
           rockName: rock.name,
         });
       }
@@ -150,16 +152,18 @@ export function getRecommendations(data: { rocks: Rock[]; todos: { text: string;
       });
     }
 
-    // Subtasks due within 7 days (upcoming / imminent)
-    const upcomingSubs = rock.subtasks.filter((s) => !s.done && s.due && daysUntil(s.due) >= 0 && daysUntil(s.due) <= 7);
+    // Subtasks due within 10 days (upcoming / imminent)
+    const upcomingSubs = rock.subtasks
+      .filter((s) => !s.done && s.due && daysUntil(s.due) >= 0 && daysUntil(s.due) <= 10)
+      .sort((a, b) => daysUntil(a.due) - daysUntil(b.due));
     if (upcomingSubs.length > 0) {
-      const soonest = upcomingSubs.sort((a, b) => daysUntil(a.due) - daysUntil(b.due))[0];
+      const soonest = upcomingSubs[0];
       const d = daysUntil(soonest.due);
       const dueLabel = d === 0 ? "today" : d === 1 ? "tomorrow" : `in ${d}d`;
       recs.push({
-        text: `"${soonest.text || "Subtask"}" on "${rock.name}" — due ${dueLabel}`,
-        reason: upcomingSubs.length > 1 ? `${upcomingSubs.length} subtasks due this week` : "Upcoming deadline",
-        urgency: d <= 1 ? "high" : "medium",
+        text: `"${soonest.text || "Subtask"}" — due ${dueLabel}`,
+        reason: `${rock.name}${upcomingSubs.length > 1 ? ` (+${upcomingSubs.length - 1} more this week)` : ""}`,
+        urgency: d <= 2 ? "high" : "medium",
         rockName: rock.name,
       });
     }

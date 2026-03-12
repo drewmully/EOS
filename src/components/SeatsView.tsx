@@ -32,45 +32,29 @@ export function SeatsView({ data, update }: Props) {
 
   return (
     <div className="animate-fadeIn">
-      <div style={{ marginBottom: 32 }}>
+      <div style={{ marginBottom: 16 }}>
         <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Seat Exit Plan</h1>
-        <div className="flex items-center gap-3 mt-1">
-          <p className="text-sm text-gray-400">Too many seats = no leverage. Plan your exit.</p>
-          {totalSeats > 0 && (
-            <span className="text-xs text-gray-300">|</span>
-          )}
-          {totalSeats > 0 && (
-            <p className="text-sm text-gray-400">{activeSeats} active / {totalSeats} total</p>
-          )}
-        </div>
+        <p className="text-sm text-gray-400 mt-0.5">
+          Too many seats = no leverage.{totalSeats > 0 ? ` ${activeSeats} active / ${totalSeats} total.` : ""}
+        </p>
       </div>
 
-      {/* Weekly prompt */}
+      {/* Weekly prompt — compact */}
       <div
-        className="rounded-2xl border shadow-sm"
+        className="rounded-xl border"
         style={{
-          marginBottom: 28,
-          padding: "20px 28px",
-          background: "linear-gradient(135deg, #FFF7ED 0%, #FFFBEB 50%, #FEF3C7 100%)",
+          marginBottom: 16,
+          padding: "12px 18px",
+          background: "linear-gradient(135deg, #FFF7ED 0%, #FFFBEB 100%)",
           borderColor: "rgba(245, 158, 11, 0.2)",
         }}
       >
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: "rgba(245, 158, 11, 0.15)" }}>
-            <svg className="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
-            </svg>
-          </div>
-          <div>
-            <p className="text-[15px] font-semibold text-amber-800">What did you do this week to exit a seat?</p>
-            <p className="text-xs text-amber-600/70 mt-0.5">Reflect on progress toward delegating or hiring.</p>
-          </div>
-        </div>
+        <p className="text-[13px] font-semibold text-amber-800">What did you do this week to exit a seat?</p>
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
         {data.seats.map((seat, i) => (
-          <Card key={seat.id} padding="lg">
+          <Card key={seat.id} padding="md">
             <div className="flex items-start gap-4">
               {/* Status accent */}
               <div
@@ -146,7 +130,7 @@ export function SeatsView({ data, update }: Props) {
           })
         }
         className="w-full border-2 border-dashed border-gray-200 rounded-2xl text-sm text-gray-400 font-semibold hover:text-gray-600 hover:border-gray-300 hover:bg-gray-50/50 transition-all duration-150 cursor-pointer flex items-center justify-center gap-1.5"
-        style={{ marginTop: 16, padding: "18px 0" }}
+        style={{ marginTop: 12, padding: "14px 0" }}
       >
         <IconPlus className="w-4 h-4" />
         Add Seat

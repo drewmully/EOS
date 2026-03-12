@@ -19,13 +19,13 @@ interface Props {
   user: UserProfile;
 }
 
-const CV_KEYS: { key: "serveFirst" | "moveTheMission" | "winTogether" | "liveTheStandard" | "tellTheTruth" | "choosePositive"; label: string; description: string }[] = [
-  { key: "serveFirst", label: "Serve First", description: "Put others' needs before your own. Lead with generosity and a servant's heart." },
-  { key: "moveTheMission", label: "Move the Mission", description: "Stay focused on the bigger picture. Every action should advance the company forward." },
-  { key: "winTogether", label: "Win Together", description: "Collaborate, support, and celebrate each other. We succeed as a team." },
-  { key: "liveTheStandard", label: "Live the Standard", description: "Hold yourself to the highest bar. Be the example others aspire to follow." },
-  { key: "tellTheTruth", label: "Tell the Truth", description: "Be radically transparent. Honest communication builds trust and drives growth." },
-  { key: "choosePositive", label: "Choose Positive", description: "Bring energy and optimism. Attitude is a choice — choose to lift others up." },
+const CV_KEYS: { key: "serveFirst" | "moveTheMission" | "winTogether" | "liveTheStandard" | "tellTheTruth" | "choosePositive"; label: string; short: string; description: string }[] = [
+  { key: "serveFirst", label: "Serve First", short: "Serve", description: "Put others' needs before your own. Lead with generosity and a servant's heart." },
+  { key: "moveTheMission", label: "Move the Mission", short: "Mission", description: "Stay focused on the bigger picture. Every action should advance the company forward." },
+  { key: "winTogether", label: "Win Together", short: "Win", description: "Collaborate, support, and celebrate each other. We succeed as a team." },
+  { key: "liveTheStandard", label: "Live the Standard", short: "Standard", description: "Hold yourself to the highest bar. Be the example others aspire to follow." },
+  { key: "tellTheTruth", label: "Tell the Truth", short: "Truth", description: "Be radically transparent. Honest communication builds trust and drives growth." },
+  { key: "choosePositive", label: "Choose Positive", short: "Positive", description: "Bring energy and optimism. Attitude is a choice — choose to lift others up." },
 ];
 
 function ratingColor(v: string): string {
@@ -48,116 +48,117 @@ export function GrowthView({ data, update, user }: Props) {
 
   return (
     <div className="animate-fadeIn">
-      <div style={{ marginBottom: 32 }}>
+      <div style={{ marginBottom: 20 }}>
         <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
           <span style={{ color: user.color }}>{user.name}&apos;s</span> Growth
         </h1>
-        <p className="text-sm text-gray-400 mt-1">Core values, GWC, and action plans</p>
+        <p className="text-sm text-gray-400 mt-0.5">Core values, GWC, and action plans</p>
       </div>
 
-      {/* Core Values — Interactive */}
-      <div style={{ marginBottom: 20 }}>
-      <Card padding="lg">
-        <div className="flex items-center gap-2.5" style={{ marginBottom: 16 }}>
-          <div className="w-1 h-4 rounded-full bg-gradient-to-b from-emerald-400 to-teal-500" />
-          <h3 className="text-[15px] font-semibold text-gray-900">Core Values</h3>
-          <span className="text-xs text-gray-300 ml-auto">Click to expand</span>
+      {/* Core Values + GWC side by side */}
+      <div className="grid grid-cols-1 lg:grid-cols-3" style={{ gap: 16, marginBottom: 16 }}>
+        {/* Core Values — 2/3 width */}
+        <div style={{ gridColumn: "span 2" }}>
+          <Card padding="md">
+            <div className="flex items-center gap-2" style={{ marginBottom: 10 }}>
+              <div className="w-1 h-3.5 rounded-full bg-gradient-to-b from-emerald-400 to-teal-500" />
+              <h3 className="text-[14px] font-semibold text-gray-900">Core Values</h3>
+              <span className="text-[10px] text-gray-300 ml-auto">Click to expand</span>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+              {CV_KEYS.map(({ key, label, description }) => {
+                const isExpanded = expandedCV === key;
+                return (
+                  <div
+                    key={key}
+                    className="rounded-lg border border-gray-100 transition-all duration-150"
+                    style={{
+                      background: isExpanded ? "linear-gradient(135deg, #ECFDF5 0%, #FFFFFF 100%)" : "#FAFAFA",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <div
+                      className="flex items-center cursor-pointer hover:bg-gray-50/50 transition-colors"
+                      style={{ padding: "8px 12px", gap: 10 }}
+                      onClick={() => setExpandedCV(isExpanded ? null : key)}
+                    >
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0" />
+                      <span className="text-[13px] font-medium text-gray-700 flex-1">{label}</span>
+                      <select
+                        value={cv[key]}
+                        onClick={(e) => e.stopPropagation()}
+                        onChange={(e) => {
+                          const v = e.target.value;
+                          update((d) => { d.growth.coreValues[key] = v; });
+                        }}
+                        className={`text-center text-xs font-semibold rounded-md border cursor-pointer transition-colors focus:outline-none ${ratingColor(cv[key])}`}
+                        style={{ width: 48, padding: "3px 0" }}
+                      >
+                        <option>+</option>
+                        <option>+/-</option>
+                        <option>-</option>
+                      </select>
+                      <div className={`text-gray-300 transition-transform duration-150 flex-shrink-0 ${isExpanded ? "rotate-180" : ""}`}>
+                        <IconChevron className="w-3 h-3" />
+                      </div>
+                    </div>
+                    {isExpanded && (
+                      <div className="animate-fadeIn" style={{ padding: "0 12px 10px 24px" }}>
+                        <p className="text-[12px] text-gray-500 leading-relaxed">{description}</p>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </Card>
         </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          {CV_KEYS.map(({ key, label, description }) => {
-            const isExpanded = expandedCV === key;
-            return (
-              <div
-                key={key}
-                className="rounded-xl border border-gray-100 transition-all duration-150"
-                style={{
-                  background: isExpanded ? "linear-gradient(135deg, #ECFDF5 0%, #F0FDF4 50%, #FFFFFF 100%)" : "#FAFAFA",
-                  overflow: "hidden",
-                }}
-              >
-                <div
-                  className="flex items-center cursor-pointer hover:bg-gray-50/50 transition-colors"
-                  style={{ padding: "12px 16px", gap: 12 }}
-                  onClick={() => setExpandedCV(isExpanded ? null : key)}
-                >
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 flex-shrink-0" />
-                  <span className="text-[14px] font-medium text-gray-700 flex-1">{label}</span>
+
+        {/* GWC — 1/3 width */}
+        <Card padding="md">
+          <div className="flex items-center gap-2" style={{ marginBottom: 10 }}>
+            <div className="w-1 h-3.5 rounded-full bg-gradient-to-b from-indigo-400 to-violet-500" />
+            <h3 className="text-[14px] font-semibold text-gray-900">GWC</h3>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {(["g", "w", "c"] as const).map((key) => {
+              const labels = { g: "Get It", w: "Want It", c: "Capacity" };
+              return (
+                <div key={key} className="flex items-center" style={{ gap: 10 }}>
+                  <span className="text-[13px] font-medium text-gray-500 flex-shrink-0" style={{ width: 70 }}>{labels[key]}</span>
                   <select
-                    value={cv[key]}
-                    onClick={(e) => e.stopPropagation()}
+                    value={gwc[key]}
                     onChange={(e) => {
                       const v = e.target.value;
-                      update((d) => { d.growth.coreValues[key] = v; });
+                      update((d) => { d.growth.gwc[key] = v; });
                     }}
-                    className={`text-center text-sm font-semibold rounded-lg border cursor-pointer transition-colors focus:outline-none ${ratingColor(cv[key])}`}
-                    style={{ width: 56, padding: "4px 0" }}
+                    className={`flex-1 text-center text-sm font-semibold rounded-lg border cursor-pointer transition-colors focus:outline-none ${gwcColor(gwc[key])}`}
+                    style={{ padding: "8px 0" }}
                   >
-                    <option>+</option>
-                    <option>+/-</option>
-                    <option>-</option>
+                    <option>Y</option>
+                    <option>N</option>
                   </select>
-                  <div className={`text-gray-300 transition-transform duration-150 flex-shrink-0 ${isExpanded ? "rotate-180" : ""}`}>
-                    <IconChevron className="w-3.5 h-3.5" />
-                  </div>
                 </div>
-                {isExpanded && (
-                  <div className="animate-fadeIn" style={{ padding: "0 16px 14px 30px" }}>
-                    <p className="text-[13px] text-gray-500 leading-relaxed">{description}</p>
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </Card>
+              );
+            })}
+          </div>
+        </Card>
       </div>
 
-      {/* GWC */}
-      <div style={{ marginBottom: 20 }}>
-      <Card padding="lg">
-        <div className="flex items-center gap-2.5" style={{ marginBottom: 16 }}>
-          <div className="w-1 h-4 rounded-full bg-gradient-to-b from-indigo-400 to-violet-500" />
-          <h3 className="text-[15px] font-semibold text-gray-900">GWC</h3>
-        </div>
-        <div className="grid grid-cols-3" style={{ gap: 12, maxWidth: 320 }}>
-          {(["g", "w", "c"] as const).map((key) => {
-            const labels = { g: "Get It", w: "Want It", c: "Capacity" };
-            return (
-              <div key={key} className="text-center">
-                <div className="text-xs font-medium text-gray-400" style={{ marginBottom: 6 }}>{labels[key]}</div>
-                <select
-                  value={gwc[key]}
-                  onChange={(e) => {
-                    const v = e.target.value;
-                    update((d) => { d.growth.gwc[key] = v; });
-                  }}
-                  className={`w-full text-center text-sm font-semibold rounded-lg border cursor-pointer transition-colors focus:outline-none ${gwcColor(gwc[key])}`}
-                  style={{ padding: "10px 0" }}
-                >
-                  <option>Y</option>
-                  <option>N</option>
-                </select>
-              </div>
-            );
-          })}
-        </div>
-      </Card>
-      </div>
-
-      {/* Strengths & Weaknesses */}
-      <div className="grid grid-cols-1 sm:grid-cols-2" style={{ gap: 16, marginBottom: 20 }}>
-        <Card padding="lg">
-          <div className="flex items-center gap-2.5" style={{ marginBottom: 12 }}>
-            <div className="w-1 h-4 rounded-full bg-emerald-400" />
-            <h3 className="text-[15px] font-semibold text-gray-900">Strengths</h3>
+      {/* Strengths & Weaknesses — side by side */}
+      <div className="grid grid-cols-1 sm:grid-cols-2" style={{ gap: 16, marginBottom: 16 }}>
+        <Card padding="md">
+          <div className="flex items-center gap-2" style={{ marginBottom: 8 }}>
+            <div className="w-1 h-3.5 rounded-full bg-emerald-400" />
+            <h3 className="text-[14px] font-semibold text-gray-900">Strengths</h3>
           </div>
           {data.growth.strengths.map((s, i) => (
-            <div key={i} className="flex items-center gap-2 group" style={{ marginBottom: 6 }}>
+            <div key={i} className="flex items-center gap-2 group" style={{ marginBottom: 4 }}>
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0" />
               <input
                 value={s}
                 onChange={(e) => { const v = e.target.value; update((d) => { d.growth.strengths[i] = v; }); }}
-                className="flex-1 min-w-0 text-[14px] bg-transparent focus:outline-none text-gray-700 py-0.5"
+                className="flex-1 min-w-0 text-[13px] bg-transparent focus:outline-none text-gray-700 py-0.5"
               />
               <button
                 onClick={() => update((d) => { d.growth.strengths.splice(i, 1); })}
@@ -170,24 +171,24 @@ export function GrowthView({ data, update, user }: Props) {
           <button
             onClick={() => update((d) => { d.growth.strengths.push(""); })}
             className="text-xs text-gray-400 hover:text-gray-600 font-medium cursor-pointer transition-colors"
-            style={{ marginTop: 4 }}
+            style={{ marginTop: 2 }}
           >
             + Add
           </button>
         </Card>
 
-        <Card padding="lg">
-          <div className="flex items-center gap-2.5" style={{ marginBottom: 12 }}>
-            <div className="w-1 h-4 rounded-full bg-red-400" />
-            <h3 className="text-[15px] font-semibold text-gray-900">Areas to Improve</h3>
+        <Card padding="md">
+          <div className="flex items-center gap-2" style={{ marginBottom: 8 }}>
+            <div className="w-1 h-3.5 rounded-full bg-red-400" />
+            <h3 className="text-[14px] font-semibold text-gray-900">Areas to Improve</h3>
           </div>
           {data.growth.weaknesses.map((w, i) => (
-            <div key={i} className="flex items-center gap-2 group" style={{ marginBottom: 6 }}>
+            <div key={i} className="flex items-center gap-2 group" style={{ marginBottom: 4 }}>
               <span className="w-1.5 h-1.5 rounded-full bg-red-400 flex-shrink-0" />
               <input
                 value={w}
                 onChange={(e) => { const v = e.target.value; update((d) => { d.growth.weaknesses[i] = v; }); }}
-                className="flex-1 min-w-0 text-[14px] bg-transparent focus:outline-none text-gray-700 py-0.5"
+                className="flex-1 min-w-0 text-[13px] bg-transparent focus:outline-none text-gray-700 py-0.5"
               />
               <button
                 onClick={() => update((d) => { d.growth.weaknesses.splice(i, 1); })}
@@ -200,19 +201,19 @@ export function GrowthView({ data, update, user }: Props) {
           <button
             onClick={() => update((d) => { d.growth.weaknesses.push(""); })}
             className="text-xs text-gray-400 hover:text-gray-600 font-medium cursor-pointer transition-colors"
-            style={{ marginTop: 4 }}
+            style={{ marginTop: 2 }}
           >
             + Add
           </button>
         </Card>
       </div>
 
-      {/* Growth Actions — Fixed text clipping */}
-      <Card padding="lg">
-        <div className="flex items-center justify-between" style={{ marginBottom: 16 }}>
-          <div className="flex items-center gap-2.5">
-            <div className="w-1 h-4 rounded-full bg-gradient-to-b from-amber-400 to-orange-500" />
-            <h3 className="text-[15px] font-semibold text-gray-900">Growth Actions</h3>
+      {/* Growth Actions */}
+      <Card padding="md">
+        <div className="flex items-center justify-between" style={{ marginBottom: 10 }}>
+          <div className="flex items-center gap-2">
+            <div className="w-1 h-3.5 rounded-full bg-gradient-to-b from-amber-400 to-orange-500" />
+            <h3 className="text-[14px] font-semibold text-gray-900">Growth Actions</h3>
           </div>
           <Button
             variant="secondary"
@@ -229,17 +230,17 @@ export function GrowthView({ data, update, user }: Props) {
         </div>
 
         {data.growth.actions.length === 0 ? (
-          <div className="text-center" style={{ padding: "32px 0" }}>
-            <p className="text-[14px] text-gray-400">No action plans yet.</p>
+          <div className="text-center" style={{ padding: "20px 0" }}>
+            <p className="text-[13px] text-gray-400">No action plans yet.</p>
           </div>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
+          <div>
             {data.growth.actions.map((action: GrowthAction, i: number) => (
               <div
                 key={action.id}
-                className="flex items-start gap-3 group"
+                className="flex items-start gap-2.5 group"
                 style={{
-                  padding: "14px 0",
+                  padding: "10px 0",
                   borderTop: i > 0 ? "1px solid #F3F4F6" : "none",
                 }}
               >
@@ -253,19 +254,19 @@ export function GrowthView({ data, update, user }: Props) {
                   }}
                 />
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap" style={{ marginBottom: 6 }}>
+                  <div className="flex items-center gap-2 flex-wrap" style={{ marginBottom: 4 }}>
                     <input
                       value={action.area}
                       onChange={(e) => { const v = e.target.value; update((d) => { d.growth.actions[i].area = v; }); }}
                       placeholder="Area"
                       className="text-xs font-medium bg-gray-50 text-gray-600 rounded-md border border-gray-200 hover:border-gray-300 focus:outline-none focus:border-gray-400 transition-colors"
-                      style={{ width: "auto", minWidth: 80, maxWidth: 200, padding: "5px 10px" }}
+                      style={{ width: "auto", minWidth: 70, maxWidth: 180, padding: "3px 8px" }}
                     />
                     <input
                       type="date"
                       value={action.due}
                       onChange={(e) => { const v = e.target.value; update((d) => { d.growth.actions[i].due = v; }); }}
-                      className="text-xs text-gray-400 bg-transparent focus:outline-none cursor-pointer"
+                      className="text-[11px] text-gray-400 bg-transparent focus:outline-none cursor-pointer"
                     />
                   </div>
                   <input
@@ -273,14 +274,14 @@ export function GrowthView({ data, update, user }: Props) {
                     onChange={(e) => { const v = e.target.value; update((d) => { d.growth.actions[i].action = v; }); }}
                     placeholder="What's the action?"
                     className={[
-                      "w-full text-[14px] bg-transparent focus:outline-none py-0.5",
+                      "w-full text-[13px] bg-transparent focus:outline-none py-0.5",
                       action.done ? "line-through text-gray-400" : "text-gray-700",
                     ].join(" ")}
                   />
                 </div>
                 <button
                   onClick={() => update((d) => { d.growth.actions.splice(i, 1); })}
-                  className="w-6 h-6 rounded flex items-center justify-center text-gray-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity duration-100 cursor-pointer mt-0.5 flex-shrink-0"
+                  className="w-5 h-5 rounded flex items-center justify-center text-gray-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity duration-100 cursor-pointer mt-0.5 flex-shrink-0"
                 >
                   <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                     <path strokeLinecap="round" d="M6 18L18 6M6 6l12 12" />

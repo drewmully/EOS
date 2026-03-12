@@ -53,18 +53,14 @@ export function RocksView({ data, update, expRock, setExpRock, user }: Props) {
 
   return (
     <div className="animate-fadeIn">
-      <div style={{ marginBottom: 32 }}>
+      <div style={{ marginBottom: 16 }}>
         <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
           <span style={{ color: user.color }}>{user.name}&apos;s</span> Rocks
         </h1>
-        <div className="flex items-center gap-3 mt-1">
-          <p className="text-sm text-gray-400">Q2 2026</p>
-          <span className="text-xs text-gray-300">|</span>
-          <p className="text-sm text-gray-400">{data.rocks.length} rocks &middot; {totalPct}% avg completion</p>
-        </div>
+        <p className="text-sm text-gray-400 mt-0.5">Q2 2026 &middot; {data.rocks.length} rocks &middot; {totalPct}% avg</p>
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         {data.rocks.map((rock, ri) => {
           const open = expRock === rock.id;
           const p = pct(rock);
@@ -88,15 +84,15 @@ export function RocksView({ data, update, expRock, setExpRock, user }: Props) {
               <div
                 onClick={() => setExpRock(open ? null : rock.id)}
                 className="flex items-center cursor-pointer hover:bg-gray-50/50 transition-colors"
-                style={{ gap: 16, padding: "18px 24px" }}
+                style={{ gap: 12, padding: "12px 18px" }}
               >
-                <ProgressRing value={p} color={ringColor} size={44} strokeWidth={3.5} />
+                <ProgressRing value={p} color={ringColor} size={36} strokeWidth={3} />
 
                 <div className="flex-1 min-w-0">
-                  <div className="text-[15px] font-semibold text-gray-900 truncate">
+                  <div className="text-[14px] font-semibold text-gray-900 truncate">
                     {rock.name || "(click to name)"}
                   </div>
-                  <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                  <div className="flex items-center gap-2 mt-1 flex-wrap">
                     <Badge variant={rock.biz === "MFS" ? "teal" : "orange"} size="sm">{rock.biz}</Badge>
                     <Badge variant={URG_VARIANT[urg.text] || "gray"} size="sm">{urg.text}</Badge>
                     <span
@@ -129,8 +125,8 @@ export function RocksView({ data, update, expRock, setExpRock, user }: Props) {
 
               {/* Expanded */}
               {open && (
-                <div className="animate-fadeIn" style={{ borderTop: "1px solid #F3F4F6", padding: "24px 24px" }}>
-                  <div className="grid grid-cols-1 sm:grid-cols-3" style={{ gap: 16, marginBottom: 24 }}>
+                <div className="animate-fadeIn" style={{ borderTop: "1px solid #F3F4F6", padding: "14px 18px" }}>
+                  <div className="grid grid-cols-1 sm:grid-cols-3" style={{ gap: 12, marginBottom: 14 }}>
                     <Input
                       label="Rock Name"
                       value={rock.name}
@@ -157,7 +153,7 @@ export function RocksView({ data, update, expRock, setExpRock, user }: Props) {
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between" style={{ marginBottom: 12 }}>
+                  <div className="flex items-center justify-between" style={{ marginBottom: 8 }}>
                     <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">
                       Subtasks &middot; {rock.subtasks.filter((s) => s.done).length}/{rock.subtasks.length}
                     </span>
@@ -172,7 +168,7 @@ export function RocksView({ data, update, expRock, setExpRock, user }: Props) {
                         key={st.id}
                         className="flex items-center gap-3 group"
                         style={{
-                          padding: "10px 0",
+                          padding: "7px 0",
                           borderTop: si > 0 ? "1px solid #F3F4F6" : "none",
                         }}
                       >
@@ -229,12 +225,12 @@ export function RocksView({ data, update, expRock, setExpRock, user }: Props) {
                       })
                     }
                     className="w-full border border-dashed border-gray-200 rounded-lg text-xs text-gray-400 font-medium hover:text-gray-600 hover:border-gray-300 transition-colors duration-100 cursor-pointer"
-                    style={{ marginTop: 12, padding: "10px 0" }}
+                    style={{ marginTop: 8, padding: "8px 0" }}
                   >
                     + Add subtask
                   </button>
 
-                  <div className="flex justify-end" style={{ marginTop: 20, paddingTop: 16, borderTop: "1px solid #F3F4F6" }}>
+                  <div className="flex justify-end" style={{ marginTop: 12, paddingTop: 10, borderTop: "1px solid #F3F4F6" }}>
                     <Button
                       variant="danger"
                       size="sm"
@@ -264,7 +260,7 @@ export function RocksView({ data, update, expRock, setExpRock, user }: Props) {
           setExpRock(id);
         }}
         className="w-full border-2 border-dashed border-gray-200 rounded-2xl text-sm text-gray-400 font-semibold hover:text-gray-600 hover:border-gray-300 hover:bg-gray-50/50 transition-all duration-150 cursor-pointer flex items-center justify-center gap-1.5"
-        style={{ marginTop: 16, padding: "18px 0" }}
+        style={{ marginTop: 12, padding: "12px 0" }}
       >
         <IconPlus className="w-4 h-4" />
         Add Rock
