@@ -19,7 +19,7 @@ export default function AppShell() {
   const [view, setView] = useState<View>("today");
   const [expRock, setExpRock] = useState<string | null>(null);
   const [mobileNav, setMobileNav] = useState(false);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [loading, setLoading] = useState(true);
   const [syncStatus, setSyncStatus] = useState<string>("idle");
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -80,13 +80,30 @@ export default function AppShell() {
       for (const u of USERS) {
         const d = loaded[u.id];
         if (!d.growth) d.growth = SEED_DATA[u.id].growth;
-        if (!d.todayPriorities || typeof d.todayPriorities[0] === "string") {
+        // Robust todayPriorities migration
+        if (!d.todayPriorities || !Array.isArray(d.todayPriorities) || d.todayPriorities.length === 0) {
+          d.todayPriorities = [
+            { text: "", done: false },
+            { text: "", done: false },
+            { text: "", done: false },
+          ];
+        } else if (typeof d.todayPriorities[0] === "string") {
           d.todayPriorities = (d.todayPriorities as unknown as string[]).map(
             (t: string) => ({ text: t || "", done: false })
           );
         }
+        // Ensure each priority has the correct shape
+        d.todayPriorities = d.todayPriorities.map((p: unknown) => {
+          if (p && typeof p === "object" && "text" in p) return p as { text: string; done: boolean };
+          return { text: String(p || ""), done: false };
+        });
         if (d.streakDays === undefined) d.streakDays = 0;
         if (!d.lastActiveDate) d.lastActiveDate = "";
+        // Ensure todos array exists
+        if (!d.todos) d.todos = [];
+        if (!d.inbox) d.inbox = [];
+        if (!d.seats) d.seats = [];
+        if (!d.rocks) d.rocks = [];
       }
       setAllData(loaded);
       setLoading(false);
@@ -206,7 +223,7 @@ export default function AppShell() {
 
       {/* Main Content */}
       <main className="flex-1 min-w-0 overflow-auto pt-12 pb-16 md:pt-0 md:pb-0">
-        <div style={{ maxWidth: 1100, margin: "0 auto", padding: "48px 48px" }}>
+        <div className="content-wrapper" style={{ maxWidth: 1100, margin: "0 auto", padding: "32px 20px" }}>
           {view === "today" && (
             <TodayView data={data} user={user} update={update} setView={setView} setExpRock={setExpRock} />
           )}

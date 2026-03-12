@@ -56,7 +56,8 @@ export function GrowthView({ data, update, user }: Props) {
       </div>
 
       {/* Core Values — Interactive */}
-      <Card className="mb-6" padding="lg">
+      <div style={{ marginBottom: 20 }}>
+      <Card padding="lg">
         <div className="flex items-center gap-2.5" style={{ marginBottom: 16 }}>
           <div className="w-1 h-4 rounded-full bg-gradient-to-b from-emerald-400 to-teal-500" />
           <h3 className="text-[15px] font-semibold text-gray-900">Core Values</h3>
@@ -109,9 +110,11 @@ export function GrowthView({ data, update, user }: Props) {
           })}
         </div>
       </Card>
+      </div>
 
       {/* GWC */}
-      <Card className="mb-6" padding="lg">
+      <div style={{ marginBottom: 20 }}>
+      <Card padding="lg">
         <div className="flex items-center gap-2.5" style={{ marginBottom: 16 }}>
           <div className="w-1 h-4 rounded-full bg-gradient-to-b from-indigo-400 to-violet-500" />
           <h3 className="text-[15px] font-semibold text-gray-900">GWC</h3>
@@ -139,9 +142,10 @@ export function GrowthView({ data, update, user }: Props) {
           })}
         </div>
       </Card>
+      </div>
 
       {/* Strengths & Weaknesses */}
-      <div className="grid grid-cols-1 sm:grid-cols-2" style={{ gap: 16, marginBottom: 24 }}>
+      <div className="grid grid-cols-1 sm:grid-cols-2" style={{ gap: 16, marginBottom: 20 }}>
         <Card padding="lg">
           <div className="flex items-center gap-2.5" style={{ marginBottom: 12 }}>
             <div className="w-1 h-4 rounded-full bg-emerald-400" />

@@ -75,7 +75,7 @@ export function RocksView({ data, update, expRock, setExpRock, user }: Props) {
           return (
             <div
               key={rock.id}
-              className="rounded-2xl overflow-hidden transition-all duration-200 border"
+              className="rounded-2xl transition-all duration-200 border"
               style={{
                 background: open ? (STATUS_BG[rock.status] || "#FFFFFF") : "#FFFFFF",
                 borderColor: open ? (STATUS_COLOR[rock.status] || "#E5E7EB") + "40" : "rgba(229,231,235,0.7)",

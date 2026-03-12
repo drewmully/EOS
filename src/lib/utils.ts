@@ -85,10 +85,8 @@ export interface Recommendation {
 export function getRecommendations(data: { rocks: Rock[]; todos: { text: string; due: string; done: boolean }[] }): Recommendation[] {
   const recs: Recommendation[] = [];
 
-  // Analyze each rock
   for (const rock of data.rocks) {
     if (rock.status === "Done") continue;
-    const score = urgencyScore(rock);
     const days = daysUntil(rock.due);
     const completion = pct(rock);
 
@@ -101,12 +99,12 @@ export function getRecommendations(data: { rocks: Rock[]; todos: { text: string;
         rockName: rock.name,
       });
     }
-    // Due this week with low completion
-    else if (days <= 7 && completion < 80) {
+    // Due within 2 weeks with low completion
+    else if (days <= 14 && completion < 80) {
       recs.push({
         text: `Push "${rock.name}" — due in ${days}d, only ${completion}% done`,
         reason: `${100 - completion}% remaining with ${days} days left`,
-        urgency: "high",
+        urgency: days <= 7 ? "high" : "medium",
         rockName: rock.name,
       });
     }
@@ -119,84 +117,86 @@ export function getRecommendations(data: { rocks: Rock[]; todos: { text: string;
         rockName: rock.name,
       });
     }
-    // At risk with near deadline
-    else if (rock.status === "At Risk" && days <= 21) {
+    // At risk
+    else if (rock.status === "At Risk") {
       recs.push({
         text: `Focus on "${rock.name}" — at risk, ${days}d left`,
-        reason: "At risk with approaching deadline",
-        urgency: "medium",
+        reason: "Marked At Risk — needs attention",
+        urgency: days <= 21 ? "high" : "medium",
         rockName: rock.name,
       });
     }
-    // Completion gap (behind where they should be)
-    else if (score >= 25 && days > 7) {
+    // Behind pace — completion gap analysis
+    else {
       const expectedCompletion = Math.max(0, Math.min(100, 100 - (days / 90) * 100));
-      if (completion < expectedCompletion - 15) {
+      if (completion < expectedCompletion - 10 && expectedCompletion > 15) {
         recs.push({
           text: `"${rock.name}" is behind pace — ${completion}% done, should be ~${Math.round(expectedCompletion)}%`,
           reason: "Falling behind expected progress",
-          urgency: "medium",
+          urgency: completion < expectedCompletion - 25 ? "high" : "medium",
           rockName: rock.name,
         });
       }
     }
 
     // Overdue subtasks
-    const overdueSubs = rock.subtasks.filter((s) => !s.done && daysUntil(s.due) < 0);
+    const overdueSubs = rock.subtasks.filter((s) => !s.done && s.due && daysUntil(s.due) < 0);
     if (overdueSubs.length > 0) {
       recs.push({
         text: `${overdueSubs.length} overdue subtask${overdueSubs.length > 1 ? "s" : ""} on "${rock.name}"`,
         reason: overdueSubs.map((s) => s.text || "unnamed").join(", "),
-        urgency: overdueSubs.length >= 2 ? "high" : "medium",
-        rockName: rock.name,
-      });
-    }
-
-    // Subtasks due today or tomorrow
-    const urgentSubs = rock.subtasks.filter((s) => !s.done && daysUntil(s.due) >= 0 && daysUntil(s.due) <= 1);
-    for (const sub of urgentSubs) {
-      recs.push({
-        text: `Complete "${sub.text || "subtask"}" on "${rock.name}" — due ${daysUntil(sub.due) === 0 ? "today" : "tomorrow"}`,
-        reason: "Subtask deadline is imminent",
         urgency: "high",
         rockName: rock.name,
       });
     }
-  }
 
-  // Todos due today/tomorrow
-  for (const todo of data.todos) {
-    if (todo.done || !todo.due) continue;
-    const days = daysUntil(todo.due);
-    if (days < 0) {
+    // Subtasks due within 7 days (upcoming / imminent)
+    const upcomingSubs = rock.subtasks.filter((s) => !s.done && s.due && daysUntil(s.due) >= 0 && daysUntil(s.due) <= 7);
+    if (upcomingSubs.length > 0) {
+      const soonest = upcomingSubs.sort((a, b) => daysUntil(a.due) - daysUntil(b.due))[0];
+      const d = daysUntil(soonest.due);
+      const dueLabel = d === 0 ? "today" : d === 1 ? "tomorrow" : `in ${d}d`;
       recs.push({
-        text: `Overdue to-do: "${todo.text}"`,
-        reason: `${Math.abs(days)}d overdue`,
-        urgency: "medium",
-      });
-    } else if (days <= 1) {
-      recs.push({
-        text: `To-do due ${days === 0 ? "today" : "tomorrow"}: "${todo.text}"`,
-        reason: "Deadline is imminent",
-        urgency: "medium",
+        text: `"${soonest.text || "Subtask"}" on "${rock.name}" — due ${dueLabel}`,
+        reason: upcomingSubs.length > 1 ? `${upcomingSubs.length} subtasks due this week` : "Upcoming deadline",
+        urgency: d <= 1 ? "high" : "medium",
+        rockName: rock.name,
       });
     }
   }
 
-  // Sort by urgency
+  // Todos due soon
+  for (const todo of data.todos) {
+    if (todo.done || !todo.due) continue;
+    const d = daysUntil(todo.due);
+    if (d < 0) {
+      recs.push({
+        text: `Overdue to-do: "${todo.text}"`,
+        reason: `${Math.abs(d)}d overdue`,
+        urgency: "high",
+      });
+    } else if (d <= 3) {
+      recs.push({
+        text: `To-do due ${d === 0 ? "today" : d === 1 ? "tomorrow" : `in ${d}d`}: "${todo.text}"`,
+        reason: "Deadline approaching",
+        urgency: d <= 1 ? "high" : "medium",
+      });
+    }
+  }
+
+  // Sort: high first, then medium
   const urgOrder = { high: 0, medium: 1, low: 2 };
   recs.sort((a, b) => urgOrder[a.urgency] - urgOrder[b.urgency]);
 
-  // Deduplicate by rockName (keep highest urgency per rock, but allow subtask-specific ones)
+  // Deduplicate
   const seen = new Set<string>();
   const deduped: Recommendation[] = [];
   for (const rec of recs) {
-    const key = rec.text;
-    if (!seen.has(key)) {
-      seen.add(key);
+    if (!seen.has(rec.text)) {
+      seen.add(rec.text);
       deduped.push(rec);
     }
   }
 
-  return deduped.slice(0, 5); // Top 5 recommendations
+  return deduped.slice(0, 5);
 }

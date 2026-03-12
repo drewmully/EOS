@@ -68,3 +68,10 @@ select {
 .focus-ring:focus-visible {
   box-shadow: 0 0 0 2px #fff, 0 0 0 4px #10B981;
 }
+
+/* Responsive content padding */
+@media (min-width: 768px) {
+  .content-wrapper {
+    padding: 40px 40px !important;
+  }
+}
