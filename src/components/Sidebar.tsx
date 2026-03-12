@@ -59,7 +59,7 @@ export function Sidebar({
       }}
     >
       {/* Person Switcher */}
-      <div className={collapsed ? "px-2 pt-5 pb-4" : "px-5 pt-6 pb-4"}>
+      <div className={collapsed ? "px-2 pt-7 pb-5" : "px-5 pt-8 pb-5"}>
         <div className={`flex ${collapsed ? "flex-col items-center gap-2.5" : "gap-2 justify-center"}`}>
           {users.map((u) => {
             const active = u.id === activeUser;
@@ -73,9 +73,9 @@ export function Sidebar({
                 <div
                   className="rounded-full flex items-center justify-center text-white font-semibold transition-all duration-150"
                   style={{
-                    width: collapsed ? 34 : 38,
-                    height: collapsed ? 34 : 38,
-                    fontSize: 12,
+                    width: collapsed ? 36 : 42,
+                    height: collapsed ? 36 : 42,
+                    fontSize: 13,
                     background: u.color,
                     opacity: active ? 1 : 0.35,
                     boxShadow: active ? `0 0 0 2px white, 0 0 0 3.5px ${u.color}` : "none",
@@ -85,7 +85,7 @@ export function Sidebar({
                 </div>
                 {!collapsed && (
                   <span
-                    className="text-[11px] font-medium mt-1.5 whitespace-nowrap"
+                    className="text-xs font-medium mt-1.5 whitespace-nowrap"
                     style={{ color: active ? u.color : "#9CA3AF" }}
                   >
                     {u.name}
@@ -101,7 +101,7 @@ export function Sidebar({
       <div className="mx-3 h-px bg-gray-100" />
 
       {/* Navigation */}
-      <nav className="flex-1 px-3 py-2">
+      <nav className="flex-1 px-3 py-3">
         {NAV.map(({ key, label, Icon }) => {
           const active = view === key;
           return (
@@ -110,8 +110,8 @@ export function Sidebar({
               onClick={() => setView(key)}
               title={collapsed ? label : undefined}
               className={[
-                "w-full flex items-center gap-3 rounded-lg mb-0.5",
-                collapsed ? "justify-center px-2 py-2.5" : "px-3 py-2.5",
+                "w-full flex items-center gap-3 rounded-lg mb-1",
+                collapsed ? "justify-center px-2 py-3" : "px-3.5 py-3",
                 "cursor-pointer transition-colors duration-100 relative",
                 active
                   ? "bg-gray-100 text-gray-900"
@@ -120,19 +120,19 @@ export function Sidebar({
             >
               <Icon
                 className={[
-                  "w-[18px] h-[18px] flex-shrink-0",
+                  "w-5 h-5 flex-shrink-0",
                   active ? "text-gray-900" : "",
                 ].join(" ")}
               />
               {!collapsed && (
-                <span className={`text-[14px] whitespace-nowrap ${active ? "font-semibold" : "font-medium"}`}>
+                <span className={`text-[15px] whitespace-nowrap ${active ? "font-semibold" : "font-medium"}`}>
                   {label}
                 </span>
               )}
               {key === "inbox" && inboxCount > 0 && (
                 <span
                   className={[
-                    "bg-gray-900 text-white text-[10px] font-semibold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1",
+                    "bg-gray-900 text-white text-[11px] font-semibold rounded-full min-w-[20px] h-[20px] flex items-center justify-center px-1",
                     collapsed ? "absolute -top-0.5 -right-0.5" : "ml-auto",
                   ].join(" ")}
                 >
@@ -169,7 +169,7 @@ export function Sidebar({
         <div className={`flex items-center ${collapsed ? "justify-center" : "gap-2"}`}>
           <div className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${syncDot}`} />
           {!collapsed && (
-            <span className="text-[11px] text-gray-400 font-medium">
+            <span className="text-xs text-gray-400 font-medium">
               {syncStatus === "synced" ? "Synced" : syncStatus === "syncing" ? "Syncing..." : syncStatus === "error" ? "Error" : "Local"}
             </span>
           )}

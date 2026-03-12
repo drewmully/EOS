@@ -53,7 +53,7 @@ export function TodayView({ data, user, update, setView, setExpRock }: Props) {
       </div>
 
       {/* Rock Cards — 4 across on desktop */}
-      <section className="mb-6">
+      <section className="mb-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
           {sorted.map((rock) => {
             const p = pct(rock);
@@ -107,7 +107,7 @@ export function TodayView({ data, user, update, setView, setExpRock }: Props) {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Top 3 Priorities */}
         <Card padding="lg">
-          <h3 className="text-[14px] font-semibold text-gray-900 mb-4">Top 3 Priorities</h3>
+          <h3 className="text-[15px] font-semibold text-gray-900 mb-4 pb-3 border-b border-gray-100">Top 3 Priorities</h3>
           <div>
             {data.todayPriorities.map((p: Priority, i: number) => (
               <div
@@ -146,9 +146,9 @@ export function TodayView({ data, user, update, setView, setExpRock }: Props) {
 
         {/* To-Do List */}
         <Card padding="lg">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-4 pb-3 border-b border-gray-100">
             <div className="flex items-center gap-2.5">
-              <h3 className="text-[14px] font-semibold text-gray-900">To-Do</h3>
+              <h3 className="text-[15px] font-semibold text-gray-900">To-Do</h3>
               {data.todos.length > 0 && (
                 <span className="text-xs text-gray-400">
                   {data.todos.filter((t) => t.done).length}/{data.todos.length}
