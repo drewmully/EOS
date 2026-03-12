@@ -15,7 +15,7 @@ const variants: Record<Variant, string> = {
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: Variant;
-  size?: "sm" | "md";
+  size?: "sm" | "md" | "lg";
   icon?: React.ReactNode;
 }
 
@@ -23,10 +23,14 @@ export function Button({ children, variant = "primary", size = "md", icon, class
   return (
     <button
       className={[
-        "inline-flex items-center justify-center gap-1.5 font-semibold rounded-[10px] cursor-pointer",
+        "inline-flex items-center justify-center gap-2 font-semibold rounded-xl cursor-pointer",
         "transition-all duration-150 active:scale-[0.97]",
         variants[variant],
-        size === "sm" ? "text-xs px-3 py-1.5" : "text-sm px-4 py-2",
+        size === "sm"
+          ? "text-sm px-4 py-2"
+          : size === "lg"
+          ? "text-base px-6 py-3"
+          : "text-sm px-5 py-2.5",
         className,
       ].join(" ")}
       {...rest}

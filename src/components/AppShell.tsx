@@ -190,8 +190,8 @@ export default function AppShell() {
       <MobileBottomNav view={view} setView={setView} inboxCount={data.inbox.length} />
 
       {/* Main Content */}
-      <main className="flex-1 overflow-auto pt-[56px] pb-[80px] md:pt-0 md:pb-0">
-        <div className="max-w-[920px] mx-auto px-5 md:px-8 py-8">
+      <main className="flex-1 overflow-auto pt-[60px] pb-[84px] md:pt-0 md:pb-0">
+        <div className="max-w-[1200px] mx-auto px-5 md:px-10 lg:px-12 py-10">
           {view === "today" && (
             <TodayView data={data} user={user} update={update} setView={setView} setExpRock={setExpRock} />
           )}

@@ -3,7 +3,6 @@
 import confetti from "canvas-confetti";
 import { UserData, UserProfile, Rock } from "@/lib/types";
 import { uid, daysUntil, pct, fmtDate, urgencyScore, urgencyLabel } from "@/lib/utils";
-import { Card } from "./ui/Card";
 import { Badge } from "./ui/Badge";
 import { ProgressRing } from "./ui/ProgressRing";
 import { Checkbox } from "./ui/Checkbox";
@@ -16,13 +15,6 @@ const STATUS_RING: Record<string, string> = {
   "At Risk": "#F59E0B",
   "Off Track": "#EF4444",
   Done: "#6366F1",
-};
-
-const STATUS_VARIANT: Record<string, "emerald" | "amber" | "red" | "indigo"> = {
-  "On Track": "emerald",
-  "At Risk": "amber",
-  "Off Track": "red",
-  Done: "indigo",
 };
 
 const BIZ_VARIANT: Record<string, "teal" | "orange"> = { MFS: "teal", Mully: "orange" };
@@ -51,22 +43,14 @@ interface Props {
 export function RocksView({ data, update, expRock, setExpRock, user }: Props) {
   return (
     <div className="animate-fadeSlideUp">
-      <div className="flex items-center gap-3 mb-2">
-        <div
-          className="w-9 h-9 rounded-full flex items-center justify-center text-white text-[11px] font-bold shadow-sm"
-          style={{ background: user.color }}
-        >
-          {user.initials}
-        </div>
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
-            {user.name}&apos;s Rocks
-          </h1>
-          <p className="text-sm text-gray-400">Q2 2026 &middot; Click to expand and edit</p>
-        </div>
+      <div className="mb-10">
+        <h1 className="text-[32px] font-bold text-gray-900 tracking-tight">
+          {user.name}&apos;s Rocks
+        </h1>
+        <p className="text-[16px] text-gray-400 mt-2">Q2 2026 &middot; Click to expand and edit</p>
       </div>
 
-      <div className="mt-6 space-y-3">
+      <div className="space-y-4">
         {data.rocks.map((rock, ri) => {
           const open = expRock === rock.id;
           const p = pct(rock);
@@ -80,26 +64,26 @@ export function RocksView({ data, update, expRock, setExpRock, user }: Props) {
               className={[
                 "bg-white rounded-2xl overflow-hidden transition-all duration-200 border",
                 open
-                  ? "border-gray-300 shadow-[0_8px_30px_rgba(0,0,0,0.08)]"
-                  : "border-gray-200/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] hover:-translate-y-0.5 hover:border-gray-300/60",
+                  ? "border-gray-300 shadow-[0_12px_40px_rgba(0,0,0,0.08)]"
+                  : "border-gray-200/70 shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.07)] hover:-translate-y-0.5 hover:border-gray-300",
               ].join(" ")}
             >
               {/* Collapsed Header */}
               <div
                 onClick={() => setExpRock(open ? null : rock.id)}
-                className="flex items-center gap-4 px-5 py-4 cursor-pointer transition-colors duration-150 hover:bg-gray-50/50"
+                className="flex items-center gap-5 px-7 py-5 cursor-pointer transition-colors duration-150 hover:bg-gray-50/50"
               >
-                <ProgressRing value={p} color={ringColor} size={48} />
+                <ProgressRing value={p} color={ringColor} size={56} strokeWidth={5} />
 
                 <div className="flex-1 min-w-0">
-                  <div className="text-[14px] font-semibold text-gray-900 truncate">
+                  <div className="text-[17px] font-semibold text-gray-900 truncate leading-snug">
                     {rock.name || "(click to name)"}
                   </div>
-                  <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                  <div className="flex items-center gap-2.5 mt-2 flex-wrap">
                     <Badge variant={BIZ_VARIANT[rock.biz] || "gray"}>{rock.biz}</Badge>
                     <Badge variant={URG_MAP[urg.text] || "gray"}>{urg.text}</Badge>
                     <span
-                      className={`text-[11px] font-medium ${
+                      className={`text-[13px] font-medium ${
                         days < 0 ? "text-red-500" : "text-gray-400"
                       }`}
                     >
@@ -118,7 +102,7 @@ export function RocksView({ data, update, expRock, setExpRock, user }: Props) {
                     update((d) => { d.rocks[ri].status = v as Rock["status"]; });
                     if (v === "Done") fireBig();
                   }}
-                  className="text-[11px] font-semibold rounded-lg px-2.5 py-1.5 border border-gray-200 bg-white cursor-pointer hover:border-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+                  className="text-[13px] font-semibold rounded-xl px-3.5 py-2 border border-gray-200 bg-white cursor-pointer hover:border-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
                 >
                   {["On Track", "At Risk", "Off Track", "Done"].map((s) => (
                     <option key={s}>{s}</option>
@@ -129,14 +113,14 @@ export function RocksView({ data, update, expRock, setExpRock, user }: Props) {
                 <div
                   className={`text-gray-300 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
                 >
-                  <IconChevron className="w-5 h-5" />
+                  <IconChevron className="w-6 h-6" />
                 </div>
               </div>
 
               {/* Expanded Panel */}
               {open && (
-                <div className="border-t border-gray-100 px-5 py-5 animate-fadeSlideUp">
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                <div className="border-t border-gray-100 px-7 py-7 animate-fadeSlideUp">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
                     <Input
                       label="Rock Name"
                       value={rock.name}
@@ -149,13 +133,13 @@ export function RocksView({ data, update, expRock, setExpRock, user }: Props) {
                       onChange={(e) => { const v = e.target.value; update((d) => { d.rocks[ri].due = v; }); }}
                     />
                     <div>
-                      <label className="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1.5">
+                      <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
                         Business
                       </label>
                       <select
                         value={rock.biz}
                         onChange={(e) => { const v = e.target.value; update((d) => { d.rocks[ri].biz = v as Rock["biz"]; }); }}
-                        className="w-full bg-white border border-gray-200 rounded-[10px] px-3.5 py-2.5 text-sm text-gray-800 cursor-pointer hover:border-gray-300 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/10"
+                        className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-[15px] text-gray-800 cursor-pointer hover:border-gray-300 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/10"
                       >
                         <option>MFS</option>
                         <option>Mully</option>
@@ -164,17 +148,17 @@ export function RocksView({ data, update, expRock, setExpRock, user }: Props) {
                   </div>
 
                   {/* Subtasks */}
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">
                       Subtasks &middot; {rock.subtasks.filter((s) => s.done).length}/{rock.subtasks.length}
                     </span>
                   </div>
 
-                  <div className="space-y-0.5">
+                  <div className="space-y-1">
                     {rock.subtasks.map((st, si) => (
                       <div
                         key={st.id}
-                        className="flex items-center gap-3 py-2.5 px-2 -mx-2 rounded-lg group hover:bg-gray-50 transition-colors duration-150"
+                        className="flex items-center gap-3.5 py-3 px-3 -mx-3 rounded-xl group hover:bg-gray-50 transition-colors duration-150"
                       >
                         <Checkbox
                           size="sm"
@@ -197,7 +181,7 @@ export function RocksView({ data, update, expRock, setExpRock, user }: Props) {
                           }}
                           placeholder="Subtask..."
                           className={[
-                            "flex-1 bg-transparent text-sm py-0.5 focus:outline-none placeholder:text-gray-300",
+                            "flex-1 bg-transparent text-[15px] py-0.5 focus:outline-none placeholder:text-gray-300",
                             st.done ? "line-through text-gray-400" : "text-gray-700",
                           ].join(" ")}
                         />
@@ -208,13 +192,13 @@ export function RocksView({ data, update, expRock, setExpRock, user }: Props) {
                             const v = e.target.value;
                             update((d) => { d.rocks[ri].subtasks[si].due = v; });
                           }}
-                          className="w-28 bg-transparent text-[11px] text-gray-400 py-0.5 focus:outline-none cursor-pointer"
+                          className="w-32 bg-transparent text-[13px] text-gray-400 py-0.5 focus:outline-none cursor-pointer"
                         />
                         <button
                           onClick={() => update((d) => { d.rocks[ri].subtasks.splice(si, 1); })}
-                          className="w-7 h-7 rounded-lg flex items-center justify-center text-gray-300 hover:text-red-500 hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-all duration-150 cursor-pointer"
+                          className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-300 hover:text-red-500 hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-all duration-150 cursor-pointer"
                         >
-                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                             <path strokeLinecap="round" d="M6 18L18 6M6 6l12 12" />
                           </svg>
                         </button>
@@ -228,13 +212,13 @@ export function RocksView({ data, update, expRock, setExpRock, user }: Props) {
                         d.rocks[ri].subtasks.push({ id: uid(), text: "", due: "", done: false });
                       })
                     }
-                    className="w-full mt-3 border-2 border-dashed border-gray-200 rounded-xl py-2.5 text-xs text-gray-400 font-medium hover:text-emerald-600 hover:border-emerald-300 hover:bg-emerald-50/30 transition-all duration-150 cursor-pointer"
+                    className="w-full mt-4 border-2 border-dashed border-gray-200 rounded-xl py-3.5 text-sm text-gray-400 font-medium hover:text-emerald-600 hover:border-emerald-300 hover:bg-emerald-50/30 transition-all duration-150 cursor-pointer"
                   >
                     + Add subtask
                   </button>
 
                   {/* Delete Rock */}
-                  <div className="mt-4 pt-4 border-t border-gray-100 flex justify-end">
+                  <div className="mt-6 pt-6 border-t border-gray-100 flex justify-end">
                     <Button
                       variant="danger"
                       size="sm"
@@ -264,9 +248,9 @@ export function RocksView({ data, update, expRock, setExpRock, user }: Props) {
           });
           setExpRock(id);
         }}
-        className="w-full mt-4 border-2 border-dashed border-gray-200 rounded-2xl py-4 text-sm text-gray-400 font-semibold hover:text-emerald-600 hover:border-emerald-300 hover:bg-emerald-50/30 transition-all duration-200 cursor-pointer flex items-center justify-center gap-2"
+        className="w-full mt-5 border-2 border-dashed border-gray-200 rounded-2xl py-5 text-[15px] text-gray-400 font-semibold hover:text-emerald-600 hover:border-emerald-300 hover:bg-emerald-50/30 transition-all duration-200 cursor-pointer flex items-center justify-center gap-2"
       >
-        <IconPlus className="w-4 h-4" />
+        <IconPlus className="w-5 h-5" />
         Add New Rock
       </button>
     </div>

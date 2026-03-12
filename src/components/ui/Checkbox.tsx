@@ -5,7 +5,8 @@ interface CheckboxProps {
 }
 
 export function Checkbox({ checked, onChange, size = "md" }: CheckboxProps) {
-  const s = size === "sm" ? "w-[18px] h-[18px]" : "w-[22px] h-[22px]";
+  const s = size === "sm" ? "w-[22px] h-[22px]" : "w-[26px] h-[26px]";
+  const icon = size === "sm" ? "w-3 h-3" : "w-3.5 h-3.5";
   return (
     <button
       type="button"
@@ -21,7 +22,7 @@ export function Checkbox({ checked, onChange, size = "md" }: CheckboxProps) {
     >
       {checked && (
         <svg
-          className="w-3 h-3 text-white"
+          className={`${icon} text-white`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
