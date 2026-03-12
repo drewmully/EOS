@@ -16,8 +16,8 @@ export function InboxView({ data, update }: Props) {
   return (
     <div className="animate-fadeIn">
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-gray-900 tracking-tight">Inbox</h1>
-        <p className="text-sm text-gray-400 mt-1">Capture first, triage later.</p>
+        <h1 className="text-xl font-semibold text-gray-900 tracking-tight">Inbox</h1>
+        <p className="text-[13px] text-gray-400 mt-0.5">Capture first, triage later.</p>
       </div>
 
       <div className="mb-6">
@@ -39,7 +39,7 @@ export function InboxView({ data, update }: Props) {
             }
           }}
           placeholder="What's on your mind? Press Enter to add."
-          className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 transition-colors duration-100 hover:border-gray-300 focus:outline-none focus:border-gray-400 shadow-[0_1px_2px_rgba(0,0,0,0.04)]"
+          className="w-full bg-white border border-gray-200 rounded-xl px-5 py-3.5 text-[14px] text-gray-800 placeholder:text-gray-400 transition-colors duration-100 hover:border-gray-300 focus:outline-none focus:border-gray-400 shadow-[0_1px_2px_rgba(0,0,0,0.04)]"
         />
       </div>
 
@@ -48,21 +48,21 @@ export function InboxView({ data, update }: Props) {
           <p className="text-sm text-gray-400">Inbox zero. Nice work.</p>
         </div>
       ) : (
-        <div className="space-y-2">
+        <div className="space-y-3">
           {data.inbox.map((item, i) => (
             <Card key={item.id} padding="md">
-              <div className="flex items-start gap-3">
+              <div className="flex items-start gap-4">
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm text-gray-800 mb-2 break-words">{item.text}</p>
+                  <p className="text-[14px] text-gray-800 mb-2.5 break-words">{item.text}</p>
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-[11px] text-gray-400">{item.date}</span>
+                    <span className="text-xs text-gray-400">{item.date}</span>
                     <select
                       value={item.biz}
                       onChange={(e) => {
                         const v = e.target.value;
                         update((d) => { d.inbox[i].biz = v; });
                       }}
-                      className="text-[11px] font-medium border border-gray-200 rounded-md px-2 py-1 text-gray-500 bg-white cursor-pointer hover:border-gray-300 focus:outline-none transition-colors"
+                      className="text-xs font-medium border border-gray-200 rounded-md px-2.5 py-1 text-gray-500 bg-white cursor-pointer hover:border-gray-300 focus:outline-none transition-colors"
                     >
                       <option value="">Business?</option>
                       <option>MFS</option>
@@ -75,7 +75,7 @@ export function InboxView({ data, update }: Props) {
                         const v = e.target.value;
                         update((d) => { d.inbox[i].triage = v; });
                       }}
-                      className={`text-[11px] font-medium border rounded-md px-2 py-1 bg-white cursor-pointer transition-colors focus:outline-none ${
+                      className={`text-xs font-medium border rounded-md px-2.5 py-1 bg-white cursor-pointer transition-colors focus:outline-none ${
                         item.triage
                           ? "border-gray-300 text-gray-700 font-semibold"
                           : "border-gray-200 text-gray-500 hover:border-gray-300"

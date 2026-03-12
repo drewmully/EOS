@@ -23,34 +23,34 @@ export function SeatsView({ data, update }: Props) {
   return (
     <div className="animate-fadeIn">
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-gray-900 tracking-tight">Seat Exit Plan</h1>
-        <p className="text-sm text-gray-400 mt-1">Too many seats = no leverage. Plan your exit.</p>
+        <h1 className="text-xl font-semibold text-gray-900 tracking-tight">Seat Exit Plan</h1>
+        <p className="text-[13px] text-gray-400 mt-0.5">Too many seats = no leverage. Plan your exit.</p>
       </div>
 
       {/* Weekly prompt */}
-      <div className="mb-6 bg-amber-50 border border-amber-200/60 rounded-xl px-4 py-3">
-        <p className="text-sm font-medium text-amber-800">What did you do this week to exit a seat?</p>
+      <div className="mb-6 bg-amber-50 border border-amber-200/60 rounded-xl px-5 py-3.5">
+        <p className="text-[14px] font-medium text-amber-800">What did you do this week to exit a seat?</p>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-4">
         {data.seats.map((seat, i) => (
           <Card key={seat.id} padding="lg">
             <div className="mb-4">
               <input
                 value={seat.name}
                 onChange={(e) => { const v = e.target.value; update((d) => { d.seats[i].name = v; }); }}
-                className="text-base font-semibold text-gray-900 bg-transparent focus:outline-none w-full mb-2"
+                className="text-[15px] font-semibold text-gray-900 bg-transparent focus:outline-none w-full mb-2"
               />
               <div className="flex items-center gap-2 flex-wrap">
                 <input
                   value={seat.hours}
                   onChange={(e) => { const v = e.target.value; update((d) => { d.seats[i].hours = v; }); }}
-                  className="w-24 text-[11px] text-gray-500 font-medium bg-gray-50 px-2.5 py-1 rounded-md border border-gray-200 hover:border-gray-300 focus:outline-none focus:border-gray-400 text-center transition-colors"
+                  className="w-28 text-xs text-gray-500 font-medium bg-gray-50 px-3 py-1.5 rounded-md border border-gray-200 hover:border-gray-300 focus:outline-none focus:border-gray-400 text-center transition-colors"
                 />
                 <select
                   value={seat.status}
                   onChange={(e) => { const v = e.target.value; update((d) => { d.seats[i].status = v; }); }}
-                  className="text-[11px] font-medium border border-gray-200 rounded-md px-2 py-1 bg-white cursor-pointer hover:border-gray-300 focus:outline-none transition-colors"
+                  className="text-xs font-medium border border-gray-200 rounded-md px-2.5 py-1 bg-white cursor-pointer hover:border-gray-300 focus:outline-none transition-colors"
                 >
                   {Object.keys(STATUS_VARIANT).map((s) => (
                     <option key={s}>{s}</option>

@@ -131,7 +131,7 @@ export default function AppShell() {
   if (!data) return null;
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#F9FAFB]">
+    <div className="flex h-screen overflow-hidden bg-[#F8F9FB]">
       {/* Desktop Sidebar */}
       <Sidebar
         view={view}
@@ -157,9 +157,9 @@ export default function AppShell() {
       {/* Mobile Nav Overlay */}
       {mobileNav && (
         <div className="fixed inset-0 z-[200] flex md:hidden">
-          <div className="w-64 bg-white border-r border-gray-200 p-4 animate-slideIn">
-            <div className="flex items-center justify-between mb-5">
-              <span className="text-sm font-semibold text-gray-900">Navigation</span>
+          <div className="w-64 bg-white border-r border-gray-200 p-5 animate-slideIn">
+            <div className="flex items-center justify-between mb-6">
+              <span className="text-[15px] font-semibold text-gray-900">Navigation</span>
               <button onClick={() => setMobileNav(false)} className="text-gray-400 hover:text-gray-600 cursor-pointer">
                 <IconX className="w-4 h-4" />
               </button>
@@ -169,7 +169,7 @@ export default function AppShell() {
                 key={k}
                 onClick={() => { setView(k); setMobileNav(false); }}
                 className={[
-                  "w-full text-left px-3 py-2 rounded-lg text-sm mb-0.5 cursor-pointer transition-colors duration-100",
+                  "w-full text-left px-3 py-2.5 rounded-lg text-[15px] mb-0.5 cursor-pointer transition-colors duration-100",
                   view === k
                     ? "bg-gray-100 text-gray-900 font-semibold"
                     : "text-gray-500 hover:text-gray-700 hover:bg-gray-50",
@@ -188,7 +188,7 @@ export default function AppShell() {
 
       {/* Main Content */}
       <main className="flex-1 overflow-auto pt-12 pb-16 md:pt-0 md:pb-0">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
+        <div className="max-w-[1080px] mx-auto px-5 sm:px-8 lg:px-10 py-8 lg:py-10">
           {view === "today" && (
             <TodayView data={data} user={user} update={update} setView={setView} setExpRock={setExpRock} />
           )}

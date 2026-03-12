@@ -43,13 +43,13 @@ export function RocksView({ data, update, expRock, setExpRock, user }: Props) {
   return (
     <div className="animate-fadeIn">
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-gray-900 tracking-tight">
+        <h1 className="text-xl font-semibold text-gray-900 tracking-tight">
           {user.name}&apos;s Rocks
         </h1>
-        <p className="text-sm text-gray-400 mt-1">Q2 2026 &middot; Click to expand</p>
+        <p className="text-[13px] text-gray-400 mt-0.5">Q2 2026 &middot; Click to expand</p>
       </div>
 
-      <div className="space-y-2">
+      <div className="space-y-3">
         {data.rocks.map((rock, ri) => {
           const open = expRock === rock.id;
           const p = pct(rock);
@@ -70,21 +70,21 @@ export function RocksView({ data, update, expRock, setExpRock, user }: Props) {
               {/* Header */}
               <div
                 onClick={() => setExpRock(open ? null : rock.id)}
-                className="flex items-center gap-3 px-4 sm:px-5 py-3.5 cursor-pointer"
+                className="flex items-center gap-4 px-5 sm:px-6 py-4 cursor-pointer"
               >
-                <ProgressRing value={p} color={ringColor} size={36} strokeWidth={3} />
+                <ProgressRing value={p} color={ringColor} size={42} strokeWidth={3.5} />
 
                 <div className="flex-1 min-w-0">
-                  <div className="text-sm font-medium text-gray-900 truncate">
+                  <div className="text-[14px] font-medium text-gray-900 truncate">
                     {rock.name || "(click to name)"}
                   </div>
-                  <div className="flex items-center gap-1.5 mt-1 flex-wrap">
-                    <span className="text-[11px] text-gray-400">{rock.biz}</span>
+                  <div className="flex items-center gap-2 mt-1 flex-wrap">
+                    <span className="text-xs text-gray-400">{rock.biz}</span>
                     <span className="text-gray-300">&middot;</span>
                     <Badge variant={URG_VARIANT[urg.text] || "gray"} size="sm">{urg.text}</Badge>
                     <span className="text-gray-300">&middot;</span>
                     <span
-                      className={`text-[11px] ${days < 0 ? "text-red-500 font-medium" : "text-gray-400"}`}
+                      className={`text-xs ${days < 0 ? "text-red-500 font-medium" : "text-gray-400"}`}
                     >
                       {days > 0 ? `${days}d left` : days === 0 ? "Due today" : `${Math.abs(days)}d over`}
                     </span>
@@ -99,7 +99,7 @@ export function RocksView({ data, update, expRock, setExpRock, user }: Props) {
                     update((d) => { d.rocks[ri].status = v as Rock["status"]; });
                     if (v === "Done") fireBig();
                   }}
-                  className="hidden sm:block text-[11px] font-medium rounded-lg px-2.5 py-1.5 border border-gray-200 bg-white cursor-pointer hover:border-gray-300 transition-colors focus:outline-none"
+                  className="hidden sm:block text-xs font-medium rounded-lg px-3 py-1.5 border border-gray-200 bg-white cursor-pointer hover:border-gray-300 transition-colors focus:outline-none"
                 >
                   {["On Track", "At Risk", "Off Track", "Done"].map((s) => (
                     <option key={s}>{s}</option>
@@ -113,8 +113,8 @@ export function RocksView({ data, update, expRock, setExpRock, user }: Props) {
 
               {/* Expanded */}
               {open && (
-                <div className="border-t border-gray-100 px-4 sm:px-5 py-5 animate-fadeIn">
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+                <div className="border-t border-gray-100 px-5 sm:px-6 py-6 animate-fadeIn">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
                     <Input
                       label="Rock Name"
                       value={rock.name}
@@ -142,14 +142,14 @@ export function RocksView({ data, update, expRock, setExpRock, user }: Props) {
                   </div>
 
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-[11px] font-medium text-gray-400 uppercase tracking-wider">
+                    <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">
                       Subtasks &middot; {rock.subtasks.filter((s) => s.done).length}/{rock.subtasks.length}
                     </span>
                   </div>
 
                   <div className="space-y-0">
                     {rock.subtasks.map((st, si) => (
-                      <div key={st.id} className="flex items-center gap-2.5 py-2 group">
+                      <div key={st.id} className="flex items-center gap-3 py-2.5 group">
                         <Checkbox
                           size="sm"
                           checked={st.done}
@@ -171,7 +171,7 @@ export function RocksView({ data, update, expRock, setExpRock, user }: Props) {
                           }}
                           placeholder="Subtask..."
                           className={[
-                            "flex-1 min-w-0 bg-transparent text-sm py-0.5 focus:outline-none placeholder:text-gray-300",
+                            "flex-1 min-w-0 bg-transparent text-[14px] py-0.5 focus:outline-none placeholder:text-gray-300",
                             st.done ? "line-through text-gray-400" : "text-gray-700",
                           ].join(" ")}
                         />
@@ -182,7 +182,7 @@ export function RocksView({ data, update, expRock, setExpRock, user }: Props) {
                             const v = e.target.value;
                             update((d) => { d.rocks[ri].subtasks[si].due = v; });
                           }}
-                          className="hidden sm:block w-24 bg-transparent text-[11px] text-gray-400 focus:outline-none cursor-pointer"
+                          className="hidden sm:block w-28 bg-transparent text-xs text-gray-400 focus:outline-none cursor-pointer"
                         />
                         <button
                           onClick={() => update((d) => { d.rocks[ri].subtasks.splice(si, 1); })}

@@ -27,7 +27,7 @@ export function Badge({ children, variant = "gray", size = "sm", dot }: BadgePro
         "inline-flex items-center gap-1 font-medium whitespace-nowrap",
         styles[variant],
         size === "sm"
-          ? "text-[11px] px-2 py-0.5 rounded-md"
+          ? "text-[11px] px-2.5 py-0.5 rounded-md"
           : "text-xs px-2.5 py-1 rounded-md",
       ].join(" ")}
     >

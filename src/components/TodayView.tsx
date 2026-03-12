@@ -45,16 +45,16 @@ export function TodayView({ data, user, update, setView, setExpRock }: Props) {
   return (
     <div className="animate-fadeIn">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold text-gray-900 tracking-tight">
+      <div className="mb-6">
+        <h1 className="text-xl font-semibold text-gray-900 tracking-tight">
           Good {greeting}, {user.name}
         </h1>
-        <p className="text-sm text-gray-400 mt-1">Here&apos;s what needs your attention.</p>
+        <p className="text-[13px] text-gray-400 mt-0.5">Here&apos;s what needs your attention.</p>
       </div>
 
-      {/* Rock Cards */}
-      <section className="mb-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+      {/* Rock Cards — 4 across on desktop */}
+      <section className="mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
           {sorted.map((rock) => {
             const p = pct(rock);
             const days = daysUntil(rock.due);
@@ -66,17 +66,20 @@ export function TodayView({ data, user, update, setView, setExpRock }: Props) {
                 hoverable
                 onClick={() => { setExpRock(rock.id); setView("rocks"); }}
                 padding="md"
+                className="flex flex-col"
               >
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-[11px] font-medium text-gray-400">{rock.biz}</span>
+                <div className="flex items-center justify-between mb-2.5">
+                  <span className="text-xs font-medium text-gray-400">{rock.biz}</span>
                   <Badge variant={URG_VARIANT[urg.text] || "gray"} size="sm">{urg.text}</Badge>
                 </div>
 
-                <h3 className="text-sm font-medium text-gray-900 leading-snug mb-3 min-h-[36px] line-clamp-2">
+                <h3 className="text-[14px] font-medium text-gray-900 leading-snug mb-auto min-h-[40px] line-clamp-2">
                   {rock.name || "(unnamed)"}
                 </h3>
 
-                <ProgressBar value={p} color={STATUS_COLOR[rock.status] || "#10B981"} size="sm" showLabel />
+                <div className="mt-3">
+                  <ProgressBar value={p} color={STATUS_COLOR[rock.status] || "#10B981"} size="sm" showLabel />
+                </div>
 
                 <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
                   <div className="flex items-center gap-1.5">
@@ -84,10 +87,10 @@ export function TodayView({ data, user, update, setView, setExpRock }: Props) {
                       className="w-1.5 h-1.5 rounded-full"
                       style={{ backgroundColor: STATUS_COLOR[rock.status] || "#10B981" }}
                     />
-                    <span className="text-[11px] text-gray-400">{rock.status}</span>
+                    <span className="text-xs text-gray-400">{rock.status}</span>
                   </div>
                   <span
-                    className={`text-[11px] font-medium ${
+                    className={`text-xs font-medium ${
                       days < 0 ? "text-red-500" : days <= 7 ? "text-amber-500" : "text-gray-400"
                     }`}
                   >
@@ -101,15 +104,15 @@ export function TodayView({ data, user, update, setView, setExpRock }: Props) {
       </section>
 
       {/* Priorities + To-dos side by side */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Top 3 Priorities */}
         <Card padding="lg">
-          <h3 className="text-sm font-semibold text-gray-900 mb-4">Top 3 Priorities</h3>
-          <div className="space-y-0">
+          <h3 className="text-[14px] font-semibold text-gray-900 mb-4">Top 3 Priorities</h3>
+          <div>
             {data.todayPriorities.map((p: Priority, i: number) => (
               <div
                 key={i}
-                className="flex items-center gap-3 py-2.5"
+                className="flex items-center gap-3 py-3"
                 style={{ borderTop: i > 0 ? "1px solid #F3F4F6" : "none" }}
               >
                 <Checkbox
@@ -131,7 +134,7 @@ export function TodayView({ data, user, update, setView, setExpRock }: Props) {
                   }}
                   placeholder="What matters most?"
                   className={[
-                    "flex-1 min-w-0 bg-transparent text-sm py-0.5",
+                    "flex-1 min-w-0 bg-transparent text-[14px] py-0.5",
                     "focus:outline-none placeholder:text-gray-300",
                     p.done ? "line-through text-gray-400" : "text-gray-700",
                   ].join(" ")}
@@ -144,8 +147,8 @@ export function TodayView({ data, user, update, setView, setExpRock }: Props) {
         {/* To-Do List */}
         <Card padding="lg">
           <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <h3 className="text-sm font-semibold text-gray-900">To-Do</h3>
+            <div className="flex items-center gap-2.5">
+              <h3 className="text-[14px] font-semibold text-gray-900">To-Do</h3>
               {data.todos.length > 0 && (
                 <span className="text-xs text-gray-400">
                   {data.todos.filter((t) => t.done).length}/{data.todos.length}
@@ -163,15 +166,15 @@ export function TodayView({ data, user, update, setView, setExpRock }: Props) {
           </div>
 
           {data.todos.length === 0 ? (
-            <div className="text-center py-8">
-              <p className="text-sm text-gray-400">No to-dos yet.</p>
+            <div className="text-center py-10">
+              <p className="text-[14px] text-gray-400">No to-dos yet.</p>
             </div>
           ) : (
-            <div className="space-y-0">
+            <div>
               {data.todos.map((todo, i) => (
                 <div
                   key={todo.id}
-                  className="flex items-center gap-2.5 py-2 group"
+                  className="flex items-center gap-3 py-2.5 group"
                   style={{ opacity: todo.done ? 0.5 : 1 }}
                 >
                   <Checkbox
@@ -188,7 +191,7 @@ export function TodayView({ data, user, update, setView, setExpRock }: Props) {
                     onChange={(e) => { const v = e.target.value; update((d) => { d.todos[i].text = v; }); }}
                     placeholder="To-do..."
                     className={[
-                      "flex-1 min-w-0 bg-transparent text-sm py-0.5 focus:outline-none",
+                      "flex-1 min-w-0 bg-transparent text-[14px] py-0.5 focus:outline-none",
                       "placeholder:text-gray-300",
                       todo.done ? "line-through text-gray-400" : "text-gray-700",
                     ].join(" ")}
@@ -197,13 +200,13 @@ export function TodayView({ data, user, update, setView, setExpRock }: Props) {
                     type="date"
                     value={todo.due}
                     onChange={(e) => { const v = e.target.value; update((d) => { d.todos[i].due = v; }); }}
-                    className="hidden sm:block w-24 bg-transparent text-[11px] text-gray-400 focus:outline-none cursor-pointer"
+                    className="hidden sm:block w-28 bg-transparent text-xs text-gray-400 focus:outline-none cursor-pointer"
                   />
                   <button
                     onClick={() => update((d) => { d.todos.splice(i, 1); })}
-                    className="w-6 h-6 rounded flex items-center justify-center text-gray-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity duration-100 cursor-pointer flex-shrink-0"
+                    className="w-7 h-7 rounded flex items-center justify-center text-gray-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity duration-100 cursor-pointer flex-shrink-0"
                   >
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                       <path strokeLinecap="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </button>

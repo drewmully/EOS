@@ -47,17 +47,17 @@ export function GrowthView({ data, update, user }: Props) {
   return (
     <div className="animate-fadeIn">
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-gray-900 tracking-tight">{user.name}&apos;s Growth</h1>
-        <p className="text-sm text-gray-400 mt-1">Core values, GWC, and action plans</p>
+        <h1 className="text-xl font-semibold text-gray-900 tracking-tight">{user.name}&apos;s Growth</h1>
+        <p className="text-[13px] text-gray-400 mt-0.5">Core values, GWC, and action plans</p>
       </div>
 
       {/* Core Values */}
-      <Card className="mb-3" padding="lg">
-        <h3 className="text-sm font-semibold text-gray-900 mb-4">Core Values</h3>
+      <Card className="mb-4" padding="lg">
+        <h3 className="text-[15px] font-semibold text-gray-900 mb-4">Core Values</h3>
         <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
           {CV_KEYS.map(({ key, label }) => (
             <div key={key} className="text-center">
-              <div className="text-[10px] font-medium text-gray-400 mb-1.5 leading-tight h-6 flex items-end justify-center">
+              <div className="text-xs font-medium text-gray-400 mb-1.5 leading-tight h-6 flex items-end justify-center">
                 {label}
               </div>
               <select
@@ -78,14 +78,14 @@ export function GrowthView({ data, update, user }: Props) {
       </Card>
 
       {/* GWC */}
-      <Card className="mb-3" padding="lg">
-        <h3 className="text-sm font-semibold text-gray-900 mb-4">GWC</h3>
+      <Card className="mb-4" padding="lg">
+        <h3 className="text-[15px] font-semibold text-gray-900 mb-4">GWC</h3>
         <div className="grid grid-cols-3 gap-3 max-w-xs">
           {(["g", "w", "c"] as const).map((key) => {
             const labels = { g: "Get It", w: "Want It", c: "Capacity" };
             return (
               <div key={key} className="text-center">
-                <div className="text-[10px] font-medium text-gray-400 mb-1.5">{labels[key]}</div>
+                <div className="text-xs font-medium text-gray-400 mb-1.5">{labels[key]}</div>
                 <select
                   value={gwc[key]}
                   onChange={(e) => {
@@ -104,16 +104,16 @@ export function GrowthView({ data, update, user }: Props) {
       </Card>
 
       {/* Strengths & Weaknesses */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
         <Card padding="lg">
-          <h3 className="text-sm font-semibold text-gray-900 mb-3">Strengths</h3>
+          <h3 className="text-[15px] font-semibold text-gray-900 mb-3">Strengths</h3>
           {data.growth.strengths.map((s, i) => (
             <div key={i} className="flex items-center gap-2 mb-1.5 group">
               <span className="w-1 h-1 rounded-full bg-emerald-400 flex-shrink-0" />
               <input
                 value={s}
                 onChange={(e) => { const v = e.target.value; update((d) => { d.growth.strengths[i] = v; }); }}
-                className="flex-1 min-w-0 text-sm bg-transparent focus:outline-none text-gray-700 py-0.5"
+                className="flex-1 min-w-0 text-[14px] bg-transparent focus:outline-none text-gray-700 py-0.5"
               />
               <button
                 onClick={() => update((d) => { d.growth.strengths.splice(i, 1); })}
@@ -132,14 +132,14 @@ export function GrowthView({ data, update, user }: Props) {
         </Card>
 
         <Card padding="lg">
-          <h3 className="text-sm font-semibold text-gray-900 mb-3">Areas to Improve</h3>
+          <h3 className="text-[15px] font-semibold text-gray-900 mb-3">Areas to Improve</h3>
           {data.growth.weaknesses.map((w, i) => (
             <div key={i} className="flex items-center gap-2 mb-1.5 group">
               <span className="w-1 h-1 rounded-full bg-red-400 flex-shrink-0" />
               <input
                 value={w}
                 onChange={(e) => { const v = e.target.value; update((d) => { d.growth.weaknesses[i] = v; }); }}
-                className="flex-1 min-w-0 text-sm bg-transparent focus:outline-none text-gray-700 py-0.5"
+                className="flex-1 min-w-0 text-[14px] bg-transparent focus:outline-none text-gray-700 py-0.5"
               />
               <button
                 onClick={() => update((d) => { d.growth.weaknesses.splice(i, 1); })}
@@ -161,7 +161,7 @@ export function GrowthView({ data, update, user }: Props) {
       {/* Action Plans */}
       <Card padding="lg">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-sm font-semibold text-gray-900">Growth Actions</h3>
+          <h3 className="text-[15px] font-semibold text-gray-900">Growth Actions</h3>
           <Button
             variant="secondary"
             size="sm"
@@ -178,7 +178,7 @@ export function GrowthView({ data, update, user }: Props) {
 
         {data.growth.actions.length === 0 ? (
           <div className="text-center py-8">
-            <p className="text-sm text-gray-400">No action plans yet.</p>
+            <p className="text-[14px] text-gray-400">No action plans yet.</p>
           </div>
         ) : (
           <div className="space-y-0">
@@ -199,13 +199,13 @@ export function GrowthView({ data, update, user }: Props) {
                       value={action.area}
                       onChange={(e) => { const v = e.target.value; update((d) => { d.growth.actions[i].area = v; }); }}
                       placeholder="Area"
-                      className="w-28 text-[11px] font-medium bg-gray-50 text-gray-600 rounded-md px-2 py-1 border border-gray-200 hover:border-gray-300 focus:outline-none focus:border-gray-400 transition-colors"
+                      className="w-28 text-xs font-medium bg-gray-50 text-gray-600 rounded-md px-2.5 py-1.5 border border-gray-200 hover:border-gray-300 focus:outline-none focus:border-gray-400 transition-colors"
                     />
                     <input
                       type="date"
                       value={action.due}
                       onChange={(e) => { const v = e.target.value; update((d) => { d.growth.actions[i].due = v; }); }}
-                      className="text-[11px] text-gray-400 bg-transparent focus:outline-none cursor-pointer"
+                      className="text-xs text-gray-400 bg-transparent focus:outline-none cursor-pointer"
                     />
                   </div>
                   <input
@@ -213,7 +213,7 @@ export function GrowthView({ data, update, user }: Props) {
                     onChange={(e) => { const v = e.target.value; update((d) => { d.growth.actions[i].action = v; }); }}
                     placeholder="What's the action?"
                     className={[
-                      "w-full text-sm bg-transparent focus:outline-none py-0.5",
+                      "w-full text-[14px] bg-transparent focus:outline-none py-0.5",
                       action.done ? "line-through text-gray-400" : "text-gray-700",
                     ].join(" ")}
                   />

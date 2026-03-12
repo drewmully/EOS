@@ -4,8 +4,8 @@ import { Card } from "./ui/Card";
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="mb-3">
-      <div className="text-[11px] font-medium text-gray-400 uppercase tracking-wider px-1 mb-2">
+    <div className="mb-4">
+      <div className="text-xs font-medium text-gray-400 uppercase tracking-wider px-1 mb-2">
         {title}
       </div>
       <Card padding="md">{children}</Card>
@@ -15,8 +15,8 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 function Row({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex gap-3 py-1.5 text-sm">
-      <span className="font-medium text-gray-400 min-w-[72px] flex-shrink-0">{label}</span>
+    <div className="flex gap-3 py-2 text-[14px]">
+      <span className="font-medium text-gray-400 min-w-[80px] flex-shrink-0">{label}</span>
       <span className="text-gray-700">{value}</span>
     </div>
   );
@@ -26,12 +26,12 @@ export function VTOView() {
   return (
     <div className="animate-fadeIn">
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-gray-900 tracking-tight">V/TO</h1>
-        <p className="text-sm text-gray-400 mt-1">Vision, Traction, Organizing.</p>
+        <h1 className="text-xl font-semibold text-gray-900 tracking-tight">V/TO</h1>
+        <p className="text-[13px] text-gray-400 mt-0.5">Vision, Traction, Organizing.</p>
       </div>
 
       <Section title="Core Values">
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           {[
             "Serve First",
             "Move the Mission",
@@ -42,7 +42,7 @@ export function VTOView() {
           ].map((v) => (
             <div
               key={v}
-              className="flex items-center gap-2 text-sm text-gray-700 bg-gray-50 rounded-lg px-3 py-2"
+              className="flex items-center gap-2 text-[14px] text-gray-700 bg-gray-50 rounded-lg px-3.5 py-2.5"
             >
               <span className="w-1 h-1 rounded-full bg-emerald-400 flex-shrink-0" />
               {v}
@@ -51,7 +51,7 @@ export function VTOView() {
         </div>
       </Section>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <Section title="MFS (3PL)">
           <Row label="Purpose" value="Making it simple for entrepreneurs to realize their dream, worry-free." />
           <Row label="Niche" value="Solopreneurs & small teams, post-revenue eComm." />

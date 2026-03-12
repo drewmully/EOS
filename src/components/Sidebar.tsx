@@ -54,13 +54,13 @@ export function Sidebar({
     <aside
       className="hidden md:flex flex-col bg-white border-r border-gray-200 flex-shrink-0 select-none overflow-hidden"
       style={{
-        width: collapsed ? 56 : 220,
+        width: collapsed ? 60 : 240,
         transition: "width 200ms ease",
       }}
     >
       {/* Person Switcher */}
-      <div className={collapsed ? "px-2 pt-4 pb-3" : "px-4 pt-5 pb-3"}>
-        <div className={`flex ${collapsed ? "flex-col items-center gap-2" : "gap-1.5 justify-center"}`}>
+      <div className={collapsed ? "px-2 pt-5 pb-4" : "px-5 pt-6 pb-4"}>
+        <div className={`flex ${collapsed ? "flex-col items-center gap-2.5" : "gap-2 justify-center"}`}>
           {users.map((u) => {
             const active = u.id === activeUser;
             return (
@@ -73,9 +73,9 @@ export function Sidebar({
                 <div
                   className="rounded-full flex items-center justify-center text-white font-semibold transition-all duration-150"
                   style={{
-                    width: collapsed ? 32 : 34,
-                    height: collapsed ? 32 : 34,
-                    fontSize: 11,
+                    width: collapsed ? 34 : 38,
+                    height: collapsed ? 34 : 38,
+                    fontSize: 12,
                     background: u.color,
                     opacity: active ? 1 : 0.35,
                     boxShadow: active ? `0 0 0 2px white, 0 0 0 3.5px ${u.color}` : "none",
@@ -85,7 +85,7 @@ export function Sidebar({
                 </div>
                 {!collapsed && (
                   <span
-                    className="text-[10px] font-medium mt-1 whitespace-nowrap"
+                    className="text-[11px] font-medium mt-1.5 whitespace-nowrap"
                     style={{ color: active ? u.color : "#9CA3AF" }}
                   >
                     {u.name}
@@ -101,7 +101,7 @@ export function Sidebar({
       <div className="mx-3 h-px bg-gray-100" />
 
       {/* Navigation */}
-      <nav className="flex-1 px-2 py-2">
+      <nav className="flex-1 px-3 py-2">
         {NAV.map(({ key, label, Icon }) => {
           const active = view === key;
           return (
@@ -110,8 +110,8 @@ export function Sidebar({
               onClick={() => setView(key)}
               title={collapsed ? label : undefined}
               className={[
-                "w-full flex items-center gap-2.5 rounded-lg mb-0.5",
-                collapsed ? "justify-center px-2 py-2.5" : "px-3 py-2",
+                "w-full flex items-center gap-3 rounded-lg mb-0.5",
+                collapsed ? "justify-center px-2 py-2.5" : "px-3 py-2.5",
                 "cursor-pointer transition-colors duration-100 relative",
                 active
                   ? "bg-gray-100 text-gray-900"
@@ -120,19 +120,19 @@ export function Sidebar({
             >
               <Icon
                 className={[
-                  "w-4 h-4 flex-shrink-0",
+                  "w-[18px] h-[18px] flex-shrink-0",
                   active ? "text-gray-900" : "",
                 ].join(" ")}
               />
               {!collapsed && (
-                <span className={`text-[13px] whitespace-nowrap ${active ? "font-semibold" : "font-medium"}`}>
+                <span className={`text-[14px] whitespace-nowrap ${active ? "font-semibold" : "font-medium"}`}>
                   {label}
                 </span>
               )}
               {key === "inbox" && inboxCount > 0 && (
                 <span
                   className={[
-                    "bg-gray-900 text-white text-[9px] font-semibold rounded-full min-w-[16px] h-4 flex items-center justify-center px-1",
+                    "bg-gray-900 text-white text-[10px] font-semibold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1",
                     collapsed ? "absolute -top-0.5 -right-0.5" : "ml-auto",
                   ].join(" ")}
                 >
@@ -145,7 +145,7 @@ export function Sidebar({
       </nav>
 
       {/* Collapse toggle */}
-      <div className="px-2 py-1">
+      <div className="px-3 py-1">
         <button
           onClick={onToggle}
           className="w-full flex items-center justify-center py-2 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-50 cursor-pointer transition-colors duration-100"
@@ -165,7 +165,7 @@ export function Sidebar({
       </div>
 
       {/* Sync */}
-      <div className={`py-3 border-t border-gray-100 ${collapsed ? "px-2" : "px-4"}`}>
+      <div className={`py-3 border-t border-gray-100 ${collapsed ? "px-3" : "px-5"}`}>
         <div className={`flex items-center ${collapsed ? "justify-center" : "gap-2"}`}>
           <div className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${syncDot}`} />
           {!collapsed && (
