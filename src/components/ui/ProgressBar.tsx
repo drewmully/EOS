@@ -6,7 +6,7 @@ interface ProgressBarProps {
 }
 
 export function ProgressBar({ value, color = "#10B981", size = "sm", showLabel }: ProgressBarProps) {
-  const h = size === "sm" ? "h-1.5" : "h-2";
+  const h = size === "sm" ? "h-2" : "h-2.5";
   return (
     <div className="flex items-center gap-2.5">
       <div className={`flex-1 ${h} bg-gray-100 rounded-full overflow-hidden`}>

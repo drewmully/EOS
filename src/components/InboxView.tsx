@@ -15,9 +15,9 @@ export function InboxView({ data, update }: Props) {
 
   return (
     <div className="animate-fadeIn">
-      <div className="mb-6">
-        <h1 className="text-xl font-semibold text-gray-900 tracking-tight">Inbox</h1>
-        <p className="text-[13px] text-gray-400 mt-0.5">Capture first, triage later.</p>
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Inbox</h1>
+        <p className="text-sm text-gray-400 mt-1">Capture first, triage later.</p>
       </div>
 
       <div className="mb-6">
@@ -39,7 +39,7 @@ export function InboxView({ data, update }: Props) {
             }
           }}
           placeholder="What's on your mind? Press Enter to add."
-          className="w-full bg-white border border-gray-200 rounded-xl px-5 py-3.5 text-[14px] text-gray-800 placeholder:text-gray-400 transition-colors duration-100 hover:border-gray-300 focus:outline-none focus:border-gray-400 shadow-[0_1px_2px_rgba(0,0,0,0.04)]"
+          className="w-full bg-white border border-gray-200/70 rounded-2xl px-6 py-4 text-[15px] text-gray-800 placeholder:text-gray-400 transition-all duration-150 hover:border-gray-300 focus:outline-none focus:border-indigo-300 focus:shadow-[0_0_0_3px_rgba(99,102,241,0.1)] shadow-[0_1px_3px_rgba(0,0,0,0.06),0_4px_12px_rgba(0,0,0,0.04)]"
         />
       </div>
 

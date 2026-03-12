@@ -42,11 +42,11 @@ interface Props {
 export function RocksView({ data, update, expRock, setExpRock, user }: Props) {
   return (
     <div className="animate-fadeIn">
-      <div className="mb-6">
-        <h1 className="text-xl font-semibold text-gray-900 tracking-tight">
-          {user.name}&apos;s Rocks
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
+          <span style={{ color: user.color }}>{user.name}&apos;s</span> Rocks
         </h1>
-        <p className="text-[13px] text-gray-400 mt-0.5">Q2 2026 &middot; Click to expand</p>
+        <p className="text-sm text-gray-400 mt-1">Q2 2026 &middot; Click to expand</p>
       </div>
 
       <div className="space-y-3">
@@ -61,10 +61,10 @@ export function RocksView({ data, update, expRock, setExpRock, user }: Props) {
             <div
               key={rock.id}
               className={[
-                "bg-white rounded-xl overflow-hidden transition-all duration-150 border",
+                "bg-white rounded-2xl overflow-hidden transition-all duration-200 border",
                 open
-                  ? "border-gray-300 shadow-md"
-                  : "border-gray-200 shadow-[0_1px_2px_rgba(0,0,0,0.04)] hover:shadow-md hover:border-gray-300",
+                  ? "border-gray-300 shadow-lg"
+                  : "border-gray-200/70 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_4px_12px_rgba(0,0,0,0.04)] hover:shadow-lg hover:border-gray-300",
               ].join(" ")}
             >
               {/* Header */}
@@ -236,7 +236,7 @@ export function RocksView({ data, update, expRock, setExpRock, user }: Props) {
           });
           setExpRock(id);
         }}
-        className="w-full mt-3 border border-dashed border-gray-200 rounded-xl py-3.5 text-sm text-gray-400 font-medium hover:text-gray-600 hover:border-gray-300 transition-colors duration-100 cursor-pointer flex items-center justify-center gap-1.5"
+        className="w-full mt-4 border-2 border-dashed border-gray-200 rounded-2xl py-4 text-sm text-gray-400 font-semibold hover:text-gray-600 hover:border-gray-300 hover:bg-gray-50/50 transition-all duration-150 cursor-pointer flex items-center justify-center gap-1.5"
       >
         <IconPlus className="w-4 h-4" />
         Add Rock

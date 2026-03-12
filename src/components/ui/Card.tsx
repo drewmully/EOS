@@ -16,11 +16,11 @@ export function Card({ children, className = "", onClick, hoverable, padding = "
     <div
       onClick={onClick}
       className={[
-        "bg-white rounded-xl border border-gray-200/80",
-        "shadow-[0_1px_3px_rgba(0,0,0,0.08),0_1px_2px_rgba(0,0,0,0.04)]",
+        "bg-white rounded-2xl border border-gray-200/70",
+        "shadow-[0_1px_3px_rgba(0,0,0,0.06),0_4px_12px_rgba(0,0,0,0.04)]",
         pad[padding],
         interactive
-          ? "cursor-pointer transition-shadow duration-150 hover:shadow-md hover:border-gray-300"
+          ? "cursor-pointer transition-all duration-200 hover:shadow-lg hover:border-gray-300 hover:-translate-y-0.5"
           : "",
         className,
       ]

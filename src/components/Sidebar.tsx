@@ -52,7 +52,7 @@ export function Sidebar({
 
   return (
     <aside
-      className="hidden md:flex flex-col bg-white border-r border-gray-200 flex-shrink-0 select-none overflow-hidden"
+      className="hidden md:flex flex-col bg-white border-r border-gray-200 flex-shrink-0 select-none"
       style={{
         width: collapsed ? 60 : 240,
         transition: "width 200ms ease",
@@ -101,7 +101,7 @@ export function Sidebar({
       <div className="mx-3 h-px bg-gray-100" />
 
       {/* Navigation */}
-      <nav className="flex-1 px-3 py-3">
+      <nav className="flex-1 px-3 py-4">
         {NAV.map(({ key, label, Icon }) => {
           const active = view === key;
           return (
@@ -110,22 +110,22 @@ export function Sidebar({
               onClick={() => setView(key)}
               title={collapsed ? label : undefined}
               className={[
-                "w-full flex items-center gap-3 rounded-lg mb-1",
-                collapsed ? "justify-center px-2 py-3" : "px-3.5 py-3",
-                "cursor-pointer transition-colors duration-100 relative",
+                "w-full flex items-center gap-3.5 rounded-xl mb-1.5",
+                collapsed ? "justify-center px-2 py-3.5" : "px-4 py-3.5",
+                "cursor-pointer transition-all duration-150 relative",
                 active
-                  ? "bg-gray-100 text-gray-900"
+                  ? "bg-gradient-to-r from-gray-100 to-gray-50 text-gray-900 shadow-sm"
                   : "text-gray-500 hover:text-gray-700 hover:bg-gray-50",
               ].join(" ")}
             >
               <Icon
                 className={[
-                  "w-5 h-5 flex-shrink-0",
+                  "w-[22px] h-[22px] flex-shrink-0",
                   active ? "text-gray-900" : "",
                 ].join(" ")}
               />
               {!collapsed && (
-                <span className={`text-[15px] whitespace-nowrap ${active ? "font-semibold" : "font-medium"}`}>
+                <span className={`text-[16px] whitespace-nowrap ${active ? "font-semibold" : "font-medium"}`}>
                   {label}
                 </span>
               )}

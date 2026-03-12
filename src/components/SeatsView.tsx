@@ -22,14 +22,14 @@ interface Props {
 export function SeatsView({ data, update }: Props) {
   return (
     <div className="animate-fadeIn">
-      <div className="mb-6">
-        <h1 className="text-xl font-semibold text-gray-900 tracking-tight">Seat Exit Plan</h1>
-        <p className="text-[13px] text-gray-400 mt-0.5">Too many seats = no leverage. Plan your exit.</p>
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Seat Exit Plan</h1>
+        <p className="text-sm text-gray-400 mt-1">Too many seats = no leverage. Plan your exit.</p>
       </div>
 
       {/* Weekly prompt */}
-      <div className="mb-6 bg-amber-50 border border-amber-200/60 rounded-xl px-5 py-3.5">
-        <p className="text-[14px] font-medium text-amber-800">What did you do this week to exit a seat?</p>
+      <div className="mb-8 bg-gradient-to-r from-amber-50 to-orange-50/50 border border-amber-200/50 rounded-2xl px-6 py-4">
+        <p className="text-[15px] font-semibold text-amber-800">What did you do this week to exit a seat?</p>
       </div>
 
       <div className="space-y-4">
@@ -96,7 +96,7 @@ export function SeatsView({ data, update }: Props) {
             d.seats.push({ id: uid(), name: "New Seat", hours: "? hrs/wk", exit: "", timeline: "", status: "Not started", notes: "" });
           })
         }
-        className="w-full mt-3 border border-dashed border-gray-200 rounded-xl py-3.5 text-sm text-gray-400 font-medium hover:text-gray-600 hover:border-gray-300 transition-colors duration-100 cursor-pointer flex items-center justify-center gap-1.5"
+        className="w-full mt-4 border-2 border-dashed border-gray-200 rounded-2xl py-4 text-sm text-gray-400 font-semibold hover:text-gray-600 hover:border-gray-300 hover:bg-gray-50/50 transition-all duration-150 cursor-pointer flex items-center justify-center gap-1.5"
       >
         <IconPlus className="w-4 h-4" />
         Add Seat

@@ -46,9 +46,11 @@ export function GrowthView({ data, update, user }: Props) {
 
   return (
     <div className="animate-fadeIn">
-      <div className="mb-6">
-        <h1 className="text-xl font-semibold text-gray-900 tracking-tight">{user.name}&apos;s Growth</h1>
-        <p className="text-[13px] text-gray-400 mt-0.5">Core values, GWC, and action plans</p>
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
+          <span style={{ color: user.color }}>{user.name}&apos;s</span> Growth
+        </h1>
+        <p className="text-sm text-gray-400 mt-1">Core values, GWC, and action plans</p>
       </div>
 
       {/* Core Values */}

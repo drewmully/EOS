@@ -28,6 +28,16 @@ export default function AppShell() {
   const user = USERS.find((u) => u.id === activeUser)!;
 
   useEffect(() => {
+    function loadLocal(userId: string): UserData | null {
+      try {
+        const raw = localStorage.getItem(`eos-focus-${userId}`);
+        return raw ? JSON.parse(raw) : null;
+      } catch { return null; }
+    }
+    function saveLocal(userId: string, d: UserData) {
+      try { localStorage.setItem(`eos-focus-${userId}`, JSON.stringify(d)); } catch { /* */ }
+    }
+
     async function init() {
       const sb = getSupabase();
       const loaded: Record<string, UserData> = {};
@@ -36,26 +46,35 @@ export default function AppShell() {
           setSyncStatus("syncing");
           for (const u of USERS) {
             const cloud = await loadUserData(u.id);
-            if (cloud) loaded[u.id] = cloud as UserData;
-            else {
-              loaded[u.id] = SEED_DATA[u.id];
-              await saveUserData(u.id, SEED_DATA[u.id]);
+            if (cloud) {
+              loaded[u.id] = cloud as UserData;
+              saveLocal(u.id, cloud as UserData);
+            } else {
+              // Try localStorage before falling back to seed
+              const local = loadLocal(u.id);
+              if (local) {
+                loaded[u.id] = local;
+                await saveUserData(u.id, local);
+              } else {
+                loaded[u.id] = SEED_DATA[u.id];
+                await saveUserData(u.id, SEED_DATA[u.id]);
+                saveLocal(u.id, SEED_DATA[u.id]);
+              }
             }
           }
           setSyncStatus("synced");
         } catch {
           setSyncStatus("error");
-          for (const u of USERS) loaded[u.id] = SEED_DATA[u.id];
+          for (const u of USERS) {
+            const local = loadLocal(u.id);
+            loaded[u.id] = local || SEED_DATA[u.id];
+          }
         }
       } else {
         setSyncStatus("local");
         for (const u of USERS) {
-          try {
-            const local = localStorage.getItem(`eos-focus-${u.id}`);
-            loaded[u.id] = local ? JSON.parse(local) : SEED_DATA[u.id];
-          } catch {
-            loaded[u.id] = SEED_DATA[u.id];
-          }
+          const local = loadLocal(u.id);
+          loaded[u.id] = local || SEED_DATA[u.id];
         }
       }
       for (const u of USERS) {
@@ -89,6 +108,9 @@ export default function AppShell() {
   }, [activeUser, data?.lastActiveDate]);
 
   const cloudSave = useCallback((userId: string, userData: UserData) => {
+    // Always persist to localStorage immediately for reliability
+    try { localStorage.setItem(`eos-focus-${userId}`, JSON.stringify(userData)); } catch { /* */ }
+
     if (saveTimer.current) clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(async () => {
       const sb = getSupabase();
@@ -100,10 +122,6 @@ export default function AppShell() {
         } catch {
           setSyncStatus("error");
         }
-      } else {
-        try {
-          localStorage.setItem(`eos-focus-${userId}`, JSON.stringify(userData));
-        } catch { /* ignore */ }
       }
     }, 600);
   }, []);
