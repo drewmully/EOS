@@ -8,7 +8,7 @@ interface CardProps {
   padding?: "none" | "sm" | "md" | "lg";
 }
 
-const pad = { none: "", sm: "p-4", md: "p-5", lg: "px-6 py-5" };
+const pad = { none: "", sm: "p-5", md: "p-6", lg: "px-7 py-6" };
 
 export function Card({ children, className = "", onClick, hoverable, padding = "md" }: CardProps) {
   const interactive = hoverable || !!onClick;

@@ -206,7 +206,7 @@ export default function AppShell() {
 
       {/* Main Content */}
       <main className="flex-1 overflow-auto pt-12 pb-16 md:pt-0 md:pb-0">
-        <div className="max-w-[1080px] mx-auto px-6 sm:px-10 lg:px-12 py-8 lg:py-10">
+        <div className="max-w-[1100px] mx-auto px-8 sm:px-12 lg:px-16 py-10 lg:py-12">
           {view === "today" && (
             <TodayView data={data} user={user} update={update} setView={setView} setExpRock={setExpRock} />
           )}

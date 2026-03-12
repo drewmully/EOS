@@ -59,8 +59,8 @@ export function Sidebar({
       }}
     >
       {/* Person Switcher */}
-      <div className={collapsed ? "px-2 pt-7 pb-5" : "px-5 pt-8 pb-5"}>
-        <div className={`flex ${collapsed ? "flex-col items-center gap-2.5" : "gap-2 justify-center"}`}>
+      <div className={collapsed ? "px-2 pt-10 pb-6" : "px-5 pt-10 pb-6"}>
+        <div className={`flex ${collapsed ? "flex-col items-center gap-3" : "gap-4 justify-center"}`}>
           {users.map((u) => {
             const active = u.id === activeUser;
             return (
@@ -101,7 +101,7 @@ export function Sidebar({
       <div className="mx-3 h-px bg-gray-100" />
 
       {/* Navigation */}
-      <nav className="flex-1 px-3 py-4">
+      <nav className="flex-1 px-4 py-4">
         {NAV.map(({ key, label, Icon }) => {
           const active = view === key;
           return (
@@ -110,8 +110,8 @@ export function Sidebar({
               onClick={() => setView(key)}
               title={collapsed ? label : undefined}
               className={[
-                "w-full flex items-center gap-3.5 rounded-xl mb-1.5",
-                collapsed ? "justify-center px-2 py-3.5" : "px-4 py-3.5",
+                "w-full flex items-center gap-3.5 rounded-xl mb-2",
+                collapsed ? "justify-center px-3 py-4" : "px-4 py-4",
                 "cursor-pointer transition-all duration-150 relative",
                 active
                   ? "bg-gradient-to-r from-gray-100 to-gray-50 text-gray-900 shadow-sm"

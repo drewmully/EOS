@@ -60,7 +60,7 @@ export function TodayView({ data, user, update, setView, setExpRock }: Props) {
           <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Rocks</h2>
           <span className="text-xs text-gray-300">{sorted.length}</span>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
           {sorted.map((rock) => {
             const p = pct(rock);
             const days = daysUntil(rock.due);
@@ -71,24 +71,24 @@ export function TodayView({ data, user, update, setView, setExpRock }: Props) {
                 key={rock.id}
                 hoverable
                 onClick={() => { setExpRock(rock.id); setView("rocks"); }}
-                padding="md"
+                padding="lg"
                 className="flex flex-col"
               >
-                <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center justify-between mb-4">
                   <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide">{rock.biz}</span>
                   <Badge variant={URG_VARIANT[urg.text] || "gray"} size="sm">{urg.text}</Badge>
                 </div>
 
-                <h3 className="text-[14px] font-semibold text-gray-900 leading-snug mb-auto min-h-[40px] line-clamp-2">
+                <h3 className="text-[15px] font-semibold text-gray-900 leading-snug mb-auto min-h-[44px] line-clamp-2">
                   {rock.name || "(unnamed)"}
                 </h3>
 
-                <div className="mt-4">
+                <div className="mt-5">
                   <ProgressBar value={p} color={STATUS_COLOR[rock.status] || "#10B981"} size="sm" showLabel />
                 </div>
 
-                <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
-                  <div className="flex items-center gap-1.5">
+                <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
+                  <div className="flex items-center gap-2">
                     <span
                       className="w-2 h-2 rounded-full"
                       style={{ backgroundColor: STATUS_COLOR[rock.status] || "#10B981" }}
@@ -110,12 +110,12 @@ export function TodayView({ data, user, update, setView, setExpRock }: Props) {
       </section>
 
       {/* Top 3 Priorities — full width, distinct */}
-      <section className="mb-6">
+      <section className="mb-8">
         <div className="flex items-center gap-2.5 mb-4">
           <div className="w-1 h-5 rounded-full bg-gradient-to-b from-indigo-400 to-violet-500" />
           <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Top 3 Priorities</h2>
         </div>
-        <div className="bg-gradient-to-br from-indigo-50/80 via-white to-violet-50/50 rounded-2xl border border-indigo-100/60 shadow-sm p-6">
+        <div className="bg-gradient-to-br from-indigo-50/80 via-white to-violet-50/50 rounded-2xl border border-indigo-100/60 shadow-sm px-8 py-6">
           <div className="space-y-0">
             {data.todayPriorities.map((p: Priority, i: number) => (
               <div
@@ -174,7 +174,7 @@ export function TodayView({ data, user, update, setView, setExpRock }: Props) {
             </Button>
           </div>
         </div>
-        <div className="bg-gradient-to-br from-amber-50/60 via-white to-orange-50/40 rounded-2xl border border-amber-100/60 shadow-sm p-6">
+        <div className="bg-gradient-to-br from-amber-50/60 via-white to-orange-50/40 rounded-2xl border border-amber-100/60 shadow-sm px-8 py-6">
           {data.todos.length === 0 ? (
             <div className="text-center py-8">
               <p className="text-sm text-gray-400">No to-dos yet.</p>
