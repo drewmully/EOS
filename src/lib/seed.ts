@@ -1,0 +1,252 @@
+import { UserData } from "./types";
+
+function uid() {
+  return "id_" + Math.random().toString(36).slice(2, 9) + Date.now().toString(36);
+}
+
+export const DREW_DATA: UserData = {
+  rocks: [
+    {
+      id: uid(), name: 'Warehouse gets first "15" 5S Score', biz: "MFS", due: "2026-04-15", status: "On Track",
+      subtasks: [
+        { id: uid(), text: "Baseline current 5S score across all zones", due: "2026-03-20", done: false },
+        { id: uid(), text: "Create zone-by-zone improvement plan with Jack", due: "2026-03-24", done: false },
+        { id: uid(), text: "Implement Sort & Set in Zone 1 (receiving)", due: "2026-03-31", done: false },
+        { id: uid(), text: "Implement Sort & Set in Zone 2 (pick/pack)", due: "2026-04-04", done: false },
+        { id: uid(), text: "Shine — deep clean and labeling", due: "2026-04-08", done: false },
+        { id: uid(), text: "Standardize — visual management boards live", due: "2026-04-12", done: false },
+        { id: uid(), text: "Full audit — score against 5S rubric", due: "2026-04-15", done: false },
+      ],
+    },
+    {
+      id: uid(), name: "Existing Customer Migration > X%", biz: "Mully", due: "2026-06-30", status: "On Track",
+      subtasks: [
+        { id: uid(), text: "Define migration target % and communicate", due: "2026-03-20", done: false },
+        { id: uid(), text: "Build migration landing page / flow", due: "2026-03-31", done: false },
+        { id: uid(), text: "Email campaign #1 — announce new model", due: "2026-04-10", done: false },
+        { id: uid(), text: "Personal outreach to top 50 legacy subs", due: "2026-04-18", done: false },
+        { id: uid(), text: "Email campaign #2 — urgency / incentive", due: "2026-05-01", done: false },
+        { id: uid(), text: "Analyze conversion, adjust if <30%", due: "2026-05-15", done: false },
+        { id: uid(), text: "Final push + deadline for legacy pricing", due: "2026-06-15", done: false },
+      ],
+    },
+    {
+      id: uid(), name: "New Customers net 300", biz: "Mully", due: "2026-06-30", status: "On Track",
+      subtasks: [
+        { id: uid(), text: "Define acquisition funnel with Jack (CPA <$150)", due: "2026-03-20", done: false },
+        { id: uid(), text: "Launch first paid campaign (Meta/IG)", due: "2026-03-27", done: false },
+        { id: uid(), text: "Week 2 checkpoint — CPA + creative review", due: "2026-04-10", done: false },
+        { id: uid(), text: "Iterate creative and targeting", due: "2026-04-18", done: false },
+        { id: uid(), text: "Month 1 checkpoint — on pace for 75/mo?", due: "2026-04-30", done: false },
+        { id: uid(), text: "Scale spend on winning channels", due: "2026-05-15", done: false },
+        { id: uid(), text: "Month 2 — cumulative vs 300 target", due: "2026-05-31", done: false },
+      ],
+    },
+    {
+      id: uid(), name: "Cash Flow Positive (Mully)", biz: "Mully", due: "2026-06-30", status: "On Track",
+      subtasks: [
+        { id: uid(), text: "Build 13-week cash flow forecast", due: "2026-03-20", done: false },
+        { id: uid(), text: "Identify top 3 cash drains — cut/reduce", due: "2026-03-27", done: false },
+        { id: uid(), text: "Set weekly cash review cadence", due: "2026-03-31", done: false },
+        { id: uid(), text: "Renegotiate vendor terms", due: "2026-04-18", done: false },
+        { id: uid(), text: "Month 1 — trending positive?", due: "2026-04-30", done: false },
+        { id: uid(), text: "Adjust pricing/margins if off track", due: "2026-05-15", done: false },
+        { id: uid(), text: "Month 2 — trajectory check", due: "2026-05-31", done: false },
+      ],
+    },
+  ],
+  todos: [],
+  inbox: [],
+  seats: [
+    { id: uid(), name: "MFS Finance / Admin", hours: "8–12 hrs/wk", exit: "Hire Controller / fractional CFO", timeline: "Q4 2026", status: "Not started", notes: "" },
+    { id: uid(), name: "MFS Sales / Marketing", hours: "5–8 hrs/wk", exit: "Separate tasks; delegate creative", timeline: "Q3 2026", status: "Not started", notes: "" },
+    { id: uid(), name: "Mully Process Load", hours: "20+ hrs/wk", exit: "Content hire → Software → CFO", timeline: "Q3–Q4 2026", status: "Not started", notes: "" },
+  ],
+  todayPriorities: [
+    { text: "", done: false },
+    { text: "", done: false },
+    { text: "", done: false },
+  ],
+  growth: {
+    coreValues: { serveFirst: "+/-", moveTheMission: "+", winTogether: "+/-", liveTheStandard: "+/-", tellTheTruth: "+", choosePositive: "+/-" },
+    gwc: { g: "Y", w: "Y", c: "N" },
+    strengths: ["Vision & strategy", "Relationship building", "Creative problem solving"],
+    weaknesses: ["Letting go of operational seats", "Cash flow discipline", "Capacity management"],
+    actions: [
+      { id: uid(), area: "Capacity", action: "Delegate MFS finance tasks to fractional CFO by Q4", due: "2026-10-01", done: false },
+      { id: uid(), area: "Core Value: Win Together", action: "Weekly 1:1s with Jack and Joe — build feedback loops", due: "2026-04-01", done: false },
+      { id: uid(), area: "GWC: Capacity", action: "Offload Mully process work — hire content person", due: "2026-07-01", done: false },
+    ],
+  },
+  streakDays: 0,
+  lastActiveDate: "",
+};
+
+export const JACK_DATA: UserData = {
+  rocks: [
+    {
+      id: uid(), name: "Real Time, Accurate Reporting", biz: "Mully", due: "2026-04-30", status: "On Track",
+      subtasks: [
+        { id: uid(), text: "Audit current reporting — identify gaps and delays", due: "2026-03-20", done: false },
+        { id: uid(), text: "Select dashboarding tool (Looker, Metabase, etc.)", due: "2026-03-27", done: false },
+        { id: uid(), text: "Build core KPI dashboard — revenue, subs, churn", due: "2026-04-07", done: false },
+        { id: uid(), text: "Integrate live data feeds from Shopify/Stripe", due: "2026-04-14", done: false },
+        { id: uid(), text: "QA data accuracy against manual reports", due: "2026-04-21", done: false },
+        { id: uid(), text: "Team training + go-live", due: "2026-04-28", done: false },
+      ],
+    },
+    {
+      id: uid(), name: "Repeatable, Proven Customer Acquisition Funnel (CPA <$150)", biz: "Mully", due: "2026-06-30", status: "On Track",
+      subtasks: [
+        { id: uid(), text: "Map current funnel end-to-end with Drew", due: "2026-03-20", done: false },
+        { id: uid(), text: "Set up attribution tracking (UTMs, pixel, GA4)", due: "2026-03-27", done: false },
+        { id: uid(), text: "Launch test campaigns on Meta — 3 creative variants", due: "2026-04-03", done: false },
+        { id: uid(), text: "Week 2 — kill losers, scale winners", due: "2026-04-17", done: false },
+        { id: uid(), text: "Add email nurture sequence for non-converters", due: "2026-05-01", done: false },
+        { id: uid(), text: "Month 2 — is CPA consistently <$150?", due: "2026-05-31", done: false },
+        { id: uid(), text: "Document the playbook — repeatable process", due: "2026-06-15", done: false },
+      ],
+    },
+    {
+      id: uid(), name: "4.5+ First Box Rating", biz: "Mully", due: "2026-06-30", status: "On Track",
+      subtasks: [
+        { id: uid(), text: "Set up post-delivery survey (NPS / 5-star)", due: "2026-03-20", done: false },
+        { id: uid(), text: "Analyze first 50 ratings — top complaints", due: "2026-04-03", done: false },
+        { id: uid(), text: "Fix top 3 unboxing/quality issues", due: "2026-04-17", done: false },
+        { id: uid(), text: "A/B test packaging improvements", due: "2026-05-01", done: false },
+        { id: uid(), text: "Rolling 4-week average — tracking toward 4.5?", due: "2026-05-15", done: false },
+        { id: uid(), text: "Iterate on product mix based on feedback", due: "2026-06-01", done: false },
+        { id: uid(), text: "Final check — sustained 4.5+ rating", due: "2026-06-25", done: false },
+      ],
+    },
+    {
+      id: uid(), name: "ShipHero is Live and Using Full Potential", biz: "MFS", due: "2026-04-30", status: "On Track",
+      subtasks: [
+        { id: uid(), text: "Complete ShipHero data migration plan", due: "2026-03-18", done: false },
+        { id: uid(), text: "Migrate inventory data — validate counts", due: "2026-03-25", done: false },
+        { id: uid(), text: "Configure automations (pick/pack/ship rules)", due: "2026-04-01", done: false },
+        { id: uid(), text: "Train warehouse team on new workflows", due: "2026-04-08", done: false },
+        { id: uid(), text: "Parallel run — old + new system for 1 week", due: "2026-04-15", done: false },
+        { id: uid(), text: "Cut over to ShipHero as primary WMS", due: "2026-04-22", done: false },
+        { id: uid(), text: "Post-launch — resolve edge cases, full adoption", due: "2026-04-30", done: false },
+      ],
+    },
+    {
+      id: uid(), name: "Key SOPs Documented and Adhered To (Simple Version)", biz: "MFS", due: "2026-03-31", status: "At Risk",
+      subtasks: [
+        { id: uid(), text: "List top 10 critical processes (receiving, pick, pack, ship)", due: "2026-03-14", done: false },
+        { id: uid(), text: "Draft SOPs for top 5 — keep to 1-page each", due: "2026-03-20", done: false },
+        { id: uid(), text: "Review SOPs with warehouse team — get feedback", due: "2026-03-24", done: false },
+        { id: uid(), text: "Print and post at each station", due: "2026-03-26", done: false },
+        { id: uid(), text: "Train team on SOPs — walkthroughs", due: "2026-03-28", done: false },
+        { id: uid(), text: "Spot-check adherence for 1 week", due: "2026-03-31", done: false },
+      ],
+    },
+    {
+      id: uid(), name: "Accessible Real-Time Reporting (Internal & Outward Facing)", biz: "MFS", due: "2026-05-15", status: "On Track",
+      subtasks: [
+        { id: uid(), text: "Define key metrics for internal vs client dashboards", due: "2026-03-25", done: false },
+        { id: uid(), text: "Build internal ops dashboard (orders, errors, SLA)", due: "2026-04-07", done: false },
+        { id: uid(), text: "Build client-facing portal (their orders, tracking)", due: "2026-04-21", done: false },
+        { id: uid(), text: "Integrate with ShipHero API for live data", due: "2026-05-01", done: false },
+        { id: uid(), text: "Beta test with 3 clients — get feedback", due: "2026-05-08", done: false },
+        { id: uid(), text: "Launch to all clients", due: "2026-05-15", done: false },
+      ],
+    },
+  ],
+  todos: [],
+  inbox: [],
+  seats: [
+    { id: uid(), name: "MFS Warehouse Ops Lead", hours: "15–20 hrs/wk", exit: "Hire warehouse manager", timeline: "Q3 2026", status: "Not started", notes: "" },
+    { id: uid(), name: "Mully Tech / Analytics", hours: "10–15 hrs/wk", exit: "Systematize dashboards, hire data analyst", timeline: "Q4 2026", status: "Not started", notes: "" },
+  ],
+  todayPriorities: [
+    { text: "", done: false },
+    { text: "", done: false },
+    { text: "", done: false },
+  ],
+  growth: {
+    coreValues: { serveFirst: "+", moveTheMission: "+/-", winTogether: "+", liveTheStandard: "+/-", tellTheTruth: "+", choosePositive: "+/-" },
+    gwc: { g: "N", w: "Y", c: "N" },
+    strengths: ["Execution speed", "Technical problem solving", "Process improvement"],
+    weaknesses: ["Getting it (big picture vision)", "Capacity — spread across too many seats", "Delegation"],
+    actions: [
+      { id: uid(), area: "GWC: Get It", action: "Monthly strategy session with Drew — understand the why behind rocks", due: "2026-04-15", done: false },
+      { id: uid(), area: "Capacity", action: "Document SOPs so tasks can be handed off to new hires", due: "2026-03-31", done: false },
+      { id: uid(), area: "Core Value: Move the Mission", action: "Set weekly priority — tie every task to a rock or V/TO goal", due: "2026-04-01", done: false },
+    ],
+  },
+  streakDays: 0,
+  lastActiveDate: "",
+};
+
+export const JOE_DATA: UserData = {
+  rocks: [
+    {
+      id: uid(), name: "10 Outings Sold", biz: "Mully", due: "2026-06-30", status: "On Track",
+      subtasks: [
+        { id: uid(), text: "Define outing packages and pricing tiers", due: "2026-03-20", done: false },
+        { id: uid(), text: "Build outing landing page with booking flow", due: "2026-03-31", done: false },
+        { id: uid(), text: "Outreach to 20 target companies / groups", due: "2026-04-10", done: false },
+        { id: uid(), text: "Close first 3 outings — refine pitch", due: "2026-04-30", done: false },
+        { id: uid(), text: "Post-outing survey — iterate on experience", due: "2026-05-10", done: false },
+        { id: uid(), text: "Ramp outreach — aim for 2/month pace", due: "2026-05-20", done: false },
+        { id: uid(), text: "Hit 10 total — document repeatable sales process", due: "2026-06-25", done: false },
+      ],
+    },
+    {
+      id: uid(), name: "5 New Clients", biz: "MFS", due: "2026-06-30", status: "On Track",
+      subtasks: [
+        { id: uid(), text: "Build ideal client profile (ICP) for MFS", due: "2026-03-20", done: false },
+        { id: uid(), text: "Create outbound prospecting list — 50 targets", due: "2026-03-27", done: false },
+        { id: uid(), text: "Launch cold email + LinkedIn outreach campaign", due: "2026-04-03", done: false },
+        { id: uid(), text: "First discovery calls — refine pitch deck", due: "2026-04-15", done: false },
+        { id: uid(), text: "Close client #1 — learn from onboarding", due: "2026-04-30", done: false },
+        { id: uid(), text: "Pipeline review — enough leads for 5?", due: "2026-05-15", done: false },
+        { id: uid(), text: "Close clients #2–5, optimize sales cycle", due: "2026-06-20", done: false },
+      ],
+    },
+    {
+      id: uid(), name: "Cash Flow Positive (MFS)", biz: "MFS", due: "2026-06-30", status: "On Track",
+      subtasks: [
+        { id: uid(), text: "Build P&L model — current vs target margins", due: "2026-03-20", done: false },
+        { id: uid(), text: "Identify top cost reduction opportunities", due: "2026-03-31", done: false },
+        { id: uid(), text: "Renegotiate shipping carrier rates", due: "2026-04-15", done: false },
+        { id: uid(), text: "Set up weekly cash position review", due: "2026-04-01", done: false },
+        { id: uid(), text: "New client revenue kicking in — tracking?", due: "2026-05-01", done: false },
+        { id: uid(), text: "Month 2 margin check — on track?", due: "2026-05-31", done: false },
+        { id: uid(), text: "Cash flow positive sustained for 4+ weeks", due: "2026-06-25", done: false },
+      ],
+    },
+  ],
+  todos: [],
+  inbox: [],
+  seats: [
+    { id: uid(), name: "MFS Biz Dev / Sales", hours: "15–20 hrs/wk", exit: "Hire sales rep once pipeline proven", timeline: "Q4 2026", status: "Not started", notes: "" },
+    { id: uid(), name: "Mully Events / Outings", hours: "10–12 hrs/wk", exit: "Hire events coordinator", timeline: "Q3 2026", status: "Not started", notes: "" },
+  ],
+  todayPriorities: [
+    { text: "", done: false },
+    { text: "", done: false },
+    { text: "", done: false },
+  ],
+  growth: {
+    coreValues: { serveFirst: "+/-", moveTheMission: "+/-", winTogether: "+/-", liveTheStandard: "+/-", tellTheTruth: "+/-", choosePositive: "+/-" },
+    gwc: { g: "Y", w: "Y", c: "N" },
+    strengths: ["Sales & relationship building", "High energy / hustle", "Creative ideas"],
+    weaknesses: ["Follow-through on details", "All core values at +/- (none at +)", "Capacity concerns"],
+    actions: [
+      { id: uid(), area: "Core Values", action: "Pick 2 core values to focus on this quarter — get to + on both", due: "2026-04-15", done: false },
+      { id: uid(), area: "GWC: Capacity", action: "Time audit — where are the 30+ hrs/wk going? Cut low-value work", due: "2026-03-31", done: false },
+      { id: uid(), area: "Follow-through", action: "Use daily Big 3 every single day — build the habit", due: "2026-04-01", done: false },
+    ],
+  },
+  streakDays: 0,
+  lastActiveDate: "",
+};
+
+export const SEED_DATA: Record<string, UserData> = {
+  drew: DREW_DATA,
+  jack: JACK_DATA,
+  joe: JOE_DATA,
+};
