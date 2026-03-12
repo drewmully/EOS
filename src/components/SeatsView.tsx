@@ -44,28 +44,28 @@ export function SeatsView({ data, update }: Props) {
       <div className="space-y-5">
         {data.seats.map((seat, i) => (
           <Card key={seat.id} padding="lg">
-            <div className="flex items-center justify-between gap-4 mb-5 flex-wrap">
+            <div className="mb-5">
               <input
                 value={seat.name}
                 onChange={(e) => { const v = e.target.value; update((d) => { d.seats[i].name = v; }); }}
-                className="text-[18px] font-semibold text-gray-900 bg-transparent border-b-2 border-transparent hover:border-gray-200 focus:border-emerald-500 focus:outline-none px-1 py-1 flex-1 min-w-[200px] transition-colors"
+                className="text-[17px] font-semibold text-gray-900 bg-transparent border-b-2 border-transparent hover:border-gray-200 focus:border-emerald-500 focus:outline-none px-1 py-1 w-full transition-colors mb-3"
               />
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 flex-wrap">
                 <input
                   value={seat.hours}
                   onChange={(e) => { const v = e.target.value; update((d) => { d.seats[i].hours = v; }); }}
-                  className="w-32 text-[13px] text-gray-500 font-medium bg-gray-50 px-3.5 py-2 rounded-xl border border-transparent hover:border-gray-200 focus:border-emerald-500 focus:outline-none text-center transition-colors"
+                  className="w-28 text-[12px] text-gray-500 font-medium bg-gray-50 px-3 py-1.5 rounded-lg border border-transparent hover:border-gray-200 focus:border-emerald-500 focus:outline-none text-center transition-colors"
                 />
                 <select
                   value={seat.status}
                   onChange={(e) => { const v = e.target.value; update((d) => { d.seats[i].status = v; }); }}
-                  className="text-[13px] font-semibold border border-gray-200 rounded-xl px-3.5 py-2 bg-white cursor-pointer hover:border-gray-300 focus:outline-none focus:border-emerald-500 transition-colors"
+                  className="text-[12px] font-semibold border border-gray-200 rounded-lg px-3 py-1.5 bg-white cursor-pointer hover:border-gray-300 focus:outline-none focus:border-emerald-500 transition-colors"
                 >
                   {Object.keys(STATUS_VARIANT).map((s) => (
                     <option key={s}>{s}</option>
                   ))}
                 </select>
-                <Badge variant={STATUS_VARIANT[seat.status] || "gray"} dot>
+                <Badge variant={STATUS_VARIANT[seat.status] || "gray"} dot size="sm">
                   {seat.status}
                 </Badge>
               </div>

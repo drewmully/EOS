@@ -19,6 +19,7 @@ export default function AppShell() {
   const [view, setView] = useState<View>("today");
   const [expRock, setExpRock] = useState<string | null>(null);
   const [mobileNav, setMobileNav] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [loading, setLoading] = useState(true);
   const [syncStatus, setSyncStatus] = useState<string>("idle");
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -143,6 +144,8 @@ export default function AppShell() {
         setActiveUser={setActiveUser}
         inboxCount={data.inbox.length}
         syncStatus={syncStatus}
+        collapsed={sidebarCollapsed}
+        onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
       />
 
       {/* Mobile Header */}
@@ -178,7 +181,7 @@ export default function AppShell() {
                     : "text-gray-500 hover:text-gray-300 hover:bg-white/[0.04]",
                 ].join(" ")}
               >
-                {k.charAt(0).toUpperCase() + k.slice(1)}
+                {k === "vto" ? "V/TO" : k.charAt(0).toUpperCase() + k.slice(1)}
               </button>
             ))}
           </div>
@@ -190,8 +193,8 @@ export default function AppShell() {
       <MobileBottomNav view={view} setView={setView} inboxCount={data.inbox.length} />
 
       {/* Main Content */}
-      <main className="flex-1 overflow-auto pt-[60px] pb-[84px] md:pt-0 md:pb-0">
-        <div className="max-w-[1200px] mx-auto px-5 md:px-10 lg:px-12 py-10">
+      <main className="flex-1 overflow-auto pt-[56px] pb-[76px] md:pt-0 md:pb-0">
+        <div className="max-w-[1100px] mx-auto px-4 sm:px-6 md:px-10 lg:px-12 py-8 md:py-10">
           {view === "today" && (
             <TodayView data={data} user={user} update={update} setView={setView} setExpRock={setExpRock} />
           )}

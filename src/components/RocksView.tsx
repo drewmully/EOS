@@ -47,7 +47,7 @@ export function RocksView({ data, update, expRock, setExpRock, user }: Props) {
         <h1 className="text-[32px] font-bold text-gray-900 tracking-tight">
           {user.name}&apos;s Rocks
         </h1>
-        <p className="text-[16px] text-gray-400 mt-2">Q2 2026 &middot; Click to expand and edit</p>
+        <p className="text-[15px] text-gray-400 mt-1.5">Q2 2026 &middot; Click to expand and edit</p>
       </div>
 
       <div className="space-y-4">
@@ -71,19 +71,19 @@ export function RocksView({ data, update, expRock, setExpRock, user }: Props) {
               {/* Collapsed Header */}
               <div
                 onClick={() => setExpRock(open ? null : rock.id)}
-                className="flex items-center gap-5 px-7 py-5 cursor-pointer transition-colors duration-150 hover:bg-gray-50/50"
+                className="flex items-center gap-4 px-5 sm:px-6 py-4 cursor-pointer transition-colors duration-150 hover:bg-gray-50/50"
               >
-                <ProgressRing value={p} color={ringColor} size={56} strokeWidth={5} />
+                <ProgressRing value={p} color={ringColor} size={48} strokeWidth={4.5} />
 
                 <div className="flex-1 min-w-0">
-                  <div className="text-[17px] font-semibold text-gray-900 truncate leading-snug">
+                  <div className="text-[15px] sm:text-[16px] font-semibold text-gray-900 truncate leading-snug">
                     {rock.name || "(click to name)"}
                   </div>
-                  <div className="flex items-center gap-2.5 mt-2 flex-wrap">
-                    <Badge variant={BIZ_VARIANT[rock.biz] || "gray"}>{rock.biz}</Badge>
-                    <Badge variant={URG_MAP[urg.text] || "gray"}>{urg.text}</Badge>
+                  <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                    <Badge variant={BIZ_VARIANT[rock.biz] || "gray"} size="sm">{rock.biz}</Badge>
+                    <Badge variant={URG_MAP[urg.text] || "gray"} size="sm">{urg.text}</Badge>
                     <span
-                      className={`text-[13px] font-medium ${
+                      className={`text-[12px] font-medium ${
                         days < 0 ? "text-red-500" : "text-gray-400"
                       }`}
                     >
@@ -102,7 +102,7 @@ export function RocksView({ data, update, expRock, setExpRock, user }: Props) {
                     update((d) => { d.rocks[ri].status = v as Rock["status"]; });
                     if (v === "Done") fireBig();
                   }}
-                  className="text-[13px] font-semibold rounded-xl px-3.5 py-2 border border-gray-200 bg-white cursor-pointer hover:border-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+                  className="hidden sm:block text-[12px] font-semibold rounded-xl px-3 py-2 border border-gray-200 bg-white cursor-pointer hover:border-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
                 >
                   {["On Track", "At Risk", "Off Track", "Done"].map((s) => (
                     <option key={s}>{s}</option>
@@ -111,15 +111,15 @@ export function RocksView({ data, update, expRock, setExpRock, user }: Props) {
 
                 {/* Chevron */}
                 <div
-                  className={`text-gray-300 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+                  className={`text-gray-300 transition-transform duration-200 flex-shrink-0 ${open ? "rotate-180" : ""}`}
                 >
-                  <IconChevron className="w-6 h-6" />
+                  <IconChevron className="w-5 h-5" />
                 </div>
               </div>
 
               {/* Expanded Panel */}
               {open && (
-                <div className="border-t border-gray-100 px-7 py-7 animate-fadeSlideUp">
+                <div className="border-t border-gray-100 px-5 sm:px-6 py-6 animate-fadeSlideUp">
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
                     <Input
                       label="Rock Name"

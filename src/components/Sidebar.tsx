@@ -8,6 +8,8 @@ import {
   IconSeats,
   IconGrowth,
   IconVTO,
+  IconChevron,
+  IconX,
 } from "./ui/Icons";
 
 export type View = "today" | "rocks" | "inbox" | "seats" | "growth" | "vto";
@@ -29,6 +31,8 @@ interface SidebarProps {
   setActiveUser: (id: string) => void;
   inboxCount: number;
   syncStatus: string;
+  collapsed: boolean;
+  onToggle: () => void;
 }
 
 export function Sidebar({
@@ -39,6 +43,8 @@ export function Sidebar({
   setActiveUser,
   inboxCount,
   syncStatus,
+  collapsed,
+  onToggle,
 }: SidebarProps) {
   const syncDot =
     syncStatus === "synced"
@@ -61,27 +67,41 @@ export function Sidebar({
   const activeUserObj = users.find((u) => u.id === activeUser);
 
   return (
-    <aside className="hidden md:flex flex-col w-[272px] bg-[#0F172A] flex-shrink-0 select-none">
-      {/* Logo / User header */}
-      <div className="px-7 pt-7 pb-5">
-        <div className="flex items-center gap-2.5 mb-1">
-          <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.6)]" />
-          <span className="text-[15px] font-bold text-white tracking-wide">
-            {activeUserObj ? `${activeUserObj.name.toUpperCase()}'S FOCUS` : "EOS FOCUS"}
-          </span>
-        </div>
-        <div className="text-[13px] text-gray-500 mt-1 font-medium pl-5">
-          {new Date().toLocaleDateString("en-US", {
-            weekday: "long",
-            month: "short",
-            day: "numeric",
-          })}
-        </div>
+    <aside
+      className="hidden md:flex flex-col bg-[#0F172A] flex-shrink-0 select-none overflow-hidden"
+      style={{
+        width: collapsed ? 72 : 260,
+        transition: "width 250ms cubic-bezier(0.4, 0, 0.2, 1)",
+      }}
+    >
+      {/* Logo / Header */}
+      <div className="px-5 pt-6 pb-4" style={{ minHeight: 64 }}>
+        {collapsed ? (
+          <div className="flex justify-center">
+            <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.6)]" />
+          </div>
+        ) : (
+          <>
+            <div className="flex items-center gap-2.5 mb-1">
+              <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.6)] flex-shrink-0" />
+              <span className="text-[14px] font-bold text-white tracking-wide whitespace-nowrap overflow-hidden">
+                {activeUserObj ? `${activeUserObj.name.toUpperCase()}'S FOCUS` : "EOS FOCUS"}
+              </span>
+            </div>
+            <div className="text-[12px] text-gray-500 mt-1 font-medium pl-5 whitespace-nowrap overflow-hidden">
+              {new Date().toLocaleDateString("en-US", {
+                weekday: "long",
+                month: "short",
+                day: "numeric",
+              })}
+            </div>
+          </>
+        )}
       </div>
 
       {/* Person Switcher */}
-      <div className="px-5 pb-5">
-        <div className="flex gap-3 justify-center">
+      <div className={collapsed ? "px-2 pb-4" : "px-4 pb-4"}>
+        <div className={`flex ${collapsed ? "flex-col items-center gap-3" : "gap-2 justify-center"}`}>
           {users.map((u) => {
             const active = u.id === activeUser;
             return (
@@ -89,26 +109,31 @@ export function Sidebar({
                 key={u.id}
                 onClick={() => setActiveUser(u.id)}
                 className="flex flex-col items-center cursor-pointer transition-all duration-200"
+                title={collapsed ? u.name : undefined}
               >
                 <div
-                  className="w-12 h-12 rounded-full flex items-center justify-center text-white text-sm font-bold mb-1.5 transition-all duration-200"
+                  className="rounded-full flex items-center justify-center text-white font-bold transition-all duration-200"
                   style={{
+                    width: collapsed ? 36 : 40,
+                    height: collapsed ? 36 : 40,
+                    fontSize: collapsed ? 11 : 12,
                     background: u.color,
-                    transform: active ? "scale(1.15)" : "scale(0.9)",
-                    opacity: active ? 1 : 0.5,
+                    opacity: active ? 1 : 0.45,
                     boxShadow: active
-                      ? `0 0 0 3px #0F172A, 0 0 0 5px ${u.color}, 0 6px 20px ${u.color}50`
+                      ? `0 0 0 2px #0F172A, 0 0 0 4px ${u.color}`
                       : "none",
                   }}
                 >
                   {u.initials}
                 </div>
-                <span
-                  className="text-[11px] font-semibold transition-colors duration-200"
-                  style={{ color: active ? u.color : "#6B7280" }}
-                >
-                  {u.name}
-                </span>
+                {!collapsed && (
+                  <span
+                    className="text-[10px] font-semibold mt-1.5 whitespace-nowrap transition-colors duration-200"
+                    style={{ color: active ? u.color : "#6B7280" }}
+                  >
+                    {u.name}
+                  </span>
+                )}
               </button>
             );
           })}
@@ -116,18 +141,20 @@ export function Sidebar({
       </div>
 
       {/* Divider */}
-      <div className="mx-6 h-px bg-white/[0.06] mb-3" />
+      <div className="mx-4 h-px bg-white/[0.06] mb-2" />
 
       {/* Navigation */}
-      <nav className="flex-1 px-4 py-1">
+      <nav className="flex-1 px-3 py-1">
         {NAV.map(({ key, label, Icon }) => {
           const active = view === key;
           return (
             <button
               key={key}
               onClick={() => setView(key)}
+              title={collapsed ? label : undefined}
               className={[
-                "w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl mb-1",
+                "w-full flex items-center gap-3 rounded-xl mb-0.5",
+                collapsed ? "justify-center px-2 py-3" : "px-3.5 py-3",
                 "cursor-pointer transition-all duration-150 group relative",
                 active
                   ? "bg-white/[0.08] text-white"
@@ -135,19 +162,26 @@ export function Sidebar({
               ].join(" ")}
             >
               {active && (
-                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-6 rounded-r-full bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
               )}
               <Icon
                 className={[
-                  "w-5 h-5 transition-colors duration-150 flex-shrink-0",
+                  "w-[18px] h-[18px] transition-colors duration-150 flex-shrink-0",
                   active ? "text-emerald-400" : "text-gray-600 group-hover:text-gray-400",
                 ].join(" ")}
               />
-              <span className={`text-[15px] ${active ? "font-semibold" : "font-medium"}`}>
-                {label}
-              </span>
+              {!collapsed && (
+                <span className={`text-[14px] whitespace-nowrap ${active ? "font-semibold" : "font-medium"}`}>
+                  {label}
+                </span>
+              )}
               {key === "inbox" && inboxCount > 0 && (
-                <span className="ml-auto bg-indigo-500/90 text-white text-[11px] font-bold rounded-full min-w-[22px] h-[22px] flex items-center justify-center px-1.5">
+                <span
+                  className={[
+                    "bg-indigo-500/90 text-white text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1",
+                    collapsed ? "absolute -top-0.5 -right-0.5" : "ml-auto",
+                  ].join(" ")}
+                >
                   {inboxCount}
                 </span>
               )}
@@ -156,11 +190,29 @@ export function Sidebar({
         })}
       </nav>
 
+      {/* Collapse Toggle */}
+      <div className="px-3 py-2">
+        <button
+          onClick={onToggle}
+          className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-gray-600 hover:text-gray-300 hover:bg-white/[0.04] cursor-pointer transition-all duration-150"
+        >
+          <div
+            className="transition-transform duration-250"
+            style={{ transform: collapsed ? "rotate(-90deg)" : "rotate(90deg)" }}
+          >
+            <IconChevron className="w-4 h-4" />
+          </div>
+          {!collapsed && <span className="text-[12px] font-medium whitespace-nowrap">Collapse</span>}
+        </button>
+      </div>
+
       {/* Sync Status */}
-      <div className="px-7 py-5 border-t border-white/[0.06]">
-        <div className="flex items-center gap-2.5">
-          <div className={`w-2 h-2 rounded-full ${syncDot}`} />
-          <span className="text-[13px] text-gray-600 font-medium">{syncLabel}</span>
+      <div className={`py-4 border-t border-white/[0.06] ${collapsed ? "px-3" : "px-5"}`}>
+        <div className={`flex items-center ${collapsed ? "justify-center" : "gap-2.5"}`}>
+          <div className={`w-2 h-2 rounded-full flex-shrink-0 ${syncDot}`} />
+          {!collapsed && (
+            <span className="text-[12px] text-gray-600 font-medium whitespace-nowrap">{syncLabel}</span>
+          )}
         </div>
       </div>
     </aside>
@@ -191,21 +243,20 @@ export function MobileHeader({
       : "bg-gray-500";
 
   return (
-    <header className="md:hidden fixed top-0 left-0 right-0 h-[60px] z-50 flex items-center justify-between px-5 bg-[#0F172A] shadow-lg">
-      <div className="flex items-center gap-3">
-        <div className="w-2 h-2 rounded-full bg-emerald-400 mr-1" />
+    <header className="md:hidden fixed top-0 left-0 right-0 h-[56px] z-50 flex items-center justify-between px-4 bg-[#0F172A]">
+      <div className="flex items-center gap-2">
+        <div className="w-2 h-2 rounded-full bg-emerald-400 mr-1 flex-shrink-0" />
         {users.map((u) => {
           const active = u.id === activeUser;
           return (
             <button
               key={u.id}
               onClick={() => setActiveUser(u.id)}
-              className="w-9 h-9 rounded-full flex items-center justify-center text-white text-[11px] font-bold cursor-pointer transition-all duration-200"
+              className="w-8 h-8 rounded-full flex items-center justify-center text-white text-[10px] font-bold cursor-pointer transition-all duration-200 flex-shrink-0"
               style={{
                 background: u.color,
                 opacity: active ? 1 : 0.35,
-                transform: active ? "scale(1.15)" : "scale(0.9)",
-                boxShadow: active ? `0 0 0 2px #0F172A, 0 0 0 3.5px ${u.color}` : "none",
+                boxShadow: active ? `0 0 0 2px #0F172A, 0 0 0 3px ${u.color}` : "none",
               }}
             >
               {u.initials}
@@ -213,10 +264,10 @@ export function MobileHeader({
           );
         })}
       </div>
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2">
         <div className={`w-2 h-2 rounded-full ${syncDot}`} />
-        <button onClick={onMenuToggle} className="text-gray-400 hover:text-white cursor-pointer p-1.5">
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+        <button onClick={onMenuToggle} className="text-gray-400 hover:text-white cursor-pointer p-1">
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
             <path d="M4 6h16M4 12h16M4 18h16" strokeLinecap="round" />
           </svg>
         </button>
@@ -228,36 +279,36 @@ export function MobileHeader({
 /* ── Mobile Bottom Nav ── */
 export function MobileBottomNav({ view, setView, inboxCount }: { view: View; setView: (v: View) => void; inboxCount: number }) {
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 h-[76px] bg-white/95 backdrop-blur-lg border-t border-gray-200/80 flex items-start justify-around z-50 px-2 pt-2.5 pb-safe">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 h-[68px] bg-white/95 backdrop-blur-lg border-t border-gray-200/80 flex items-center justify-around z-50 px-1 pb-safe">
       {NAV.map(({ key, label, Icon }) => {
         const active = view === key;
         return (
           <button
             key={key}
             onClick={() => setView(key)}
-            className="flex flex-col items-center gap-1 cursor-pointer relative min-w-[52px] py-2 transition-all duration-150"
+            className="flex flex-col items-center gap-0.5 cursor-pointer relative min-w-[48px] py-1.5 transition-all duration-150"
           >
             <div className="relative">
               <Icon
-                className={`w-[22px] h-[22px] transition-colors duration-150 ${
+                className={`w-5 h-5 transition-colors duration-150 ${
                   active ? "text-emerald-600" : "text-gray-400"
                 }`}
               />
               {key === "inbox" && inboxCount > 0 && (
-                <span className="absolute -top-1.5 -right-2.5 bg-indigo-500 text-white text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                <span className="absolute -top-1 -right-2 bg-indigo-500 text-white text-[8px] font-bold rounded-full w-3.5 h-3.5 flex items-center justify-center">
                   {inboxCount}
                 </span>
               )}
             </div>
             <span
-              className={`text-[11px] font-semibold transition-colors duration-150 ${
+              className={`text-[10px] font-semibold transition-colors duration-150 ${
                 active ? "text-emerald-600" : "text-gray-400"
               }`}
             >
               {label}
             </span>
             {active && (
-              <div className="absolute -top-0.5 left-1/2 -translate-x-1/2 w-10 h-[3px] rounded-full bg-emerald-500" />
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-[2.5px] rounded-full bg-emerald-500" />
             )}
           </button>
         );

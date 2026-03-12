@@ -78,10 +78,10 @@ export function GrowthView({ data, update, user }: Props) {
       {/* People Analyzer — Core Values */}
       <Card className="mb-5" padding="lg">
         <h3 className="text-[17px] font-bold text-gray-800 mb-6">People Analyzer — Core Values</h3>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
+        <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
           {CV_KEYS.map(({ key, label }) => (
             <div key={key} className="text-center">
-              <div className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-3 leading-tight min-h-[28px] flex items-end justify-center">
+              <div className="text-[10px] sm:text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-2 leading-tight min-h-[24px] flex items-end justify-center text-center">
                 {label}
               </div>
               <select

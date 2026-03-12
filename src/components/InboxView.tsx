@@ -58,18 +58,18 @@ export function InboxView({ data, update }: Props) {
         <div className="space-y-3">
           {data.inbox.map((item, i) => (
             <Card key={item.id} padding="md" hoverable>
-              <div className="flex items-start gap-5">
+              <div className="flex items-start gap-4">
                 <div className="flex-1 min-w-0">
-                  <p className="text-[16px] font-medium text-gray-800 mb-3">{item.text}</p>
-                  <div className="flex items-center gap-3 flex-wrap">
-                    <span className="text-[13px] text-gray-400 font-medium">{item.date}</span>
+                  <p className="text-[15px] font-medium text-gray-800 mb-2.5 break-words">{item.text}</p>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-[12px] text-gray-400 font-medium">{item.date}</span>
                     <select
                       value={item.biz}
                       onChange={(e) => {
                         const v = e.target.value;
                         update((d) => { d.inbox[i].biz = v; });
                       }}
-                      className="text-[13px] font-medium border border-gray-200 rounded-lg px-3 py-1.5 text-gray-500 bg-white cursor-pointer hover:border-gray-300 focus:outline-none focus:border-indigo-500 transition-colors"
+                      className="text-[12px] font-medium border border-gray-200 rounded-lg px-2.5 py-1.5 text-gray-500 bg-white cursor-pointer hover:border-gray-300 focus:outline-none focus:border-indigo-500 transition-colors"
                     >
                       <option value="">Business?</option>
                       <option>MFS</option>
@@ -82,7 +82,7 @@ export function InboxView({ data, update }: Props) {
                         const v = e.target.value;
                         update((d) => { d.inbox[i].triage = v; });
                       }}
-                      className={`text-[13px] font-medium border rounded-lg px-3 py-1.5 bg-white cursor-pointer transition-colors focus:outline-none ${
+                      className={`text-[12px] font-medium border rounded-lg px-2.5 py-1.5 bg-white cursor-pointer transition-colors focus:outline-none ${
                         item.triage
                           ? "border-indigo-200 text-indigo-600 font-semibold hover:border-indigo-300 focus:border-indigo-500"
                           : "border-gray-200 text-gray-500 hover:border-gray-300 focus:border-indigo-500"
