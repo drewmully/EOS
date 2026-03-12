@@ -149,23 +149,36 @@ export function Sidebar({
         })}
       </nav>
 
-      {/* Collapse toggle */}
-      <div className="px-3 py-1">
+      {/* Collapse toggle — double chevron with label */}
+      <div style={{ padding: "4px 12px 8px" }}>
         <button
           onClick={onToggle}
-          className="w-full flex items-center justify-center py-2 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-50 cursor-pointer transition-colors duration-100"
-          title={collapsed ? "Expand" : "Collapse"}
+          className="w-full flex items-center justify-center gap-2 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-50 cursor-pointer transition-colors duration-100"
+          style={{ padding: "10px 12px" }}
+          title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
           <svg
-            className="w-4 h-4 transition-transform duration-200"
-            style={{ transform: collapsed ? "rotate(-90deg)" : "rotate(90deg)" }}
+            className="w-4 h-4 flex-shrink-0"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
             strokeWidth={1.5}
           >
-            <path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+            {collapsed ? (
+              <>
+                <path d="M13 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M4 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
+              </>
+            ) : (
+              <>
+                <path d="M11 19l-7-7 7-7" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M20 19l-7-7 7-7" strokeLinecap="round" strokeLinejoin="round" />
+              </>
+            )}
           </svg>
+          {!collapsed && (
+            <span className="text-xs font-medium">Collapse</span>
+          )}
         </button>
       </div>
 

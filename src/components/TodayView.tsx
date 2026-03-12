@@ -2,7 +2,7 @@
 
 import confetti from "canvas-confetti";
 import { UserData, UserProfile, Priority } from "@/lib/types";
-import { uid, daysUntil, pct, urgencyScore, urgencyLabel } from "@/lib/utils";
+import { uid, daysUntil, pct, urgencyScore, urgencyLabel, getRecommendations } from "@/lib/utils";
 import { Card } from "./ui/Card";
 import { Badge } from "./ui/Badge";
 import { ProgressBar } from "./ui/ProgressBar";
@@ -41,11 +41,12 @@ export function TodayView({ data, user, update, setView, setExpRock }: Props) {
   const hr = new Date().getHours();
   const greeting = hr < 12 ? "morning" : hr < 17 ? "afternoon" : "evening";
   const sorted = [...data.rocks].sort((a, b) => urgencyScore(b) - urgencyScore(a));
+  const recommendations = getRecommendations(data);
 
   return (
     <div className="animate-fadeIn">
       {/* Header */}
-      <div className="mb-8">
+      <div style={{ marginBottom: 32 }}>
         <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
           Good {greeting},{" "}
           <span style={{ color: user.color }}>{user.name}</span>
@@ -53,14 +54,83 @@ export function TodayView({ data, user, update, setView, setExpRock }: Props) {
         <p className="text-sm text-gray-400 mt-1">Here&apos;s what needs your attention.</p>
       </div>
 
+      {/* Smart Recommendations */}
+      {recommendations.length > 0 && (
+        <section style={{ marginBottom: 40 }}>
+          <div className="flex items-center gap-2.5" style={{ marginBottom: 16 }}>
+            <div className="w-1 h-5 rounded-full" style={{ background: "linear-gradient(to bottom, #F59E0B, #EF4444)" }} />
+            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Suggested Focus</h2>
+            <span className="text-[11px] font-medium text-amber-600 bg-amber-50 border border-amber-200/50 rounded-full" style={{ padding: "2px 10px" }}>
+              Smart
+            </span>
+          </div>
+          <div
+            className="rounded-2xl border shadow-sm"
+            style={{
+              padding: "20px 28px",
+              background: "linear-gradient(135deg, #FFF7ED 0%, #FFFFFF 50%, #FEF2F2 100%)",
+              borderColor: "rgba(251, 191, 36, 0.3)",
+            }}
+          >
+            <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
+              {recommendations.map((rec, i) => (
+                <div
+                  key={i}
+                  className="flex items-start gap-3"
+                  style={{
+                    padding: "12px 0",
+                    borderTop: i > 0 ? "1px solid rgba(251, 191, 36, 0.15)" : "none",
+                  }}
+                >
+                  <div
+                    className="flex-shrink-0 rounded-full flex items-center justify-center"
+                    style={{
+                      width: 24,
+                      height: 24,
+                      marginTop: 1,
+                      background:
+                        rec.urgency === "high" ? "#FEE2E2"
+                        : rec.urgency === "medium" ? "#FEF3C7"
+                        : "#DCFCE7",
+                    }}
+                  >
+                    <svg
+                      className="w-3 h-3"
+                      fill="none"
+                      stroke={
+                        rec.urgency === "high" ? "#DC2626"
+                        : rec.urgency === "medium" ? "#D97706"
+                        : "#16A34A"
+                      }
+                      viewBox="0 0 24 24"
+                      strokeWidth={2.5}
+                    >
+                      {rec.urgency === "high" ? (
+                        <path strokeLinecap="round" d="M12 9v4m0 4h.01M12 3l9.5 16.5H2.5L12 3z" />
+                      ) : (
+                        <path strokeLinecap="round" d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20 10 10 0 000-20z" />
+                      )}
+                    </svg>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[14px] font-medium text-gray-800 leading-snug">{rec.text}</p>
+                    <p className="text-xs text-gray-400 mt-0.5">{rec.reason}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Rock Cards */}
-      <section className="mb-10">
-        <div className="flex items-center gap-2.5 mb-4">
+      <section style={{ marginBottom: 40 }}>
+        <div className="flex items-center gap-2.5" style={{ marginBottom: 16 }}>
           <div className="w-1 h-5 rounded-full bg-gradient-to-b from-emerald-400 to-teal-500" />
           <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Rocks</h2>
           <span className="text-xs text-gray-300">{sorted.length}</span>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4" style={{ gap: 20 }}>
           {sorted.map((rock) => {
             const p = pct(rock);
             const days = daysUntil(rock.due);
@@ -74,20 +144,20 @@ export function TodayView({ data, user, update, setView, setExpRock }: Props) {
                 padding="lg"
                 className="flex flex-col"
               >
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center justify-between" style={{ marginBottom: 14 }}>
                   <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide">{rock.biz}</span>
                   <Badge variant={URG_VARIANT[urg.text] || "gray"} size="sm">{urg.text}</Badge>
                 </div>
 
-                <h3 className="text-[15px] font-semibold text-gray-900 leading-snug mb-auto min-h-[44px] line-clamp-2">
+                <h3 className="text-[15px] font-semibold text-gray-900 leading-snug mb-auto line-clamp-2" style={{ minHeight: 44 }}>
                   {rock.name || "(unnamed)"}
                 </h3>
 
-                <div className="mt-5">
+                <div style={{ marginTop: 18 }}>
                   <ProgressBar value={p} color={STATUS_COLOR[rock.status] || "#10B981"} size="sm" showLabel />
                 </div>
 
-                <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
+                <div className="flex items-center justify-between" style={{ marginTop: 14, paddingTop: 14, borderTop: "1px solid #F3F4F6" }}>
                   <div className="flex items-center gap-2">
                     <span
                       className="w-2 h-2 rounded-full"
@@ -109,19 +179,22 @@ export function TodayView({ data, user, update, setView, setExpRock }: Props) {
         </div>
       </section>
 
-      {/* Top 3 Priorities — full width, distinct */}
-      <section className="mb-8">
-        <div className="flex items-center gap-2.5 mb-4">
+      {/* Top 3 Priorities */}
+      <section style={{ marginBottom: 36 }}>
+        <div className="flex items-center gap-2.5" style={{ marginBottom: 16 }}>
           <div className="w-1 h-5 rounded-full bg-gradient-to-b from-indigo-400 to-violet-500" />
           <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Top 3 Priorities</h2>
         </div>
         <div className="bg-gradient-to-br from-indigo-50/80 via-white to-violet-50/50 rounded-2xl border border-indigo-100/60 shadow-sm" style={{ padding: "24px 32px" }}>
-          <div className="space-y-0">
+          <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
             {data.todayPriorities.map((p: Priority, i: number) => (
               <div
                 key={i}
-                className="flex items-center gap-4 py-3.5"
-                style={{ borderTop: i > 0 ? "1px solid rgba(99,102,241,0.1)" : "none" }}
+                className="flex items-center gap-4"
+                style={{
+                  padding: "14px 0",
+                  borderTop: i > 0 ? "1px solid rgba(99,102,241,0.1)" : "none",
+                }}
               >
                 <Checkbox
                   checked={p.done}
@@ -153,9 +226,9 @@ export function TodayView({ data, user, update, setView, setExpRock }: Props) {
         </div>
       </section>
 
-      {/* To-Do — full width, distinct */}
+      {/* To-Do */}
       <section>
-        <div className="flex items-center gap-2.5 mb-4">
+        <div className="flex items-center gap-2.5" style={{ marginBottom: 16 }}>
           <div className="w-1 h-5 rounded-full bg-gradient-to-b from-amber-400 to-orange-500" />
           <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">To-Do</h2>
           {data.todos.length > 0 && (
@@ -176,16 +249,20 @@ export function TodayView({ data, user, update, setView, setExpRock }: Props) {
         </div>
         <div className="bg-gradient-to-br from-amber-50/60 via-white to-orange-50/40 rounded-2xl border border-amber-100/60 shadow-sm" style={{ padding: "24px 32px" }}>
           {data.todos.length === 0 ? (
-            <div className="text-center py-8">
+            <div className="text-center" style={{ padding: "32px 0" }}>
               <p className="text-sm text-gray-400">No to-dos yet.</p>
             </div>
           ) : (
-            <div className="space-y-0">
+            <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
               {data.todos.map((todo, i) => (
                 <div
                   key={todo.id}
-                  className="flex items-center gap-4 py-3 group"
-                  style={{ opacity: todo.done ? 0.5 : 1, borderTop: i > 0 ? "1px solid rgba(245,158,11,0.1)" : "none" }}
+                  className="flex items-center gap-4 group"
+                  style={{
+                    padding: "12px 0",
+                    opacity: todo.done ? 0.5 : 1,
+                    borderTop: i > 0 ? "1px solid rgba(245,158,11,0.1)" : "none",
+                  }}
                 >
                   <Checkbox
                     size="sm"

@@ -17,6 +17,13 @@ const STATUS_COLOR: Record<string, string> = {
   Done: "#6366F1",
 };
 
+const STATUS_BG: Record<string, string> = {
+  "On Track": "linear-gradient(135deg, #ECFDF5 0%, #FFFFFF 100%)",
+  "At Risk": "linear-gradient(135deg, #FFFBEB 0%, #FFFFFF 100%)",
+  "Off Track": "linear-gradient(135deg, #FEF2F2 0%, #FFFFFF 100%)",
+  Done: "linear-gradient(135deg, #EEF2FF 0%, #FFFFFF 100%)",
+};
+
 const URG_VARIANT: Record<string, "red" | "amber" | "emerald" | "blue"> = {
   "PUSH NOW": "red",
   "NEEDS FOCUS": "amber",
@@ -40,16 +47,24 @@ interface Props {
 }
 
 export function RocksView({ data, update, expRock, setExpRock, user }: Props) {
+  const totalPct = data.rocks.length > 0
+    ? Math.round(data.rocks.reduce((sum, r) => sum + pct(r), 0) / data.rocks.length)
+    : 0;
+
   return (
     <div className="animate-fadeIn">
-      <div className="mb-8">
+      <div style={{ marginBottom: 32 }}>
         <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
           <span style={{ color: user.color }}>{user.name}&apos;s</span> Rocks
         </h1>
-        <p className="text-sm text-gray-400 mt-1">Q2 2026 &middot; Click to expand</p>
+        <div className="flex items-center gap-3 mt-1">
+          <p className="text-sm text-gray-400">Q2 2026</p>
+          <span className="text-xs text-gray-300">|</span>
+          <p className="text-sm text-gray-400">{data.rocks.length} rocks &middot; {totalPct}% avg completion</p>
+        </div>
       </div>
 
-      <div className="space-y-3">
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         {data.rocks.map((rock, ri) => {
           const open = expRock === rock.id;
           const p = pct(rock);
@@ -60,31 +75,32 @@ export function RocksView({ data, update, expRock, setExpRock, user }: Props) {
           return (
             <div
               key={rock.id}
-              className={[
-                "bg-white rounded-2xl overflow-hidden transition-all duration-200 border",
-                open
-                  ? "border-gray-300 shadow-lg"
-                  : "border-gray-200/70 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_4px_12px_rgba(0,0,0,0.04)] hover:shadow-lg hover:border-gray-300",
-              ].join(" ")}
+              className="rounded-2xl overflow-hidden transition-all duration-200 border"
+              style={{
+                background: open ? (STATUS_BG[rock.status] || "#FFFFFF") : "#FFFFFF",
+                borderColor: open ? (STATUS_COLOR[rock.status] || "#E5E7EB") + "40" : "rgba(229,231,235,0.7)",
+                boxShadow: open
+                  ? `0 4px 24px rgba(0,0,0,0.08), 0 0 0 1px ${STATUS_COLOR[rock.status] || "#E5E7EB"}20`
+                  : "0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04)",
+              }}
             >
               {/* Header */}
               <div
                 onClick={() => setExpRock(open ? null : rock.id)}
-                className="flex items-center gap-4 px-5 sm:px-6 py-4 cursor-pointer"
+                className="flex items-center cursor-pointer hover:bg-gray-50/50 transition-colors"
+                style={{ gap: 16, padding: "18px 24px" }}
               >
-                <ProgressRing value={p} color={ringColor} size={42} strokeWidth={3.5} />
+                <ProgressRing value={p} color={ringColor} size={44} strokeWidth={3.5} />
 
                 <div className="flex-1 min-w-0">
-                  <div className="text-[14px] font-medium text-gray-900 truncate">
+                  <div className="text-[15px] font-semibold text-gray-900 truncate">
                     {rock.name || "(click to name)"}
                   </div>
-                  <div className="flex items-center gap-2 mt-1 flex-wrap">
-                    <span className="text-xs text-gray-400">{rock.biz}</span>
-                    <span className="text-gray-300">&middot;</span>
+                  <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                    <Badge variant={rock.biz === "MFS" ? "teal" : "orange"} size="sm">{rock.biz}</Badge>
                     <Badge variant={URG_VARIANT[urg.text] || "gray"} size="sm">{urg.text}</Badge>
-                    <span className="text-gray-300">&middot;</span>
                     <span
-                      className={`text-xs ${days < 0 ? "text-red-500 font-medium" : "text-gray-400"}`}
+                      className={`text-xs font-medium ${days < 0 ? "text-red-500" : days <= 7 ? "text-amber-500" : "text-gray-400"}`}
                     >
                       {days > 0 ? `${days}d left` : days === 0 ? "Due today" : `${Math.abs(days)}d over`}
                     </span>
@@ -113,8 +129,8 @@ export function RocksView({ data, update, expRock, setExpRock, user }: Props) {
 
               {/* Expanded */}
               {open && (
-                <div className="border-t border-gray-100 px-5 sm:px-6 py-6 animate-fadeIn">
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                <div className="animate-fadeIn" style={{ borderTop: "1px solid #F3F4F6", padding: "24px 24px" }}>
+                  <div className="grid grid-cols-1 sm:grid-cols-3" style={{ gap: 16, marginBottom: 24 }}>
                     <Input
                       label="Rock Name"
                       value={rock.name}
@@ -141,15 +157,25 @@ export function RocksView({ data, update, expRock, setExpRock, user }: Props) {
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center justify-between" style={{ marginBottom: 12 }}>
                     <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">
                       Subtasks &middot; {rock.subtasks.filter((s) => s.done).length}/{rock.subtasks.length}
                     </span>
                   </div>
 
-                  <div className="space-y-0">
+                  <div
+                    className="rounded-xl border border-gray-100"
+                    style={{ background: "rgba(249,250,251,0.5)", padding: "4px 16px" }}
+                  >
                     {rock.subtasks.map((st, si) => (
-                      <div key={st.id} className="flex items-center gap-3 py-2.5 group">
+                      <div
+                        key={st.id}
+                        className="flex items-center gap-3 group"
+                        style={{
+                          padding: "10px 0",
+                          borderTop: si > 0 ? "1px solid #F3F4F6" : "none",
+                        }}
+                      >
                         <Checkbox
                           size="sm"
                           checked={st.done}
@@ -202,12 +228,13 @@ export function RocksView({ data, update, expRock, setExpRock, user }: Props) {
                         d.rocks[ri].subtasks.push({ id: uid(), text: "", due: "", done: false });
                       })
                     }
-                    className="w-full mt-3 border border-dashed border-gray-200 rounded-lg py-2.5 text-xs text-gray-400 font-medium hover:text-gray-600 hover:border-gray-300 transition-colors duration-100 cursor-pointer"
+                    className="w-full border border-dashed border-gray-200 rounded-lg text-xs text-gray-400 font-medium hover:text-gray-600 hover:border-gray-300 transition-colors duration-100 cursor-pointer"
+                    style={{ marginTop: 12, padding: "10px 0" }}
                   >
                     + Add subtask
                   </button>
 
-                  <div className="mt-5 pt-4 border-t border-gray-100 flex justify-end">
+                  <div className="flex justify-end" style={{ marginTop: 20, paddingTop: 16, borderTop: "1px solid #F3F4F6" }}>
                     <Button
                       variant="danger"
                       size="sm"
@@ -236,7 +263,8 @@ export function RocksView({ data, update, expRock, setExpRock, user }: Props) {
           });
           setExpRock(id);
         }}
-        className="w-full mt-4 border-2 border-dashed border-gray-200 rounded-2xl py-4 text-sm text-gray-400 font-semibold hover:text-gray-600 hover:border-gray-300 hover:bg-gray-50/50 transition-all duration-150 cursor-pointer flex items-center justify-center gap-1.5"
+        className="w-full border-2 border-dashed border-gray-200 rounded-2xl text-sm text-gray-400 font-semibold hover:text-gray-600 hover:border-gray-300 hover:bg-gray-50/50 transition-all duration-150 cursor-pointer flex items-center justify-center gap-1.5"
+        style={{ marginTop: 16, padding: "18px 0" }}
       >
         <IconPlus className="w-4 h-4" />
         Add Rock
