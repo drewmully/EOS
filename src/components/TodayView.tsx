@@ -115,7 +115,7 @@ export function TodayView({ data, user, update, setView, setExpRock }: Props) {
           <div className="w-1 h-5 rounded-full bg-gradient-to-b from-indigo-400 to-violet-500" />
           <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Top 3 Priorities</h2>
         </div>
-        <div className="bg-gradient-to-br from-indigo-50/80 via-white to-violet-50/50 rounded-2xl border border-indigo-100/60 shadow-sm px-8 py-6">
+        <div className="bg-gradient-to-br from-indigo-50/80 via-white to-violet-50/50 rounded-2xl border border-indigo-100/60 shadow-sm" style={{ padding: "24px 32px" }}>
           <div className="space-y-0">
             {data.todayPriorities.map((p: Priority, i: number) => (
               <div
@@ -174,7 +174,7 @@ export function TodayView({ data, user, update, setView, setExpRock }: Props) {
             </Button>
           </div>
         </div>
-        <div className="bg-gradient-to-br from-amber-50/60 via-white to-orange-50/40 rounded-2xl border border-amber-100/60 shadow-sm px-8 py-6">
+        <div className="bg-gradient-to-br from-amber-50/60 via-white to-orange-50/40 rounded-2xl border border-amber-100/60 shadow-sm" style={{ padding: "24px 32px" }}>
           {data.todos.length === 0 ? (
             <div className="text-center py-8">
               <p className="text-sm text-gray-400">No to-dos yet.</p>

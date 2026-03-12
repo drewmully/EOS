@@ -59,8 +59,8 @@ export function Sidebar({
       }}
     >
       {/* Person Switcher */}
-      <div className={collapsed ? "px-2 pt-10 pb-6" : "px-5 pt-10 pb-6"}>
-        <div className={`flex ${collapsed ? "flex-col items-center gap-3" : "gap-4 justify-center"}`}>
+      <div style={{ padding: collapsed ? "48px 8px 24px" : "48px 20px 24px" }}>
+        <div className="flex justify-center" style={{ gap: collapsed ? 12 : 20, flexDirection: collapsed ? "column" : "row", alignItems: collapsed ? "center" : undefined }}>
           {users.map((u) => {
             const active = u.id === activeUser;
             return (
@@ -101,7 +101,7 @@ export function Sidebar({
       <div className="mx-3 h-px bg-gray-100" />
 
       {/* Navigation */}
-      <nav className="flex-1 px-4 py-4">
+      <nav style={{ flex: 1, padding: "20px 16px" }}>
         {NAV.map(({ key, label, Icon }) => {
           const active = view === key;
           return (
@@ -109,9 +109,14 @@ export function Sidebar({
               key={key}
               onClick={() => setView(key)}
               title={collapsed ? label : undefined}
+              style={{
+                padding: collapsed ? "14px 12px" : "14px 16px",
+                marginBottom: 8,
+                gap: 14,
+              }}
               className={[
-                "w-full flex items-center gap-3.5 rounded-xl mb-2",
-                collapsed ? "justify-center px-3 py-4" : "px-4 py-4",
+                "w-full flex items-center rounded-xl",
+                collapsed ? "justify-center" : "",
                 "cursor-pointer transition-all duration-150 relative",
                 active
                   ? "bg-gradient-to-r from-gray-100 to-gray-50 text-gray-900 shadow-sm"
