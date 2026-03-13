@@ -136,6 +136,12 @@ export default function AppShell() {
       if (!sh.issuesMully) sh.issuesMully = SEED_SHARED.issuesMully;
       if (!sh.scorecard) sh.scorecard = SEED_SHARED.scorecard;
       if (!sh.links) sh.links = [];
+      // Migrate old weeks[] format to weekData{}
+      for (const biz of ["mfs", "mully"] as const) {
+        for (const row of sh.scorecard[biz]) {
+          if (!row.weekData) row.weekData = {};
+        }
+      }
       setSharedData(sh);
 
       setLoading(false);

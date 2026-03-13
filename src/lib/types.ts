@@ -118,7 +118,7 @@ export interface ScorecardRow {
   measurable: string;
   owner: string;
   goal: string;
-  weeks: [string, string, string, string]; // 4 weeks of data
+  weekData: Record<string, string>; // key = "YYYY-MM-DD" (Friday date), value = entered data
 }
 
 export interface Scorecard {
