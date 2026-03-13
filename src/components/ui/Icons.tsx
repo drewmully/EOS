@@ -87,3 +87,26 @@ export const IconX = IF(
     <path d="M6 6l12 12" />
   </>
 );
+
+export const IconIDS = IF(
+  <>
+    <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" />
+    <rect x="9" y="3" width="6" height="4" rx="1" />
+    <path d="M9 12h6" />
+    <path d="M9 16h6" />
+  </>
+);
+
+export const IconScorecard = IF(
+  <>
+    <path d="M3 3v18h18" />
+    <path d="M7 14l4-4 4 4 4-6" />
+  </>
+);
+
+export const IconLinks = IF(
+  <>
+    <path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71" />
+    <path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71" />
+  </>
+);

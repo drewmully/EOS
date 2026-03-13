@@ -1,7 +1,7 @@
 "use client";
 
 import confetti from "canvas-confetti";
-import { UserData, UserProfile, Priority } from "@/lib/types";
+import { UserData, UserProfile, SharedData, Priority } from "@/lib/types";
 import { uid, daysUntil, pct, urgencyScore, urgencyLabel, getRecommendations } from "@/lib/utils";
 import { Badge } from "./ui/Badge";
 import { ProgressBar } from "./ui/ProgressBar";
@@ -34,13 +34,15 @@ interface Props {
   update: (fn: (d: UserData) => void) => void;
   setView: (v: View) => void;
   setExpRock: (id: string) => void;
+  shared?: SharedData | null;
 }
 
-export function TodayView({ data, user, update, setView, setExpRock }: Props) {
+export function TodayView({ data, user, update, setView, setExpRock, shared }: Props) {
   const hr = new Date().getHours();
   const greeting = hr < 12 ? "morning" : hr < 17 ? "afternoon" : "evening";
   const sorted = [...data.rocks].sort((a, b) => urgencyScore(b) - urgencyScore(a));
-  const recommendations = getRecommendations(data);
+  const allIssues = shared ? [...shared.issuesMFS, ...shared.issuesMully] : [];
+  const recommendations = getRecommendations(data, user.name, allIssues);
 
   return (
     <div className="animate-fadeIn">

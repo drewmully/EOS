@@ -101,3 +101,41 @@ export const USERS: UserProfile[] = [
   { id: "jack", name: "Jack", initials: "JK", color: "#6366F1" },
   { id: "joe", name: "Joe", initials: "JO", color: "#F59E0B" },
 ];
+
+/* ── Shared data (not per-user) ── */
+
+export interface Issue {
+  id: string;
+  title: string;
+  priority: number; // 0 = highest, 3 = lowest
+  owner: string;    // user name or empty
+  todo: string;     // agreed resolution / to-do
+  starred: boolean; // top-3 for IDS today
+}
+
+export interface ScorecardRow {
+  id: string;
+  measurable: string;
+  owner: string;
+  goal: string;
+  weeks: [string, string, string, string]; // 4 weeks of data
+}
+
+export interface Scorecard {
+  mfs: ScorecardRow[];
+  mully: ScorecardRow[];
+}
+
+export interface LinkItem {
+  id: string;
+  label: string;
+  url: string;
+  category: string; // e.g. "SOP", "Artifact", etc.
+}
+
+export interface SharedData {
+  issuesMFS: Issue[];
+  issuesMully: Issue[];
+  scorecard: Scorecard;
+  links: LinkItem[];
+}

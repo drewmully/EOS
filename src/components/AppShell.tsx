@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { UserData, USERS } from "@/lib/types";
-import { SEED_DATA } from "@/lib/seed";
+import { UserData, SharedData, USERS } from "@/lib/types";
+import { SEED_DATA, SEED_SHARED } from "@/lib/seed";
 import { loadUserData, saveUserData, getSupabase } from "@/lib/supabase";
 import { Sidebar, MobileHeader, MobileBottomNav, View } from "./Sidebar";
 import { TodayView } from "./TodayView";
@@ -11,6 +11,9 @@ import { InboxView } from "./InboxView";
 import { SeatsView } from "./SeatsView";
 import { GrowthView } from "./GrowthView";
 import { VTOView } from "./VTOView";
+import { IDSView } from "./IDSView";
+import { ScorecardView } from "./ScorecardView";
+import { LinksView } from "./LinksView";
 import { IconX } from "./ui/Icons";
 
 export default function AppShell() {
@@ -20,9 +23,11 @@ export default function AppShell() {
   const [expRock, setExpRock] = useState<string | null>(null);
   const [mobileNav, setMobileNav] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
+  const [sharedData, setSharedData] = useState<SharedData | null>(null);
   const [loading, setLoading] = useState(true);
   const [syncStatus, setSyncStatus] = useState<string>("idle");
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const sharedSaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const data = allData[activeUser] || null;
   const user = USERS.find((u) => u.id === activeUser)!;
@@ -106,6 +111,33 @@ export default function AppShell() {
         if (!d.rocks) d.rocks = [];
       }
       setAllData(loaded);
+
+      // Load shared data
+      let sh: SharedData | null = null;
+      try {
+        const raw = localStorage.getItem("eos-focus-shared");
+        sh = raw ? JSON.parse(raw) : null;
+      } catch { /* */ }
+      const sb2 = getSupabase();
+      if (sb2) {
+        try {
+          const cloud = await loadUserData("__shared__");
+          if (cloud) {
+            sh = cloud as SharedData;
+            try { localStorage.setItem("eos-focus-shared", JSON.stringify(sh)); } catch { /* */ }
+          } else if (sh) {
+            await saveUserData("__shared__", sh);
+          }
+        } catch { /* use local */ }
+      }
+      if (!sh) sh = SEED_SHARED;
+      // Ensure all fields exist (migration safety)
+      if (!sh.issuesMFS) sh.issuesMFS = SEED_SHARED.issuesMFS;
+      if (!sh.issuesMully) sh.issuesMully = SEED_SHARED.issuesMully;
+      if (!sh.scorecard) sh.scorecard = SEED_SHARED.scorecard;
+      if (!sh.links) sh.links = [];
+      setSharedData(sh);
+
       setLoading(false);
     }
     init();
@@ -155,6 +187,27 @@ export default function AppShell() {
     [activeUser, cloudSave]
   );
 
+  const updateShared = useCallback(
+    (fn: (d: SharedData) => void) => {
+      setSharedData((prev) => {
+        if (!prev) return prev;
+        const next = JSON.parse(JSON.stringify(prev)) as SharedData;
+        fn(next);
+        // Persist
+        try { localStorage.setItem("eos-focus-shared", JSON.stringify(next)); } catch { /* */ }
+        if (sharedSaveTimer.current) clearTimeout(sharedSaveTimer.current);
+        sharedSaveTimer.current = setTimeout(async () => {
+          const sb = getSupabase();
+          if (sb) {
+            try { await saveUserData("__shared__", next); } catch { /* */ }
+          }
+        }, 600);
+        return next;
+      });
+    },
+    []
+  );
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen bg-white">
@@ -199,7 +252,7 @@ export default function AppShell() {
                 <IconX className="w-4 h-4" />
               </button>
             </div>
-            {(["today", "rocks", "inbox", "seats", "growth", "vto"] as View[]).map((k) => (
+            {(["today", "rocks", "inbox", "seats", "growth", "vto", "ids", "scorecard", "links"] as View[]).map((k) => (
               <button
                 key={k}
                 onClick={() => { setView(k); setMobileNav(false); }}
@@ -210,7 +263,7 @@ export default function AppShell() {
                     : "text-gray-500 hover:text-gray-700 hover:bg-gray-50",
                 ].join(" ")}
               >
-                {k === "vto" ? "V/TO" : k.charAt(0).toUpperCase() + k.slice(1)}
+                {k === "vto" ? "V/TO" : k === "ids" ? "IDS" : k.charAt(0).toUpperCase() + k.slice(1)}
               </button>
             ))}
           </div>
@@ -225,7 +278,7 @@ export default function AppShell() {
       <main className="flex-1 min-w-0 overflow-auto pt-12 pb-16 md:pt-0 md:pb-0">
         <div className="content-wrapper" style={{ maxWidth: 1100, margin: "0 auto", padding: "32px 20px" }}>
           {view === "today" && (
-            <TodayView data={data} user={user} update={update} setView={setView} setExpRock={setExpRock} />
+            <TodayView data={data} user={user} update={update} setView={setView} setExpRock={setExpRock} shared={sharedData} />
           )}
           {view === "rocks" && (
             <RocksView data={data} update={update} expRock={expRock} setExpRock={setExpRock} user={user} />
@@ -234,6 +287,15 @@ export default function AppShell() {
           {view === "seats" && <SeatsView data={data} update={update} />}
           {view === "growth" && <GrowthView data={data} update={update} user={user} />}
           {view === "vto" && <VTOView />}
+          {view === "ids" && sharedData && (
+            <IDSView shared={sharedData} updateShared={updateShared} />
+          )}
+          {view === "scorecard" && sharedData && (
+            <ScorecardView shared={sharedData} updateShared={updateShared} />
+          )}
+          {view === "links" && sharedData && (
+            <LinksView shared={sharedData} updateShared={updateShared} />
+          )}
         </div>
       </main>
     </div>

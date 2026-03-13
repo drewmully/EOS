@@ -1,4 +1,4 @@
-import { UserData } from "./types";
+import { UserData, SharedData } from "./types";
 
 function uid() {
   return "id_" + Math.random().toString(36).slice(2, 9) + Date.now().toString(36);
@@ -249,4 +249,60 @@ export const SEED_DATA: Record<string, UserData> = {
   drew: DREW_DATA,
   jack: JACK_DATA,
   joe: JOE_DATA,
+};
+
+export const SEED_SHARED: SharedData = {
+  issuesMFS: [
+    { id: uid(), title: "Shiphero (WMS) Integration", priority: 0, owner: "Jack", todo: "Integrate it and go live with first client (3/20)", starred: true },
+    { id: uid(), title: "Error Rate", priority: 1, owner: "", todo: "", starred: true },
+    { id: uid(), title: "Fulfillment Time", priority: 1, owner: "", todo: "", starred: true },
+    { id: uid(), title: "Label Printing", priority: 1, owner: "", todo: "", starred: false },
+    { id: uid(), title: "Safety", priority: 2, owner: "", todo: "", starred: false },
+    { id: uid(), title: "Organization", priority: 0, owner: "Drew", todo: "Clean up / throw out waste (3/20)", starred: false },
+    { id: uid(), title: "Time Management", priority: 1, owner: "", todo: "", starred: false },
+    { id: uid(), title: "Sales Process kinda unproven", priority: 1, owner: "", todo: "", starred: false },
+    { id: uid(), title: "Cash Flow", priority: 0, owner: "Joe", todo: "Model + Accounting System in place (3/20)", starred: false },
+    { id: uid(), title: "Lack of Standardization", priority: 0, owner: "", todo: "", starred: false },
+    { id: uid(), title: "Smart Layout", priority: 1, owner: "", todo: "", starred: false },
+    { id: uid(), title: "Account Management", priority: 1, owner: "", todo: "", starred: false },
+  ],
+  issuesMully: [
+    { id: uid(), title: "Finances / Capital", priority: 0, owner: "Drew", todo: "Restructure operating model/expenses and debt stack (3/20)", starred: true },
+    { id: uid(), title: "Quality", priority: 1, owner: "", todo: "", starred: true },
+    { id: uid(), title: "Inventory Management", priority: 0, owner: "Jack", todo: "A baseline system for inventory tracking (kinda manual 3/20)", starred: true },
+    { id: uid(), title: "Customer Service", priority: 1, owner: "", todo: "", starred: false },
+    { id: uid(), title: "Repeatable Marketing Strategy", priority: 1, owner: "", todo: "", starred: false },
+    { id: uid(), title: "Brand Equity", priority: 2, owner: "", todo: "", starred: false },
+    { id: uid(), title: "GTM Strategy", priority: 1, owner: "", todo: "", starred: false },
+    { id: uid(), title: "Retention", priority: 1, owner: "", todo: "", starred: false },
+    { id: uid(), title: "Upselling / diverse revenue", priority: 1, owner: "", todo: "", starred: false },
+    { id: uid(), title: "Buggy Customer Flow", priority: 0, owner: "Drew", todo: "Harmonize SKUS then update return portal", starred: false },
+  ],
+  scorecard: {
+    mfs: [
+      { id: uid(), measurable: "Fulfillment Orders", owner: "", goal: "", weeks: ["", "", "", ""] },
+      { id: uid(), measurable: "Special Project Hours", owner: "", goal: "", weeks: ["", "", "", ""] },
+      { id: uid(), measurable: "Net Total Sales", owner: "", goal: "", weeks: ["", "", "", ""] },
+      { id: uid(), measurable: "Fulfillment Labor Cost", owner: "", goal: "", weeks: ["", "", "", ""] },
+      { id: uid(), measurable: "Cash Change", owner: "", goal: "", weeks: ["", "", "", ""] },
+      { id: uid(), measurable: "New Accounts Landed", owner: "", goal: "", weeks: ["", "", "", ""] },
+      { id: uid(), measurable: "5S Score for the Week", owner: "", goal: "", weeks: ["", "", "", ""] },
+    ],
+    mully: [
+      { id: uid(), measurable: "Active Subscribers (new)", owner: "", goal: "", weeks: ["", "", "", ""] },
+      { id: uid(), measurable: "Active Subscribers (legacy)", owner: "", goal: "", weeks: ["", "", "", ""] },
+      { id: uid(), measurable: "Net Cash change (Cash Change - Debt Increase/+Debt Decrease)", owner: "", goal: "", weeks: ["", "", "", ""] },
+      { id: uid(), measurable: "Marketing Spend", owner: "", goal: "", weeks: ["", "", "", ""] },
+      { id: uid(), measurable: "Order to Ship Time", owner: "", goal: "", weeks: ["", "", "", ""] },
+      { id: uid(), measurable: "New Subscribers Gained (% of total active)", owner: "", goal: "", weeks: ["", "", "", ""] },
+      { id: uid(), measurable: "Subscribers Lost (% of total active)", owner: "", goal: "", weeks: ["", "", "", ""] },
+      { id: uid(), measurable: "Customer Service Volume", owner: "", goal: "", weeks: ["", "", "", ""] },
+      { id: uid(), measurable: "Average Junip Rating for Week", owner: "", goal: "", weeks: ["", "", "", ""] },
+      { id: uid(), measurable: "Legacy Subscribers Converted (% of Total)", owner: "", goal: "", weeks: ["", "", "", ""] },
+      { id: uid(), measurable: "Visitors on Site", owner: "", goal: "", weeks: ["", "", "", ""] },
+      { id: uid(), measurable: "Site convert to account", owner: "", goal: "", weeks: ["", "", "", ""] },
+      { id: uid(), measurable: "Account to purchase", owner: "", goal: "", weeks: ["", "", "", ""] },
+    ],
+  },
+  links: [],
 };

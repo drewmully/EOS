@@ -8,17 +8,23 @@ import {
   IconSeats,
   IconGrowth,
   IconVTO,
+  IconIDS,
+  IconScorecard,
+  IconLinks,
 } from "./ui/Icons";
 
-export type View = "today" | "rocks" | "inbox" | "seats" | "growth" | "vto";
+export type View = "today" | "rocks" | "inbox" | "seats" | "growth" | "vto" | "ids" | "scorecard" | "links";
 
-const NAV: { key: View; label: string; Icon: React.FC<{ className?: string }> }[] = [
+const NAV: { key: View; label: string; Icon: React.FC<{ className?: string }>; divider?: boolean }[] = [
   { key: "today", label: "Today", Icon: IconToday },
   { key: "rocks", label: "Rocks", Icon: IconRocks },
   { key: "inbox", label: "Inbox", Icon: IconInbox },
   { key: "seats", label: "Seats", Icon: IconSeats },
   { key: "growth", label: "Growth", Icon: IconGrowth },
   { key: "vto", label: "V/TO", Icon: IconVTO },
+  { key: "ids", label: "IDS", Icon: IconIDS, divider: true },
+  { key: "scorecard", label: "Scorecard", Icon: IconScorecard },
+  { key: "links", label: "Links", Icon: IconLinks },
 ];
 
 interface SidebarProps {
@@ -101,12 +107,13 @@ export function Sidebar({
       <div className="mx-3 h-px bg-gray-100" />
 
       {/* Navigation */}
-      <nav style={{ flex: 1, padding: "20px 16px" }}>
-        {NAV.map(({ key, label, Icon }) => {
+      <nav style={{ flex: 1, padding: "20px 16px", overflowY: "auto" }}>
+        {NAV.map(({ key, label, Icon, divider }) => {
           const active = view === key;
           return (
+            <div key={key}>
+            {divider && <div className="mx-1 my-2 h-px bg-gray-100" />}
             <button
-              key={key}
               onClick={() => setView(key)}
               title={collapsed ? label : undefined}
               style={{
@@ -145,6 +152,7 @@ export function Sidebar({
                 </span>
               )}
             </button>
+            </div>
           );
         })}
       </nav>
@@ -243,9 +251,10 @@ export function MobileHeader({
 
 /* ── Mobile Bottom Nav ── */
 export function MobileBottomNav({ view, setView, inboxCount }: { view: View; setView: (v: View) => void; inboxCount: number }) {
+  const mobileNav = NAV.slice(0, 6); // Core 6 views only; shared views via hamburger menu
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 h-14 bg-white border-t border-gray-200 flex items-center justify-around z-50 px-1 pb-safe">
-      {NAV.map(({ key, label, Icon }) => {
+      {mobileNav.map(({ key, label, Icon }) => {
         const active = view === key;
         return (
           <button

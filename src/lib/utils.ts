@@ -1,4 +1,4 @@
-import { Rock } from "./types";
+import { Rock, Issue } from "./types";
 
 export function uid(): string {
   return "id_" + Math.random().toString(36).slice(2, 9) + Date.now().toString(36);
@@ -80,9 +80,10 @@ export interface Recommendation {
 }
 
 /**
- * Analyze rocks, subtasks, and deadlines to generate smart daily priority recommendations.
+ * Analyze rocks, subtasks, deadlines, and IDS issues to generate smart daily priority recommendations.
+ * Capped at 4 recommendations to avoid overwhelm.
  */
-export function getRecommendations(data: { rocks: Rock[]; todos: { text: string; due: string; done: boolean }[] }): Recommendation[] {
+export function getRecommendations(data: { rocks: Rock[]; todos: { text: string; due: string; done: boolean }[] }, userName?: string, issues?: Issue[]): Recommendation[] {
   const recs: Recommendation[] = [];
 
   for (const rock of data.rocks) {
@@ -188,6 +189,25 @@ export function getRecommendations(data: { rocks: Rock[]; todos: { text: string;
     }
   }
 
+  // IDS issues assigned to this user with a to-do
+  if (userName && issues) {
+    const myIssues = issues.filter(
+      (iss) => iss.owner.toLowerCase() === userName.toLowerCase() && iss.todo
+    );
+    // Starred P0 issues first
+    const sorted = [...myIssues].sort((a, b) => {
+      if (a.starred !== b.starred) return a.starred ? -1 : 1;
+      return a.priority - b.priority;
+    });
+    for (const iss of sorted.slice(0, 2)) {
+      recs.push({
+        text: `IDS: "${iss.title}" — ${iss.todo}`,
+        reason: `P${iss.priority} issue${iss.starred ? " (starred)" : ""}`,
+        urgency: iss.priority === 0 ? "high" : "medium",
+      });
+    }
+  }
+
   // Sort: high first, then medium
   const urgOrder = { high: 0, medium: 1, low: 2 };
   recs.sort((a, b) => urgOrder[a.urgency] - urgOrder[b.urgency]);
@@ -202,5 +222,5 @@ export function getRecommendations(data: { rocks: Rock[]; todos: { text: string;
     }
   }
 
-  return deduped.slice(0, 5);
+  return deduped.slice(0, 4);
 }
