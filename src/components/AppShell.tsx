@@ -26,8 +26,10 @@ export default function AppShell() {
   const [sharedData, setSharedData] = useState<SharedData | null>(null);
   const [loading, setLoading] = useState(true);
   const [syncStatus, setSyncStatus] = useState<string>("idle");
-  const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const saveTimers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
+  const pendingSaves = useRef<Record<string, () => Promise<void>>>({});
   const sharedSaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pendingSharedSave = useRef<(() => Promise<void>) | null>(null);
 
   const data = allData[activeUser] || null;
   const user = USERS.find((u) => u.id === activeUser)!;
@@ -149,6 +151,21 @@ export default function AppShell() {
     init();
   }, []);
 
+  // Flush any pending cloud saves before the page unloads
+  useEffect(() => {
+    const flush = () => {
+      for (const key of Object.keys(saveTimers.current)) {
+        clearTimeout(saveTimers.current[key]);
+      }
+      if (sharedSaveTimer.current) clearTimeout(sharedSaveTimer.current);
+      // Fire all pending saves synchronously via sendBeacon fallback
+      for (const fn of Object.values(pendingSaves.current)) fn();
+      if (pendingSharedSave.current) pendingSharedSave.current();
+    };
+    window.addEventListener("beforeunload", flush);
+    return () => window.removeEventListener("beforeunload", flush);
+  }, []);
+
   useEffect(() => {
     if (!data) return;
     const today = new Date().toISOString().slice(0, 10);
@@ -166,8 +183,9 @@ export default function AppShell() {
     // Always persist to localStorage immediately for reliability
     try { localStorage.setItem(`eos-focus-${userId}`, JSON.stringify(userData)); } catch { /* */ }
 
-    if (saveTimer.current) clearTimeout(saveTimer.current);
-    saveTimer.current = setTimeout(async () => {
+    // Per-user debounce timer — editing one user never cancels another user's save
+    if (saveTimers.current[userId]) clearTimeout(saveTimers.current[userId]);
+    const doSave = async () => {
       const sb = getSupabase();
       if (sb) {
         try {
@@ -178,7 +196,10 @@ export default function AppShell() {
           setSyncStatus("error");
         }
       }
-    }, 600);
+      delete pendingSaves.current[userId];
+    };
+    pendingSaves.current[userId] = doSave;
+    saveTimers.current[userId] = setTimeout(doSave, 600);
   }, []);
 
   const update = useCallback(
@@ -202,12 +223,15 @@ export default function AppShell() {
         // Persist
         try { localStorage.setItem("eos-focus-shared", JSON.stringify(next)); } catch { /* */ }
         if (sharedSaveTimer.current) clearTimeout(sharedSaveTimer.current);
-        sharedSaveTimer.current = setTimeout(async () => {
+        const doSave = async () => {
           const sb = getSupabase();
           if (sb) {
             try { await saveUserData("__shared__", next); } catch { /* */ }
           }
-        }, 600);
+          pendingSharedSave.current = null;
+        };
+        pendingSharedSave.current = doSave;
+        sharedSaveTimer.current = setTimeout(doSave, 600);
         return next;
       });
     },
