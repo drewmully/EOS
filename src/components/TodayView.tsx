@@ -47,7 +47,7 @@ export function TodayView({ data, user, update, setView, setExpRock, shared }: P
   return (
     <div className="animate-fadeIn">
       {/* Header row — greeting + recommendations inline */}
-      <div style={{ marginBottom: 20 }}>
+      <div style={{ marginBottom: 24 }}>
         <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
           Good {greeting},{" "}
           <span style={{ color: user.color }}>{user.name}</span>
@@ -97,7 +97,7 @@ export function TodayView({ data, user, update, setView, setExpRock, shared }: P
       )}
 
       {/* Rocks — compact horizontal cards */}
-      <div style={{ marginBottom: 20 }}>
+      <div style={{ marginBottom: 28 }}>
         <div className="flex items-center gap-2" style={{ marginBottom: 10 }}>
           <div className="w-1 h-3.5 rounded-full bg-gradient-to-b from-emerald-400 to-teal-500" />
           <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Rocks</span>
@@ -142,7 +142,7 @@ export function TodayView({ data, user, update, setView, setExpRock, shared }: P
       </div>
 
       {/* Bottom row: Priorities + Todos side by side */}
-      <div className="grid grid-cols-1 lg:grid-cols-2" style={{ gap: 16 }}>
+      <div className="grid grid-cols-1 lg:grid-cols-2" style={{ gap: 24 }}>
         {/* Top 3 Priorities */}
         <div>
           <div className="flex items-center gap-2" style={{ marginBottom: 10 }}>

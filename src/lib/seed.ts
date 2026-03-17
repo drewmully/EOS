@@ -309,44 +309,67 @@ export const SEED_SHARED: SharedData = {
     stages: [
       {
         id: uid(), name: "Rollout", subtitle: "Active Subscribers",
-        status: "active",
+        status: "planning",
         segment: "Current active subscribers (~2,400)",
         channels: [
-          { id: uid(), name: "Email", icon: "\u2709\uFE0F", color: "#3B82F6", content: [] },
-          { id: uid(), name: "SMS", icon: "\uD83D\uDCF1", color: "#10B981", content: [] },
-          { id: uid(), name: "In-App", icon: "\uD83D\uDD14", color: "#8B5CF6", content: [] },
+          { id: uid(), name: "Email", icon: "\u2709\uFE0F", color: "#3B82F6", content: [], campaigns: [
+            { id: uid(), name: "Re-launch Announcement", content: [] },
+            { id: uid(), name: "Monthly Newsletter", content: [] },
+          ] },
+          { id: uid(), name: "SMS", icon: "\uD83D\uDCF1", color: "#10B981", content: [], campaigns: [
+            { id: uid(), name: "Welcome Text Series", content: [] },
+          ] },
+          { id: uid(), name: "On-Site", icon: "\uD83C\uDF10", color: "#8B5CF6", content: [], campaigns: [
+            { id: uid(), name: "Banner Promo", content: [] },
+          ] },
         ],
         tasks: [], feedback: "",
       },
       {
         id: uid(), name: "Level 2", subtitle: "Cancelled / One-Time Purchasers",
-        status: "locked",
+        status: "planning",
         segment: "Cancelled subscribers, one-time purchasers",
         channels: [
-          { id: uid(), name: "Email", icon: "\u2709\uFE0F", color: "#3B82F6", content: [] },
-          { id: uid(), name: "Direct Mail", icon: "\uD83D\uDCEC", color: "#F59E0B", content: [] },
+          { id: uid(), name: "Email", icon: "\u2709\uFE0F", color: "#3B82F6", content: [], campaigns: [
+            { id: uid(), name: "Win-Back Sequence", content: [] },
+          ] },
+          { id: uid(), name: "Direct Mail", icon: "\uD83D\uDCEC", color: "#F59E0B", content: [], campaigns: [
+            { id: uid(), name: "Postcard Drop", content: [] },
+          ] },
         ],
         tasks: [], feedback: "",
       },
       {
         id: uid(), name: "Level 3", subtitle: "Email List",
-        status: "locked",
+        status: "planning",
         segment: "Broader email list (non-purchasers)",
         channels: [
-          { id: uid(), name: "Email", icon: "\u2709\uFE0F", color: "#3B82F6", content: [] },
-          { id: uid(), name: "Instagram", icon: "\uD83D\uDCF7", color: "#E1306C", content: [] },
-          { id: uid(), name: "Facebook", icon: "\uD83D\uDC4D", color: "#1877F2", content: [] },
+          { id: uid(), name: "Email", icon: "\u2709\uFE0F", color: "#3B82F6", content: [], campaigns: [
+            { id: uid(), name: "Nurture Sequence", content: [] },
+          ] },
+          { id: uid(), name: "Instagram", icon: "\uD83D\uDCF8", color: "#E1306C", content: [], campaigns: [
+            { id: uid(), name: "Organic Content Plan", content: [] },
+          ] },
+          { id: uid(), name: "Facebook", icon: "\uD83D\uDC4D", color: "#1877F2", content: [], campaigns: [
+            { id: uid(), name: "Community Engagement", content: [] },
+          ] },
         ],
         tasks: [], feedback: "",
       },
       {
         id: uid(), name: "Level 4", subtitle: "Broader Audience",
-        status: "locked",
+        status: "planning",
         segment: "Cold audiences, lookalikes, paid",
         channels: [
-          { id: uid(), name: "Meta Ads", icon: "\uD83C\uDFAF", color: "#1877F2", content: [] },
-          { id: uid(), name: "Google Ads", icon: "\uD83D\uDD0D", color: "#EA4335", content: [] },
-          { id: uid(), name: "Influencer", icon: "\u2B50", color: "#F59E0B", content: [] },
+          { id: uid(), name: "Meta Ads", icon: "\uD83C\uDFAF", color: "#1877F2", content: [], campaigns: [
+            { id: uid(), name: "Lookalike Campaign", content: [] },
+          ] },
+          { id: uid(), name: "Google Ads", icon: "\uD83D\uDD0D", color: "#EA4335", content: [], campaigns: [
+            { id: uid(), name: "Search Campaign", content: [] },
+          ] },
+          { id: uid(), name: "Influencer", icon: "\u2B50", color: "#F59E0B", content: [], campaigns: [
+            { id: uid(), name: "Influencer Outreach", content: [] },
+          ] },
         ],
         tasks: [], feedback: "",
       },

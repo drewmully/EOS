@@ -7,6 +7,7 @@ import {
   MarketingChannel,
   ContentItem,
   MarketingTask,
+  Campaign,
   Learning,
   StageStatus,
   ContentStatus,
@@ -43,6 +44,16 @@ const STAGE_STATUS_CFG: Record<StageStatus, { label: string; color: string; bg: 
 };
 
 const CONTENT_STATUSES: ContentStatus[] = ["idea", "draft", "review", "scheduled", "live"];
+
+const CHANNEL_ICONS: Record<string, string> = {
+  "Email": "\u2709\uFE0F", "SMS": "\uD83D\uDCF1", "In-App": "\uD83D\uDD14", "On-Site": "\uD83C\uDF10",
+  "Direct Mail": "\uD83D\uDCEC", "Instagram": "\uD83D\uDCF8", "Facebook": "\uD83D\uDC4D",
+  "Meta Ads": "\uD83C\uDFAF", "Google Ads": "\uD83D\uDD0D", "Influencer": "\u2B50", "Social": "\uD83D\uDCE3",
+};
+
+function getChannelIcon(ch: MarketingChannel): string {
+  return ch.icon || CHANNEL_ICONS[ch.name] || "\uD83D\uDCE2";
+}
 
 type SubView = "pipeline" | "calendar" | "learnings";
 
@@ -150,12 +161,12 @@ function ContentCard({
       </div>
 
       {/* Tags row */}
-      {!expanded && (item.type || item.tags.length > 0) && (
+      {!expanded && (item.type || (item.tags && item.tags.length > 0)) && (
         <div className="flex items-center gap-1 flex-wrap" style={{ padding: "0 12px 8px" }}>
           {item.type && (
             <span className="text-[9px] font-medium bg-gray-100 text-gray-500 rounded px-1.5 py-0.5">{item.type}</span>
           )}
-          {item.tags.map((t, i) => (
+          {(item.tags || []).map((t, i) => (
             <span key={i} className="text-[9px] font-medium bg-gray-50 text-gray-400 rounded px-1.5 py-0.5">{t}</span>
           ))}
         </div>
@@ -208,7 +219,7 @@ function ContentCard({
 
           <label className="text-[10px] text-gray-400 font-medium">Tags</label>
           <input
-            value={item.tags.join(", ")}
+            value={(item.tags || []).join(", ")}
             onChange={(e) => onUpdate({ tags: e.target.value.split(",").map((t) => t.trim()).filter(Boolean) })}
             className="w-full text-[12px] text-gray-700 bg-gray-50 rounded-md border border-gray-200 focus:outline-none px-2.5 py-1.5 mb-2"
             placeholder="promo, urgency, educational..."
@@ -233,18 +244,22 @@ function ContentCard({
 }
 
 /* ══════════════════════════════════════════════════
-   KANBAN BOARD — content pipeline per channel
+   KANBAN BOARD — content pipeline per campaign
    ══════════════════════════════════════════════════ */
 
-function ChannelKanban({
-  channel,
+function CampaignKanban({
+  campaign,
+  channelColor,
   stageIdx,
   channelIdx,
+  campaignIdx,
   updateShared,
 }: {
-  channel: MarketingChannel;
+  campaign: Campaign;
+  channelColor: string;
   stageIdx: number;
   channelIdx: number;
+  campaignIdx: number;
   updateShared: (fn: (d: SharedData) => void) => void;
 }) {
   const [expandedCard, setExpandedCard] = useState<string | null>(null);
@@ -253,22 +268,22 @@ function ChannelKanban({
 
   function updateContent(contentIdx: number, patch: Partial<ContentItem>) {
     updateShared((d) => {
-      const item = d.marketing.stages[stageIdx].channels[channelIdx].content[contentIdx];
+      const item = d.marketing.stages[stageIdx].channels[channelIdx].campaigns[campaignIdx].content[contentIdx];
       Object.assign(item, patch);
     });
   }
 
   function deleteContent(contentIdx: number) {
     updateShared((d) => {
-      d.marketing.stages[stageIdx].channels[channelIdx].content.splice(contentIdx, 1);
+      d.marketing.stages[stageIdx].channels[channelIdx].campaigns[campaignIdx].content.splice(contentIdx, 1);
     });
     setExpandedCard(null);
   }
 
   function addContent(status: ContentStatus) {
-    const maxOrder = channel.content.reduce((m, c) => Math.max(m, c.order || 0), 0);
+    const maxOrder = campaign.content.reduce((m, c) => Math.max(m, c.order || 0), 0);
     updateShared((d) => {
-      d.marketing.stages[stageIdx].channels[channelIdx].content.push({ ...newContent(maxOrder + 1), status });
+      d.marketing.stages[stageIdx].channels[channelIdx].campaigns[campaignIdx].content.push({ ...newContent(maxOrder + 1), status });
     });
   }
 
@@ -276,7 +291,7 @@ function ChannelKanban({
     if (!dragItem.current) return;
     const { id } = dragItem.current;
     updateShared((d) => {
-      const item = d.marketing.stages[stageIdx].channels[channelIdx].content.find((c) => c.id === id);
+      const item = d.marketing.stages[stageIdx].channels[channelIdx].campaigns[campaignIdx].content.find((c) => c.id === id);
       if (item) item.status = targetStatus;
     });
     dragItem.current = null;
@@ -284,13 +299,13 @@ function ChannelKanban({
   }
 
   const contentByStatus = (status: ContentStatus) =>
-    channel.content
+    campaign.content
       .map((c, i) => ({ ...c, _idx: i }))
       .filter((c) => c.status === status)
       .sort((a, b) => (a.order || 0) - (b.order || 0));
 
   return (
-    <div className="flex gap-2 overflow-x-auto pb-2" style={{ minHeight: 120 }}>
+    <div className="flex gap-2 overflow-x-auto pb-2" style={{ minHeight: 100 }}>
       {CONTENT_STATUSES.map((status) => {
         const items = contentByStatus(status);
         const cfg = STATUS_CFG[status];
@@ -299,26 +314,26 @@ function ChannelKanban({
         return (
           <div
             key={status}
-            className="flex-1 min-w-[150px] rounded-lg transition-colors duration-150"
-            style={{ background: isOver ? cfg.bg : "#FAFBFC", padding: 8 }}
+            className="flex-1 min-w-[140px] rounded-lg transition-colors duration-150"
+            style={{ background: isOver ? cfg.bg : "#FAFBFC", padding: 6 }}
             onDragOver={(e) => { e.preventDefault(); setDragOverStatus(status); }}
             onDragLeave={() => setDragOverStatus(null)}
             onDrop={(e) => { e.preventDefault(); handleDrop(status); }}
           >
             {/* Column header */}
-            <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center justify-between mb-1.5">
               <div className="flex items-center gap-1.5">
-                <div className="w-2 h-2 rounded-full" style={{ background: cfg.dot }} />
-                <span className="text-[11px] font-semibold" style={{ color: cfg.color }}>{cfg.label}</span>
+                <div className="w-1.5 h-1.5 rounded-full" style={{ background: cfg.dot }} />
+                <span className="text-[10px] font-semibold" style={{ color: cfg.color }}>{cfg.label}</span>
                 {items.length > 0 && (
-                  <span className="text-[10px] text-gray-400 font-medium">{items.length}</span>
+                  <span className="text-[9px] text-gray-400 font-medium">{items.length}</span>
                 )}
               </div>
               <button
                 onClick={() => addContent(status)}
-                className="w-5 h-5 rounded flex items-center justify-center text-gray-300 hover:text-gray-500 hover:bg-white cursor-pointer transition-colors"
+                className="w-4 h-4 rounded flex items-center justify-center text-gray-300 hover:text-gray-500 hover:bg-white cursor-pointer transition-colors"
               >
-                <IconPlus className="w-3 h-3" />
+                <IconPlus className="w-2.5 h-2.5" />
               </button>
             </div>
 
@@ -328,7 +343,7 @@ function ChannelKanban({
                 <ContentCard
                   key={item.id}
                   item={item}
-                  channelColor={channel.color}
+                  channelColor={channelColor}
                   onUpdate={(patch) => updateContent(item._idx, patch)}
                   onDelete={() => deleteContent(item._idx)}
                   onDragStart={() => { dragItem.current = { id: item.id, fromStatus: item.status }; }}
@@ -340,13 +355,103 @@ function ChannelKanban({
             </div>
 
             {items.length === 0 && !isOver && (
-              <div className="text-center py-4">
-                <p className="text-[10px] text-gray-300">Drop here</p>
+              <div className="text-center py-3">
+                <p className="text-[9px] text-gray-300">Drop here</p>
               </div>
             )}
           </div>
         );
       })}
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════
+   CAMPAIGN SECTION — collapsible campaign within a channel
+   ══════════════════════════════════════════════════ */
+
+function CampaignSection({
+  campaign,
+  channelColor,
+  stageIdx,
+  channelIdx,
+  campaignIdx,
+  updateShared,
+}: {
+  campaign: Campaign;
+  channelColor: string;
+  stageIdx: number;
+  channelIdx: number;
+  campaignIdx: number;
+  updateShared: (fn: (d: SharedData) => void) => void;
+}) {
+  const [expanded, setExpanded] = useState(false);
+  const totalItems = campaign.content.length;
+  const liveItems = campaign.content.filter((c) => c.status === "live" || c.status === "scheduled").length;
+
+  return (
+    <div
+      className="rounded-lg border overflow-hidden transition-all"
+      style={{ borderColor: expanded ? channelColor + "30" : "#F3F4F6", background: expanded ? "#FEFEFE" : "#FAFBFC" }}
+    >
+      <div
+        className="flex items-center gap-2.5 cursor-pointer select-none"
+        style={{ padding: "8px 12px" }}
+        onClick={() => setExpanded(!expanded)}
+      >
+        <div className="w-1.5 h-5 rounded-full" style={{ background: channelColor + "60" }} />
+        {expanded ? (
+          <input
+            value={campaign.name}
+            onChange={(e) => updateShared((d) => { d.marketing.stages[stageIdx].channels[channelIdx].campaigns[campaignIdx].name = e.target.value; })}
+            onClick={(e) => e.stopPropagation()}
+            className="text-[13px] font-semibold text-gray-800 bg-transparent focus:outline-none border-b border-transparent focus:border-gray-300 flex-1"
+            placeholder="Campaign name..."
+          />
+        ) : (
+          <span className="text-[13px] font-semibold text-gray-800 flex-1">{campaign.name || "Untitled Campaign"}</span>
+        )}
+        <div className="flex items-center gap-2 ml-auto">
+          <span className="text-[10px] text-gray-400">{totalItems} items</span>
+          {liveItems > 0 && (
+            <span className="text-[9px] font-semibold rounded-full px-1.5 py-0.5" style={{ background: STATUS_CFG.live.bg, color: STATUS_CFG.live.color }}>
+              {liveItems} live
+            </span>
+          )}
+          <svg
+            className="w-3 h-3 text-gray-400 transition-transform duration-200"
+            style={{ transform: expanded ? "rotate(180deg)" : "none" }}
+            fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}
+          >
+            <path strokeLinecap="round" d="M6 9l6 6 6-6" />
+          </svg>
+        </div>
+      </div>
+
+      {expanded && (
+        <div style={{ padding: "4px 10px 10px" }}>
+          <CampaignKanban
+            campaign={campaign}
+            channelColor={channelColor}
+            stageIdx={stageIdx}
+            channelIdx={channelIdx}
+            campaignIdx={campaignIdx}
+            updateShared={updateShared}
+          />
+          <div className="flex justify-end mt-1">
+            <button
+              onClick={() => {
+                if (confirm(`Delete "${campaign.name}" campaign?`)) {
+                  updateShared((d) => { d.marketing.stages[stageIdx].channels[channelIdx].campaigns.splice(campaignIdx, 1); });
+                }
+              }}
+              className="text-[10px] text-gray-300 hover:text-red-500 cursor-pointer"
+            >
+              Remove campaign
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -373,11 +478,19 @@ function PipelineView({ shared, updateShared }: Props) {
   }
 
   function channelContentCount(ch: MarketingChannel) {
-    return ch.content.length;
+    const campaignContent = (ch.campaigns || []).reduce((n, camp) => n + camp.content.length, 0);
+    return ch.content.length + campaignContent;
   }
 
   function channelLiveCount(ch: MarketingChannel) {
-    return ch.content.filter((c) => c.status === "live" || c.status === "scheduled").length;
+    const fromContent = ch.content.filter((c) => c.status === "live" || c.status === "scheduled").length;
+    const fromCampaigns = (ch.campaigns || []).reduce((n, camp) =>
+      n + camp.content.filter((c) => c.status === "live" || c.status === "scheduled").length, 0);
+    return fromContent + fromCampaigns;
+  }
+
+  function channelCampaignCount(ch: MarketingChannel) {
+    return (ch.campaigns || []).length;
   }
 
   return (
@@ -386,8 +499,8 @@ function PipelineView({ shared, updateShared }: Props) {
         const sc = STAGE_COLORS[idx] || STAGE_COLORS[0];
         const badge = STAGE_STATUS_CFG[stage.status];
         const expanded = expandedStage === stage.id;
-        const isLocked = stage.status === "locked";
-        const totalContent = stage.channels.reduce((n, ch) => n + ch.content.length, 0);
+        const isLocked = false; // No locked rings — all stages accessible
+        const totalContent = stage.channels.reduce((n, ch) => n + channelContentCount(ch), 0);
         const totalTasks = stage.tasks.length;
         const doneTasks = stage.tasks.filter((t) => t.done).length;
 
@@ -405,7 +518,7 @@ function PipelineView({ shared, updateShared }: Props) {
             <div
               className="flex items-center gap-3 cursor-pointer select-none"
               style={{ padding: "16px 20px" }}
-              onClick={() => !isLocked && setExpandedStage(expanded ? null : stage.id)}
+              onClick={() => setExpandedStage(expanded ? null : stage.id)}
             >
               {/* Stage number with gradient */}
               <div
@@ -509,7 +622,7 @@ function PipelineView({ shared, updateShared }: Props) {
                     <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">Channels</span>
                     <button
                       onClick={() => updateStage(idx, (s) => {
-                        s.channels.push({ id: uid(), name: "", icon: "", color: "#6B7280", content: [] });
+                        s.channels.push({ id: uid(), name: "", icon: "", color: "#6B7280", content: [], campaigns: [] });
                       })}
                       className="flex items-center gap-1 text-[11px] text-gray-400 hover:text-gray-600 cursor-pointer"
                     >
@@ -520,6 +633,7 @@ function PipelineView({ shared, updateShared }: Props) {
                   <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                     {stage.channels.map((ch, ci) => {
                       const chExpanded = expandedChannel === ch.id;
+                      const campaigns = ch.campaigns || [];
                       return (
                         <div
                           key={ch.id}
@@ -534,13 +648,12 @@ function PipelineView({ shared, updateShared }: Props) {
                           >
                             {chExpanded ? (
                               <>
-                                <input
-                                  value={ch.icon}
-                                  onChange={(e) => updateStage(idx, (s) => { s.channels[ci].icon = e.target.value; })}
-                                  onClick={(e) => e.stopPropagation()}
-                                  className="w-7 text-center text-[16px] bg-transparent focus:outline-none"
-                                  placeholder="?"
-                                />
+                                <div
+                                  className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+                                  style={{ background: ch.color + "15" }}
+                                >
+                                  <span className="text-[16px]">{getChannelIcon(ch)}</span>
+                                </div>
                                 <input
                                   value={ch.name}
                                   onChange={(e) => updateStage(idx, (s) => { s.channels[ci].name = e.target.value; })}
@@ -558,11 +671,17 @@ function PipelineView({ shared, updateShared }: Props) {
                               </>
                             ) : (
                               <>
-                                <span className="text-[16px]">{ch.icon || "?"}</span>
+                                <div
+                                  className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+                                  style={{ background: ch.color + "15" }}
+                                >
+                                  <span className="text-[16px]">{getChannelIcon(ch)}</span>
+                                </div>
                                 <span className="text-[14px] font-semibold text-gray-900">{ch.name || "Unnamed"}</span>
                               </>
                             )}
-                            <div className="ml-auto flex items-center gap-2">
+                            <div className="ml-auto flex items-center gap-3">
+                              <span className="text-[11px] text-gray-400">{channelCampaignCount(ch)} campaigns</span>
                               <span className="text-[11px] text-gray-400">{channelContentCount(ch)} items</span>
                               {channelLiveCount(ch) > 0 && (
                                 <span className="text-[10px] font-semibold rounded-full px-2 py-0.5" style={{ background: STATUS_CFG.live.bg, color: STATUS_CFG.live.color }}>
@@ -579,17 +698,40 @@ function PipelineView({ shared, updateShared }: Props) {
                             </div>
                           </div>
 
-                          {/* Channel Kanban board */}
+                          {/* Expanded channel — campaigns */}
                           {chExpanded && (
-                            <div style={{ padding: "8px 10px 12px" }}>
-                              <ChannelKanban
-                                channel={ch}
-                                stageIdx={idx}
-                                channelIdx={ci}
-                                updateShared={updateShared}
-                              />
-                              {/* Delete channel */}
-                              <div className="flex justify-end mt-2">
+                            <div style={{ padding: "8px 14px 14px" }}>
+                              {campaigns.length === 0 && (
+                                <div className="text-center py-6 rounded-lg border border-dashed border-gray-200">
+                                  <p className="text-[12px] text-gray-400">No campaigns yet</p>
+                                  <p className="text-[10px] text-gray-300 mt-0.5">Add a campaign to start planning content</p>
+                                </div>
+                              )}
+                              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                                {campaigns.map((camp, cmpIdx) => (
+                                  <CampaignSection
+                                    key={camp.id}
+                                    campaign={camp}
+                                    channelColor={ch.color}
+                                    stageIdx={idx}
+                                    channelIdx={ci}
+                                    campaignIdx={cmpIdx}
+                                    updateShared={updateShared}
+                                  />
+                                ))}
+                              </div>
+
+                              {/* Add campaign + delete channel */}
+                              <div className="flex items-center justify-between mt-3">
+                                <button
+                                  onClick={() => updateStage(idx, (s) => {
+                                    if (!s.channels[ci].campaigns) s.channels[ci].campaigns = [];
+                                    s.channels[ci].campaigns.push({ id: uid(), name: "", content: [] });
+                                  })}
+                                  className="flex items-center gap-1.5 text-[11px] font-medium text-gray-400 hover:text-gray-600 cursor-pointer"
+                                >
+                                  <IconPlus className="w-3 h-3" /> Add Campaign
+                                </button>
                                 <button
                                   onClick={() => { if (confirm(`Delete "${ch.name}" channel?`)) updateStage(idx, (s) => { s.channels.splice(ci, 1); }); }}
                                   className="text-[11px] text-gray-300 hover:text-red-500 cursor-pointer"
@@ -721,7 +863,7 @@ function CalendarView({ shared }: Props) {
     return `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
   }
 
-  // Collect all scheduled/live content across all stages and channels
+  // Collect all scheduled/live content across all stages, channels, and campaigns
   type ScheduledItem = { content: ContentItem; stage: MarketingStage; channel: MarketingChannel; stageIdx: number };
   const allScheduled: ScheduledItem[] = [];
   for (const [si, stage] of stages.entries()) {
@@ -729,6 +871,13 @@ function CalendarView({ shared }: Props) {
       for (const c of ch.content) {
         if (c.scheduledDate) {
           allScheduled.push({ content: c, stage, channel: ch, stageIdx: si });
+        }
+      }
+      for (const camp of (ch.campaigns || [])) {
+        for (const c of camp.content) {
+          if (c.scheduledDate) {
+            allScheduled.push({ content: c, stage, channel: ch, stageIdx: si });
+          }
         }
       }
     }
@@ -757,7 +906,7 @@ function CalendarView({ shared }: Props) {
           <div className="flex gap-3 mt-2 overflow-x-auto pb-1">
             {upcoming.map((s) => (
               <div key={s.content.id} className="flex items-center gap-2 bg-white rounded-lg border border-gray-200 px-3 py-2 flex-shrink-0">
-                <span className="text-[13px]">{s.channel.icon}</span>
+                <span className="text-[13px]">{getChannelIcon(s.channel)}</span>
                 <div>
                   <p className="text-[12px] font-semibold text-gray-900">{s.content.title || "Untitled"}</p>
                   <p className="text-[10px] text-gray-400">{fmtDate(s.content.scheduledDate)} &middot; {s.channel.name} &middot; {s.stage.name}</p>
@@ -820,7 +969,7 @@ function CalendarView({ shared }: Props) {
                           className="rounded px-1.5 py-0.5 truncate flex items-center gap-1"
                           style={{ background: s.channel.color + "15", fontSize: 10, fontWeight: 600, color: s.channel.color }}
                         >
-                          <span>{s.channel.icon}</span>
+                          <span>{getChannelIcon(s.channel)}</span>
                           <span className="truncate">{s.content.title || s.content.type || "Content"}</span>
                         </div>
                       ))}
@@ -994,9 +1143,13 @@ function AIPanel({ shared, onClose }: { shared: SharedData; onClose: () => void 
       parts.push(`## Stage ${i + 1}: ${stage.name} (${stage.subtitle}) — ${stage.status}`);
       parts.push(`Segment: ${stage.segment}`);
       for (const ch of stage.channels) {
-        parts.push(`Channel: ${ch.name} — ${ch.content.length} content items`);
-        for (const c of ch.content) {
-          parts.push(`  - ${c.title || "untitled"} [${c.status}]${c.scheduledDate ? " scheduled " + c.scheduledDate : ""}`);
+        const campCount = (ch.campaigns || []).length;
+        parts.push(`Channel: ${ch.name} — ${campCount} campaigns, ${ch.content.length} legacy items`);
+        for (const camp of (ch.campaigns || [])) {
+          parts.push(`  Campaign: ${camp.name} — ${camp.content.length} items`);
+          for (const c of camp.content) {
+            parts.push(`    - ${c.title || "untitled"} [${c.status}]${c.scheduledDate ? " scheduled " + c.scheduledDate : ""}`);
+          }
         }
       }
       if (stage.feedback) parts.push(`Feedback: ${stage.feedback}`);
@@ -1123,9 +1276,14 @@ export function MarketingView({ shared, updateShared }: Props) {
   const stages = shared.marketing.stages;
 
   const activeStage = stages.find((s) => s.status === "active" || s.status === "review");
-  const totalContent = stages.reduce((n, s) => s.channels.reduce((m, ch) => m + ch.content.length, n), 0);
-  const totalScheduled = stages.reduce((n, s) => s.channels.reduce((m, ch) => m + ch.content.filter((c) => c.scheduledDate).length, n), 0);
-  const totalLive = stages.reduce((n, s) => s.channels.reduce((m, ch) => m + ch.content.filter((c) => c.status === "live").length, n), 0);
+  function allContent(ch: MarketingChannel): ContentItem[] {
+    const fromCampaigns = (ch.campaigns || []).flatMap((camp) => camp.content);
+    return [...ch.content, ...fromCampaigns];
+  }
+  const totalContent = stages.reduce((n, s) => s.channels.reduce((m, ch) => m + allContent(ch).length, n), 0);
+  const totalScheduled = stages.reduce((n, s) => s.channels.reduce((m, ch) => m + allContent(ch).filter((c) => c.scheduledDate).length, n), 0);
+  const totalLive = stages.reduce((n, s) => s.channels.reduce((m, ch) => m + allContent(ch).filter((c) => c.status === "live").length, n), 0);
+  const totalCampaigns = stages.reduce((n, s) => s.channels.reduce((m, ch) => m + (ch.campaigns || []).length, n), 0);
 
   return (
     <div className="animate-fadeIn">
@@ -1160,8 +1318,8 @@ export function MarketingView({ shared, updateShared }: Props) {
       <div className="grid grid-cols-4 gap-3 mb-5">
         {[
           { label: "Active Stage", value: activeStage?.name || "—", sub: activeStage?.subtitle || "", color: "#0D9488" },
-          { label: "Content Pieces", value: String(totalContent), sub: `${totalLive} live`, color: "#3B82F6" },
-          { label: "Scheduled", value: String(totalScheduled), sub: "on calendar", color: "#7C3AED" },
+          { label: "Campaigns", value: String(totalCampaigns), sub: `${totalContent} content`, color: "#3B82F6" },
+          { label: "Scheduled", value: String(totalScheduled), sub: `${totalLive} live`, color: "#7C3AED" },
           { label: "Stages Done", value: `${stages.filter((s) => s.status === "complete").length}/${stages.length}`, sub: "completed", color: "#F59E0B" },
         ].map((stat) => (
           <div key={stat.label} className="rounded-xl bg-white border border-gray-200 overflow-hidden" style={{ padding: "14px 16px" }}>

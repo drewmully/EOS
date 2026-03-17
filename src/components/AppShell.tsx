@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { UserData, SharedData, ContentItem, USERS } from "@/lib/types";
+import { UserData, SharedData, ContentItem, Campaign, USERS } from "@/lib/types";
 import { SEED_DATA, SEED_SHARED } from "@/lib/seed";
 import { loadUserData, saveUserData, getSupabase } from "@/lib/supabase";
 import { Sidebar, MobileHeader, MobileBottomNav, View } from "./Sidebar";
@@ -140,6 +140,12 @@ export default function AppShell() {
       if (!sh.scorecard) sh.scorecard = SEED_SHARED.scorecard;
       if (!sh.links) sh.links = [];
       if (!sh.marketing) sh.marketing = SEED_SHARED.marketing;
+      // Channel icon auto-detect map
+      const CHANNEL_ICONS: Record<string, string> = {
+        "Email": "\u2709\uFE0F", "SMS": "\uD83D\uDCF1", "In-App": "\uD83D\uDD14", "On-Site": "\uD83C\uDF10",
+        "Direct Mail": "\uD83D\uDCEC", "Instagram": "\uD83D\uDCF8", "Facebook": "\uD83D\uDC4D",
+        "Meta Ads": "\uD83C\uDFAF", "Google Ads": "\uD83D\uDD0D", "Influencer": "\u2B50", "Social": "\uD83D\uDCE3",
+      };
       // Migrate old string[] channels to MarketingChannel[] objects
       for (const stage of sh.marketing.stages) {
         if (stage.channels?.length && typeof stage.channels[0] === "string") {
@@ -148,12 +154,30 @@ export default function AppShell() {
           (stage as any).channels = (stage.channels as unknown as string[]).map((name: string) => ({
             id: "id_" + Math.random().toString(36).slice(2, 9),
             name,
-            icon: "",
+            icon: CHANNEL_ICONS[name] || "",
             color: "#6B7280",
             content: oldContent || [],
+            campaigns: [{ id: "id_" + Math.random().toString(36).slice(2, 9), name: "Default", content: oldContent || [] }] as Campaign[],
           }));
           delete (stage as unknown as Record<string, unknown>).content;
         }
+        // Migrate: ensure all channels have campaigns array and icons
+        for (const ch of stage.channels) {
+          if (!ch.campaigns) ch.campaigns = [];
+          // Auto-detect icon if empty
+          if (!ch.icon && CHANNEL_ICONS[ch.name]) ch.icon = CHANNEL_ICONS[ch.name];
+          // Migrate flat content into a campaign if campaigns is empty but content exists
+          if (ch.campaigns.length === 0 && ch.content && ch.content.length > 0) {
+            ch.campaigns = [{ id: "id_" + Math.random().toString(36).slice(2, 9), name: "Default", content: ch.content }];
+          }
+          // Ensure all content items have tags array
+          for (const c of ch.content) { if (!c.tags) c.tags = []; }
+          for (const camp of ch.campaigns) {
+            for (const c of camp.content) { if (!c.tags) c.tags = []; }
+          }
+        }
+        // Unlock all locked stages → planning
+        if (stage.status === "locked") stage.status = "planning";
       }
       // Migrate old weeks[] format to weekData{}
       for (const biz of ["mfs", "mully"] as const) {

@@ -158,12 +158,19 @@ export interface MarketingTask {
   done: boolean;
 }
 
+export interface Campaign {
+  id: string;
+  name: string;            // "Welcome Series", "Monthly Newsletter", etc.
+  content: ContentItem[];
+}
+
 export interface MarketingChannel {
   id: string;
   name: string;            // Email, SMS, Instagram, Facebook Ads, etc.
   icon: string;            // emoji or short label for visual
   color: string;           // hex accent color
-  content: ContentItem[];  // content pipeline for this channel
+  content: ContentItem[];  // legacy flat content (migrated to campaigns)
+  campaigns: Campaign[];   // named campaigns within this channel
 }
 
 export interface MarketingStage {
