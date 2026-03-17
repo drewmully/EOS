@@ -136,16 +136,18 @@ export interface LinkItem {
 /* ── Fibonacci Marketing Planner ── */
 
 export type StageStatus = "locked" | "planning" | "active" | "review" | "complete";
-export type ContentStatus = "idea" | "draft" | "review" | "live";
+export type ContentStatus = "idea" | "draft" | "review" | "scheduled" | "live";
 
 export interface ContentItem {
   id: string;
   title: string;
-  type: string;       // email, social post, ad, landing page, SMS, etc.
-  channel: string;    // which channel it's for
+  type: string;            // email blast, social post, ad creative, landing page, etc.
   status: ContentStatus;
-  body: string;       // the actual copy / brief
+  body: string;            // the actual copy / brief
   assignee: string;
+  scheduledDate: string;   // YYYY-MM-DD — when it goes out (populates calendar)
+  order: number;           // sort order within channel for drag-reorder
+  tags: string[];          // flexible labels: "urgency", "promo", "educational", etc.
 }
 
 export interface MarketingTask {
@@ -156,24 +158,23 @@ export interface MarketingTask {
   done: boolean;
 }
 
-export interface MarketingStage {
+export interface MarketingChannel {
   id: string;
-  name: string;           // editable: "Rollout", "Level 2", etc.
-  subtitle: string;       // editable: "Active Subscribers", etc.
-  status: StageStatus;
-  segment: string;        // editable: who we're targeting
-  channels: string[];     // editable: where we're marketing
-  content: ContentItem[];
-  tasks: MarketingTask[];
-  feedback: string;       // quick feedback before unlocking next stage
+  name: string;            // Email, SMS, Instagram, Facebook Ads, etc.
+  icon: string;            // emoji or short label for visual
+  color: string;           // hex accent color
+  content: ContentItem[];  // content pipeline for this channel
 }
 
-export interface CalendarEvent {
+export interface MarketingStage {
   id: string;
-  date: string;           // YYYY-MM-DD
-  title: string;
-  stageId: string;        // which stage it belongs to
-  type: string;           // launch, content, feedback, milestone — editable
+  name: string;            // editable: "Rollout", "Level 2", etc.
+  subtitle: string;        // editable: "Active Subscribers", etc.
+  status: StageStatus;
+  segment: string;         // editable: who we're targeting
+  channels: MarketingChannel[];
+  tasks: MarketingTask[];
+  feedback: string;        // quick feedback before unlocking next stage
 }
 
 export interface Learning {
@@ -181,13 +182,12 @@ export interface Learning {
   date: string;
   stageId: string;
   text: string;
-  metric: string;         // what happened (data)
-  insight: string;        // what it means (interpretation)
+  metric: string;
+  insight: string;
 }
 
 export interface MarketingData {
   stages: MarketingStage[];
-  calendar: CalendarEvent[];
   learnings: Learning[];
 }
 

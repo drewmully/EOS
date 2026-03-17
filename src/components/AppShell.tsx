@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { UserData, SharedData, USERS } from "@/lib/types";
+import { UserData, SharedData, ContentItem, USERS } from "@/lib/types";
 import { SEED_DATA, SEED_SHARED } from "@/lib/seed";
 import { loadUserData, saveUserData, getSupabase } from "@/lib/supabase";
 import { Sidebar, MobileHeader, MobileBottomNav, View } from "./Sidebar";
@@ -140,6 +140,21 @@ export default function AppShell() {
       if (!sh.scorecard) sh.scorecard = SEED_SHARED.scorecard;
       if (!sh.links) sh.links = [];
       if (!sh.marketing) sh.marketing = SEED_SHARED.marketing;
+      // Migrate old string[] channels to MarketingChannel[] objects
+      for (const stage of sh.marketing.stages) {
+        if (stage.channels?.length && typeof stage.channels[0] === "string") {
+          const oldContent = (stage as unknown as Record<string, unknown>).content as ContentItem[] | undefined;
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (stage as any).channels = (stage.channels as unknown as string[]).map((name: string) => ({
+            id: "id_" + Math.random().toString(36).slice(2, 9),
+            name,
+            icon: "",
+            color: "#6B7280",
+            content: oldContent || [],
+          }));
+          delete (stage as unknown as Record<string, unknown>).content;
+        }
+      }
       // Migrate old weeks[] format to weekData{}
       for (const biz of ["mfs", "mully"] as const) {
         for (const row of sh.scorecard[biz]) {
