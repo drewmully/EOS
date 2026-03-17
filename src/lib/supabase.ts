@@ -34,5 +34,8 @@ export async function saveUserData(userId: string, userData: unknown) {
     },
     { onConflict: "user_id" }
   );
-  if (error) console.error("Save error:", error);
+  if (error) {
+    console.error("Save error:", error);
+    throw new Error(`Supabase save failed for ${userId}: ${error.message}`);
+  }
 }

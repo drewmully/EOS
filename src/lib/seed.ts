@@ -1,7 +1,11 @@
-import { UserData, SharedData } from "./types";
+import { UserData, SharedData, ContentItem } from "./types";
 
 function uid() {
   return "id_" + Math.random().toString(36).slice(2, 9) + Date.now().toString(36);
+}
+
+function ci(title: string, type: string, body: string, tags: string[], order: number): ContentItem {
+  return { id: uid(), title, type, status: "idea", body, assignee: "", scheduledDate: "", order, tags };
 }
 
 export const DREW_DATA: UserData = {
@@ -307,68 +311,150 @@ export const SEED_SHARED: SharedData = {
   links: [],
   marketing: {
     stages: [
+      /* ── Phase 1: Active Subscribers (1,400) ── */
       {
         id: uid(), name: "Rollout", subtitle: "Active Subscribers",
         status: "planning",
-        segment: "Current active subscribers (~2,400)",
+        segment: "Current active subscribers (~1,400)",
         channels: [
           { id: uid(), name: "Email", icon: "\u2709\uFE0F", color: "#3B82F6", content: [], campaigns: [
-            { id: uid(), name: "Re-launch Announcement", content: [] },
-            { id: uid(), name: "Monthly Newsletter", content: [] },
+            { id: uid(), name: "Membership Launch Sequence", content: [
+              ci("Teaser \u2014 Something new is coming", "email", "Countdown GIF, sneak-peek of member dashboard", ["Open Rate \u2265 40%"], 1),
+              ci("Launch Announcement", "email", "Hero image of membership tiers, CTA button to join", ["Click Rate \u2265 12%"], 2),
+              ci("Membership Benefit Spotlight", "email", "Carousel of exclusive perks: discounts, early access, rewards", ["Conversions \u2265 3%"], 3),
+            ] },
           ] },
           { id: uid(), name: "SMS", icon: "\uD83D\uDCF1", color: "#10B981", content: [], campaigns: [
-            { id: uid(), name: "Welcome Text Series", content: [] },
+            { id: uid(), name: "Launch SMS Series", content: [
+              ci("Teaser \u2014 short & punchy", "sms", "Big news dropping soon from MyMully \uD83D\uDC40", ["Open Rate \u2265 55%"], 1),
+              ci("Launch Day Alert", "sms", "Membership is LIVE! Tap to claim your spot \u2192", ["Click Rate \u2265 8%"], 2),
+              ci("Exclusive Member Deal", "sms", "Members save 20% this week only \u2014 don't miss out", ["Conversions \u2265 2%"], 3),
+            ] },
           ] },
-          { id: uid(), name: "On-Site", icon: "\uD83C\uDF10", color: "#8B5CF6", content: [], campaigns: [
-            { id: uid(), name: "Banner Promo", content: [] },
+          { id: uid(), name: "Physical Letter", icon: "\uD83D\uDCE8", color: "#8B5CF6", content: [], campaigns: [
+            { id: uid(), name: "Welcome Mailer", content: [
+              ci("Welcome Notice + QR Code", "physical letter", "Branded postcard with QR to signup page, limited-time offer", ["QR Scans \u2265 5%"], 1),
+            ] },
+          ] },
+          { id: uid(), name: "Social Media", icon: "\uD83D\uDCF1", color: "#E1306C", content: [], campaigns: [
+            { id: uid(), name: "Launch Social", content: [
+              ci("Launch Announcement Post", "social post", "High-energy video reel: unboxing membership perks", ["Views \u2265 50K"], 1),
+            ] },
           ] },
         ],
         tasks: [], feedback: "",
       },
+      /* ── Phase 2: Cancelled / One-Time Buyers (3,200) ── */
       {
-        id: uid(), name: "Level 2", subtitle: "Cancelled / One-Time Purchasers",
+        id: uid(), name: "Level 2", subtitle: "Cancelled / One-Time Buyers",
         status: "planning",
-        segment: "Cancelled subscribers, one-time purchasers",
+        segment: "Cancelled subscribers, one-time purchasers (~3,200)",
         channels: [
           { id: uid(), name: "Email", icon: "\u2709\uFE0F", color: "#3B82F6", content: [], campaigns: [
-            { id: uid(), name: "Win-Back Sequence", content: [] },
+            { id: uid(), name: "Win-Back Sequence", content: [
+              ci("We miss you \u2014 Win-Back", "email", "Personalized copy referencing last purchase, re-engage CTA", ["Open Rate \u2265 30%"], 1),
+              ci("What's New at MyMully", "email", "New products + membership value prop side-by-side", ["Click Rate \u2265 8%"], 2),
+              ci("Limited-Time Comeback Offer", "email", "Exclusive 30-day free trial or discount on first membership month", ["Conversions \u2265 2%"], 3),
+            ] },
+          ] },
+          { id: uid(), name: "SMS", icon: "\uD83D\uDCF1", color: "#10B981", content: [], campaigns: [
+            { id: uid(), name: "Win-Back SMS", content: [
+              ci("Win-Back Nudge", "sms", "Come back & try MyMully Membership free for 30 days", ["Click Rate \u2265 6%"], 1),
+              ci("Urgency Reminder", "sms", "Last chance \u2014 your free trial offer expires tomorrow", ["Click Rate \u2265 5%"], 2),
+            ] },
+          ] },
+          { id: uid(), name: "Retargeting Ads", icon: "\uD83C\uDFAF", color: "#F97316", content: [], campaigns: [
+            { id: uid(), name: "Retargeting", content: [
+              ci("Display & Social Retargeting", "ad creative", "Dynamic product ads paired with membership benefits callout", ["CTR \u2265 1.5%"], 1),
+            ] },
+          ] },
+          { id: uid(), name: "Social Media", icon: "\uD83D\uDCF1", color: "#E1306C", content: [], campaigns: [
+            { id: uid(), name: "UGC & Testimonials", content: [
+              ci("Testimonial / UGC Post", "social post", "Real member stories: savings, exclusive access, community", ["Engagement \u2265 4%"], 1),
+            ] },
           ] },
           { id: uid(), name: "Direct Mail", icon: "\uD83D\uDCEC", color: "#F59E0B", content: [], campaigns: [
-            { id: uid(), name: "Postcard Drop", content: [] },
+            { id: uid(), name: "Comeback Mailer", content: [
+              ci("Comeback Postcard", "direct mail", "\"Your membership is waiting\" postcard with personalized QR code", ["QR Scans \u2265 3%"], 1),
+            ] },
           ] },
         ],
         tasks: [], feedback: "",
       },
+      /* ── Phase 3: Email List / Non-Purchasers (12,000+) ── */
       {
-        id: uid(), name: "Level 3", subtitle: "Email List",
+        id: uid(), name: "Level 3", subtitle: "Email List (Non-Purchasers)",
         status: "planning",
-        segment: "Broader email list (non-purchasers)",
+        segment: "Broader email list, non-purchasers (~12,000+)",
         channels: [
           { id: uid(), name: "Email", icon: "\u2709\uFE0F", color: "#3B82F6", content: [], campaigns: [
-            { id: uid(), name: "Nurture Sequence", content: [] },
+            { id: uid(), name: "Nurture Sequence", content: [
+              ci("Introduction to MyMully Membership", "email", "Clean infographic: what membership includes, pricing tiers", ["Open Rate \u2265 25%"], 1),
+              ci("Social Proof & Reviews", "email", "Star ratings, member quotes, trust badges", ["Click Rate \u2265 6%"], 2),
+              ci("Free Trial / Intro Offer", "email", "Try membership free for 14 days \u2014 no commitment", ["Conversions \u2265 1.5%"], 3),
+            ] },
           ] },
-          { id: uid(), name: "Instagram", icon: "\uD83D\uDCF8", color: "#E1306C", content: [], campaigns: [
-            { id: uid(), name: "Organic Content Plan", content: [] },
+          { id: uid(), name: "SMS", icon: "\uD83D\uDCF1", color: "#10B981", content: [], campaigns: [
+            { id: uid(), name: "Brand Intro SMS", content: [
+              ci("Brand Intro + Membership CTA", "sms", "Discover why 1,400+ members love MyMully \u2192", ["Click Rate \u2265 4%"], 1),
+            ] },
           ] },
-          { id: uid(), name: "Facebook", icon: "\uD83D\uDC4D", color: "#1877F2", content: [], campaigns: [
-            { id: uid(), name: "Community Engagement", content: [] },
+          { id: uid(), name: "Social Media", icon: "\uD83D\uDCF1", color: "#E1306C", content: [], campaigns: [
+            { id: uid(), name: "Organic Social", content: [
+              ci("Educational Carousel", "social post", "\"5 reasons MyMully members save more\" carousel post", ["Saves \u2265 2%"], 1),
+              ci("Influencer Collaboration", "influencer", "Influencer unboxing/walkthrough of member experience", ["Views \u2265 75K"], 2),
+            ] },
+          ] },
+          { id: uid(), name: "Blog / SEO", icon: "\uD83D\uDCDD", color: "#6366F1", content: [], campaigns: [
+            { id: uid(), name: "Content Marketing", content: [
+              ci("Is a Membership Worth It? \u2014 Article", "blog post", "Long-form comparison: membership vs. one-time buying", ["Page Views \u2265 2K"], 1),
+            ] },
+          ] },
+          { id: uid(), name: "Referral Program", icon: "\uD83E\uDD1D", color: "#0D9488", content: [], campaigns: [
+            { id: uid(), name: "Member-Get-Member", content: [
+              ci("Member-Get-Member Launch", "referral", "Share your link, earn $10 credit per signup", ["Referrals \u2265 100"], 1),
+            ] },
           ] },
         ],
         tasks: [], feedback: "",
       },
+      /* ── Phase 4: Broader Audience Acquisition ── */
       {
         id: uid(), name: "Level 4", subtitle: "Broader Audience",
         status: "planning",
-        segment: "Cold audiences, lookalikes, paid",
+        segment: "Cold audiences, lookalikes, paid channels",
         channels: [
-          { id: uid(), name: "Meta Ads", icon: "\uD83C\uDFAF", color: "#1877F2", content: [], campaigns: [
-            { id: uid(), name: "Lookalike Campaign", content: [] },
+          { id: uid(), name: "Paid Social", icon: "\uD83D\uDCB0", color: "#1877F2", content: [], campaigns: [
+            { id: uid(), name: "Prospecting Campaigns", content: [
+              ci("Meta Prospecting (LAL 1-3%)", "paid social", "Video ads showcasing membership value + savings calculator", ["CPA \u2264 $18"], 1),
+              ci("TikTok Prospecting", "paid social", "Trend-driven short-form: POV you just joined MyMully", ["CPA \u2264 $22"], 2),
+            ] },
           ] },
           { id: uid(), name: "Google Ads", icon: "\uD83D\uDD0D", color: "#EA4335", content: [], campaigns: [
-            { id: uid(), name: "Search Campaign", content: [] },
+            { id: uid(), name: "Search & PMax", content: [
+              ci("Search \u2014 Brand + Category", "search ad", "MyMully Membership + category keywords with offer extensions", ["CPA \u2264 $15"], 1),
+              ci("Performance Max", "pmax", "Asset group with membership visuals, reviews, pricing", ["ROAS \u2265 3.5x"], 2),
+            ] },
           ] },
-          { id: uid(), name: "Influencer", icon: "\u2B50", color: "#F59E0B", content: [], campaigns: [
-            { id: uid(), name: "Influencer Outreach", content: [] },
+          { id: uid(), name: "YouTube", icon: "\u25B6\uFE0F", color: "#FF0000", content: [], campaigns: [
+            { id: uid(), name: "Video Ads", content: [
+              ci("Pre-Roll / In-Stream Ad", "video ad", "30-sec explainer: what members get, how to join", ["VTR \u2265 25%"], 1),
+            ] },
+          ] },
+          { id: uid(), name: "Podcast / Audio", icon: "\uD83C\uDFA7", color: "#9333EA", content: [], campaigns: [
+            { id: uid(), name: "Sponsored Segments", content: [
+              ci("Sponsored Segment", "audio ad", "Host-read ad with unique promo code \"MYMULLY\"", ["Promo Code Use \u2265 50"], 1),
+            ] },
+          ] },
+          { id: uid(), name: "PR / Media", icon: "\uD83D\uDCF0", color: "#0EA5E9", content: [], campaigns: [
+            { id: uid(), name: "Launch PR", content: [
+              ci("Launch Press Release", "press release", "Newsworthy angle: community-first membership model", ["Placements \u2265 5"], 1),
+            ] },
+          ] },
+          { id: uid(), name: "Partnerships", icon: "\uD83E\uDD1D", color: "#0D9488", content: [], campaigns: [
+            { id: uid(), name: "Co-Branded Campaign", content: [
+              ci("Co-Branded Campaign", "partnership", "Bundle deal or cross-promo with complementary brand", ["Signups \u2265 200"], 1),
+            ] },
           ] },
         ],
         tasks: [], feedback: "",

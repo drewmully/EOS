@@ -46,6 +46,17 @@ export default function AppShell() {
       try { localStorage.setItem(`eos-focus-${userId}`, JSON.stringify(d)); } catch { /* */ }
     }
 
+    // Check if data looks like it has real user edits (not just seed defaults)
+    function hasUserEdits(d: UserData): boolean {
+      const hasPriorities = d.todayPriorities?.some((p) =>
+        (typeof p === "object" && p !== null && "text" in p) ? (p as { text: string }).text.length > 0 : false
+      );
+      const hasTodos = d.todos?.length > 0;
+      const hasSubtaskProgress = d.rocks?.some((r) => r.subtasks?.some((s) => s.done));
+      const hasStreak = (d.streakDays || 0) > 0;
+      return !!(hasPriorities || hasTodos || hasSubtaskProgress || hasStreak);
+    }
+
     async function init() {
       const sb = getSupabase();
       const loaded: Record<string, UserData> = {};
@@ -54,20 +65,26 @@ export default function AppShell() {
           setSyncStatus("syncing");
           for (const u of USERS) {
             const cloud = await loadUserData(u.id);
+            const local = loadLocal(u.id);
             if (cloud) {
-              loaded[u.id] = cloud as UserData;
-              saveLocal(u.id, cloud as UserData);
-            } else {
-              // Try localStorage before falling back to seed
-              const local = loadLocal(u.id);
-              if (local) {
+              // If cloud data looks like seed but localStorage has real edits, prefer local
+              if (!hasUserEdits(cloud as UserData) && local && hasUserEdits(local)) {
+                console.warn(`[EOS] Cloud data for ${u.id} appears stale — using localStorage and re-syncing`);
                 loaded[u.id] = local;
-                await saveUserData(u.id, local);
+                try { await saveUserData(u.id, local); } catch { /* will retry on next save */ }
               } else {
-                loaded[u.id] = SEED_DATA[u.id];
-                await saveUserData(u.id, SEED_DATA[u.id]);
-                saveLocal(u.id, SEED_DATA[u.id]);
+                loaded[u.id] = cloud as UserData;
+                saveLocal(u.id, cloud as UserData);
               }
+            } else if (local) {
+              loaded[u.id] = local;
+              try { await saveUserData(u.id, local); } catch { /* will retry on next save */ }
+            } else {
+              loaded[u.id] = SEED_DATA[u.id];
+              try {
+                await saveUserData(u.id, SEED_DATA[u.id]);
+              } catch { /* will retry on next save */ }
+              saveLocal(u.id, SEED_DATA[u.id]);
             }
           }
           setSyncStatus("synced");
@@ -140,6 +157,14 @@ export default function AppShell() {
       if (!sh.scorecard) sh.scorecard = SEED_SHARED.scorecard;
       if (!sh.links) sh.links = [];
       if (!sh.marketing) sh.marketing = SEED_SHARED.marketing;
+      // One-time migration: seed marketing data from spreadsheet if campaigns are empty
+      const hasCampaignContent = sh.marketing.stages.some((s) =>
+        s.channels.some((ch) => (ch.campaigns || []).some((camp) => camp.content.length > 0))
+      );
+      if (!hasCampaignContent) {
+        console.log("[EOS] Seeding marketing data from spreadsheet...");
+        sh.marketing = SEED_SHARED.marketing;
+      }
       // Channel icon auto-detect map
       const CHANNEL_ICONS: Record<string, string> = {
         "Email": "\u2709\uFE0F", "SMS": "\uD83D\uDCF1", "In-App": "\uD83D\uDD14", "On-Site": "\uD83C\uDF10",
@@ -186,6 +211,13 @@ export default function AppShell() {
         }
       }
       setSharedData(sh);
+
+      // Persist migrated shared data back to cloud + localStorage
+      try { localStorage.setItem("eos-focus-shared", JSON.stringify(sh)); } catch { /* */ }
+      const sb3 = getSupabase();
+      if (sb3) {
+        try { await saveUserData("__shared__", sh); } catch { /* non-critical */ }
+      }
 
       setLoading(false);
     }
