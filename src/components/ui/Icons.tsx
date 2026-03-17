@@ -104,6 +104,17 @@ export const IconScorecard = IF(
   </>
 );
 
+// Fibonacci golden spiral
+export const IconMarketing = IF(
+  <>
+    <path d="M12 12a4 4 0 0 1-4-4" />
+    <path d="M8 8a6 6 0 0 1 6-6" />
+    <path d="M14 2a10 10 0 0 1 10 10" />
+    <path d="M24 12a14 14 0 0 1-14 14" />
+    <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none" />
+  </>
+);
+
 export const IconLinks = IF(
   <>
     <path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71" />

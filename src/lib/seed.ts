@@ -305,4 +305,38 @@ export const SEED_SHARED: SharedData = {
     ],
   },
   links: [],
+  marketing: {
+    stages: [
+      {
+        id: uid(), name: "Rollout", subtitle: "Active Subscribers",
+        status: "active",
+        segment: "Current active subscribers (~2,400)",
+        channels: ["Email", "SMS", "In-app"],
+        content: [], tasks: [], feedback: "",
+      },
+      {
+        id: uid(), name: "Level 2", subtitle: "Cancelled / One-Time Purchasers",
+        status: "locked",
+        segment: "Cancelled subscribers, one-time purchasers",
+        channels: ["Email", "Direct Mail"],
+        content: [], tasks: [], feedback: "",
+      },
+      {
+        id: uid(), name: "Level 3", subtitle: "Email List",
+        status: "locked",
+        segment: "Broader email list (non-purchasers)",
+        channels: ["Email", "Social"],
+        content: [], tasks: [], feedback: "",
+      },
+      {
+        id: uid(), name: "Level 4", subtitle: "Broader Audience",
+        status: "locked",
+        segment: "Cold audiences, lookalikes, paid",
+        channels: ["Meta Ads", "Google Ads", "Influencer"],
+        content: [], tasks: [], feedback: "",
+      },
+    ],
+    calendar: [],
+    learnings: [],
+  },
 };

@@ -14,6 +14,7 @@ import { VTOView } from "./VTOView";
 import { IDSView } from "./IDSView";
 import { ScorecardView } from "./ScorecardView";
 import { LinksView } from "./LinksView";
+import { MarketingView } from "./MarketingView";
 import { IconX } from "./ui/Icons";
 
 export default function AppShell() {
@@ -138,6 +139,7 @@ export default function AppShell() {
       if (!sh.issuesMully) sh.issuesMully = SEED_SHARED.issuesMully;
       if (!sh.scorecard) sh.scorecard = SEED_SHARED.scorecard;
       if (!sh.links) sh.links = [];
+      if (!sh.marketing) sh.marketing = SEED_SHARED.marketing;
       // Migrate old weeks[] format to weekData{}
       for (const biz of ["mfs", "mully"] as const) {
         for (const row of sh.scorecard[biz]) {
@@ -282,7 +284,7 @@ export default function AppShell() {
                 <IconX className="w-4 h-4" />
               </button>
             </div>
-            {(["today", "rocks", "inbox", "seats", "growth", "vto", "ids", "scorecard", "links"] as View[]).map((k) => (
+            {(["today", "rocks", "inbox", "seats", "growth", "vto", "ids", "scorecard", "marketing", "links"] as View[]).map((k) => (
               <button
                 key={k}
                 onClick={() => { setView(k); setMobileNav(false); }}
@@ -322,6 +324,9 @@ export default function AppShell() {
           )}
           {view === "scorecard" && sharedData && (
             <ScorecardView shared={sharedData} updateShared={updateShared} />
+          )}
+          {view === "marketing" && sharedData && (
+            <MarketingView shared={sharedData} updateShared={updateShared} />
           )}
           {view === "links" && sharedData && (
             <LinksView shared={sharedData} updateShared={updateShared} />

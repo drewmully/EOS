@@ -11,9 +11,10 @@ import {
   IconIDS,
   IconScorecard,
   IconLinks,
+  IconMarketing,
 } from "./ui/Icons";
 
-export type View = "today" | "rocks" | "inbox" | "seats" | "growth" | "vto" | "ids" | "scorecard" | "links";
+export type View = "today" | "rocks" | "inbox" | "seats" | "growth" | "vto" | "ids" | "scorecard" | "marketing" | "links";
 
 const NAV: { key: View; label: string; Icon: React.FC<{ className?: string }>; divider?: boolean }[] = [
   { key: "today", label: "Today", Icon: IconToday },
@@ -24,6 +25,7 @@ const NAV: { key: View; label: string; Icon: React.FC<{ className?: string }>; d
   { key: "vto", label: "V/TO", Icon: IconVTO },
   { key: "ids", label: "IDS", Icon: IconIDS, divider: true },
   { key: "scorecard", label: "Scorecard", Icon: IconScorecard },
+  { key: "marketing", label: "Marketing", Icon: IconMarketing },
   { key: "links", label: "Links", Icon: IconLinks },
 ];
 

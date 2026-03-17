@@ -133,9 +133,68 @@ export interface LinkItem {
   category: string; // e.g. "SOP", "Artifact", etc.
 }
 
+/* ── Fibonacci Marketing Planner ── */
+
+export type StageStatus = "locked" | "planning" | "active" | "review" | "complete";
+export type ContentStatus = "idea" | "draft" | "review" | "live";
+
+export interface ContentItem {
+  id: string;
+  title: string;
+  type: string;       // email, social post, ad, landing page, SMS, etc.
+  channel: string;    // which channel it's for
+  status: ContentStatus;
+  body: string;       // the actual copy / brief
+  assignee: string;
+}
+
+export interface MarketingTask {
+  id: string;
+  text: string;
+  assignee: string;
+  due: string;
+  done: boolean;
+}
+
+export interface MarketingStage {
+  id: string;
+  name: string;           // editable: "Rollout", "Level 2", etc.
+  subtitle: string;       // editable: "Active Subscribers", etc.
+  status: StageStatus;
+  segment: string;        // editable: who we're targeting
+  channels: string[];     // editable: where we're marketing
+  content: ContentItem[];
+  tasks: MarketingTask[];
+  feedback: string;       // quick feedback before unlocking next stage
+}
+
+export interface CalendarEvent {
+  id: string;
+  date: string;           // YYYY-MM-DD
+  title: string;
+  stageId: string;        // which stage it belongs to
+  type: string;           // launch, content, feedback, milestone — editable
+}
+
+export interface Learning {
+  id: string;
+  date: string;
+  stageId: string;
+  text: string;
+  metric: string;         // what happened (data)
+  insight: string;        // what it means (interpretation)
+}
+
+export interface MarketingData {
+  stages: MarketingStage[];
+  calendar: CalendarEvent[];
+  learnings: Learning[];
+}
+
 export interface SharedData {
   issuesMFS: Issue[];
   issuesMully: Issue[];
   scorecard: Scorecard;
   links: LinkItem[];
+  marketing: MarketingData;
 }
