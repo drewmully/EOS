@@ -226,7 +226,7 @@ export function PipelineView({ shared, updateShared, activeUser }: Props) {
         <div className="flex items-center gap-2">
           <button
             onClick={addDeal}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-gray-900 text-white text-xs font-medium hover:bg-gray-800 cursor-pointer transition-colors"
+            className="flex items-center gap-1.5 px-4 py-2.5 rounded-lg bg-gray-900 text-white text-xs font-medium hover:bg-gray-800 cursor-pointer transition-colors"
           >
             <IconPlus className="w-3 h-3" /> Add Deal
           </button>
@@ -294,6 +294,17 @@ export function PipelineView({ shared, updateShared, activeUser }: Props) {
    SUB-COMPONENTS
    ═══════════════════════════════════════════════════════ */
 
+/* ── Render bold markdown ── */
+function renderFormattedText(text: string): React.ReactNode {
+  const parts = text.split(/(\*\*[^*]+\*\*)/g);
+  return parts.map((part, i) => {
+    if (part.startsWith("**") && part.endsWith("**")) {
+      return <strong key={i}>{part.slice(2, -2)}</strong>;
+    }
+    return part;
+  });
+}
+
 /* ── AI Advisor Bar ── */
 function AiAdvisorBar({ advice, loading, onRefresh, onChat }: { advice: string; loading: boolean; onRefresh: () => void; onChat: () => void }) {
   return (
@@ -312,14 +323,14 @@ function AiAdvisorBar({ advice, loading, onRefresh, onChat }: { advice: string; 
               Analyzing pipeline...
             </div>
           ) : (
-            <p className="text-[13px] text-gray-700 leading-relaxed mt-0.5">{advice || "Add some deals to get AI-powered sales recommendations."}</p>
+            <p className="text-[13px] text-gray-700 leading-relaxed mt-0.5">{advice ? renderFormattedText(advice) : "Add some deals to get AI-powered sales recommendations."}</p>
           )}
         </div>
         <div className="flex items-center gap-1.5 flex-shrink-0">
-          <button onClick={onRefresh} disabled={loading} className="px-3 py-1.5 rounded-md text-[11px] font-medium text-indigo-600 bg-white border border-indigo-200 hover:bg-indigo-50 cursor-pointer transition-colors disabled:opacity-50">
+          <button onClick={onRefresh} disabled={loading} className="px-4 py-2 rounded-md text-[11px] font-medium text-indigo-600 bg-white border border-indigo-200 hover:bg-indigo-50 cursor-pointer transition-colors disabled:opacity-50">
             Refresh
           </button>
-          <button onClick={onChat} className="px-3 py-1.5 rounded-md text-[11px] font-medium text-white bg-indigo-600 hover:bg-indigo-700 cursor-pointer transition-colors">
+          <button onClick={onChat} className="px-4 py-2 rounded-md text-[11px] font-medium text-white bg-indigo-600 hover:bg-indigo-700 cursor-pointer transition-colors">
             Chat
           </button>
         </div>
@@ -331,13 +342,13 @@ function AiAdvisorBar({ advice, loading, onRefresh, onChat }: { advice: string; 
 /* ── Pipeline Toggle ── */
 function PipelineToggle({ active, onChange }: { active: PipelineType; onChange: (p: PipelineType) => void }) {
   return (
-    <div className="inline-flex rounded-lg bg-gray-100 p-0.5">
+    <div className="inline-flex rounded-lg bg-gray-100 p-1">
       {([["mully", "Mully Golf"], ["mfs", "MFS 3PL"]] as [PipelineType, string][]).map(([key, label]) => (
         <button
           key={key}
           onClick={() => onChange(key)}
           className={[
-            "px-5 py-2 rounded-md text-xs font-semibold cursor-pointer transition-all duration-150",
+            "px-6 py-2.5 rounded-md text-xs font-semibold cursor-pointer transition-all duration-150",
             active === key ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700",
           ].join(" ")}
         >
@@ -351,12 +362,12 @@ function PipelineToggle({ active, onChange }: { active: PipelineType; onChange: 
 /* ── View Toggle ── */
 function ViewToggle({ active, onChange }: { active: "kanban" | "table"; onChange: (v: "kanban" | "table") => void }) {
   return (
-    <div className="flex rounded-lg bg-gray-100 p-0.5">
+    <div className="flex rounded-lg bg-gray-100 p-1">
       {(["kanban", "table"] as const).map((mode) => (
         <button
           key={mode}
           onClick={() => onChange(mode)}
-          className={["px-3 py-2 rounded-md text-xs cursor-pointer transition-all", active === mode ? "bg-white text-gray-900 shadow-sm" : "text-gray-400"].join(" ")}
+          className={["px-3.5 py-2.5 rounded-md text-xs cursor-pointer transition-all", active === mode ? "bg-white text-gray-900 shadow-sm" : "text-gray-400"].join(" ")}
           title={mode === "kanban" ? "Board" : "Table"}
         >
           {mode === "kanban" ? (
@@ -417,13 +428,13 @@ function SearchFilterBar({
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search deals..."
-          className="w-full pl-8 pr-3 py-2 rounded-lg border border-gray-200 text-xs text-gray-700 focus:outline-none focus:border-gray-400 bg-white"
+          className="w-full pl-8 pr-3 py-2.5 rounded-lg border border-gray-200 text-xs text-gray-700 focus:outline-none focus:border-gray-400 bg-white"
         />
       </div>
       <select
         value={stageFilter}
         onChange={(e) => setStageFilter(e.target.value as DealStage | "all")}
-        className="px-3 py-2 rounded-lg border border-gray-200 text-[11px] text-gray-600 bg-white cursor-pointer focus:outline-none"
+        className="px-3.5 py-2.5 rounded-lg border border-gray-200 text-[11px] text-gray-600 bg-white cursor-pointer focus:outline-none"
       >
         <option value="all">All Stages</option>
         {ALL_STAGES.map((s) => <option key={s} value={s}>{s}</option>)}
@@ -431,7 +442,7 @@ function SearchFilterBar({
       <select
         value={ownerFilter}
         onChange={(e) => setOwnerFilter(e.target.value)}
-        className="px-3 py-2 rounded-lg border border-gray-200 text-[11px] text-gray-600 bg-white cursor-pointer focus:outline-none"
+        className="px-3.5 py-2.5 rounded-lg border border-gray-200 text-[11px] text-gray-600 bg-white cursor-pointer focus:outline-none"
       >
         <option value="all">All Owners</option>
         {USERS.map((u) => <option key={u.id} value={u.name}>{u.name}</option>)}
@@ -439,7 +450,7 @@ function SearchFilterBar({
       <button
         onClick={() => setHotOnly(!hotOnly)}
         className={[
-          "px-3 py-2 rounded-lg border text-[11px] font-medium cursor-pointer transition-all flex-shrink-0",
+          "px-3.5 py-2.5 rounded-lg border text-[11px] font-medium cursor-pointer transition-all flex-shrink-0",
           hotOnly ? "bg-amber-50 border-amber-300 text-amber-700" : "bg-white border-gray-200 text-gray-400 hover:border-amber-300 hover:text-amber-600",
         ].join(" ")}
       >
@@ -461,7 +472,7 @@ function KanbanBoard({
   onToggleStar: (id: string) => void;
 }) {
   return (
-    <div className="flex gap-2.5 overflow-x-auto pb-4 rounded-xl" style={{ minHeight: 320, background: "#F9FAFB", padding: "14px 12px" }}>
+    <div className="flex gap-2.5 overflow-x-auto pb-4 rounded-xl border border-gray-200" style={{ minHeight: 320, background: "#EEEEF2", padding: "16px 14px" }}>
       {ALL_STAGES.map((stage) => {
         const stageDeals = deals.filter((d) => d.stage === stage);
         const isExit = DEAL_EXIT_STAGES.includes(stage);
@@ -809,18 +820,6 @@ function DealDetailPanel({
       </div>
     </>
   );
-}
-
-/* ── Render bold markdown ── */
-function renderFormattedText(text: string): React.ReactNode {
-  // Split on **bold** patterns
-  const parts = text.split(/(\*\*[^*]+\*\*)/g);
-  return parts.map((part, i) => {
-    if (part.startsWith("**") && part.endsWith("**")) {
-      return <strong key={i}>{part.slice(2, -2)}</strong>;
-    }
-    return part;
-  });
 }
 
 /* ── AI Chat Panel ── */
