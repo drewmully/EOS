@@ -209,7 +209,7 @@ export type DealStage =
   | "Meeting Scheduled"
   | "Proposal Sent"
   | "Signed"
-  | "Paid"
+  | "Closed"
   | "Onboarding"
   | "Parking Lot"
   | "Not Interested";
@@ -221,7 +221,7 @@ export const DEAL_STAGES: DealStage[] = [
   "Meeting Scheduled",
   "Proposal Sent",
   "Signed",
-  "Paid",
+  "Closed",
   "Onboarding",
 ];
 
@@ -234,7 +234,7 @@ export const STAGE_COLORS: Record<DealStage, string> = {
   "Meeting Scheduled": "#0EA5E9",
   "Proposal Sent": "#F59E0B",
   "Signed": "#10B981",
-  "Paid": "#059669",
+  "Closed": "#059669",
   "Onboarding": "#0D9488",
   "Parking Lot": "#9CA3AF",
   "Not Interested": "#EF4444",
