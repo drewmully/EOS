@@ -159,8 +159,13 @@ export default function AppShell() {
       if (!sh.links) sh.links = [];
       if (!sh.marketing) sh.marketing = SEED_SHARED.marketing;
       if (!sh.pipeline) sh.pipeline = SEED_SHARED.pipeline || { mully: [], mfs: [] };
-      if (!sh.pipeline.mully) sh.pipeline.mully = [];
-      if (!sh.pipeline.mfs) sh.pipeline.mfs = [];
+      // Seed pipeline arrays only if they are missing or empty (first-time setup)
+      if (!sh.pipeline.mully || sh.pipeline.mully.length === 0) {
+        sh.pipeline.mully = SEED_SHARED.pipeline.mully;
+      }
+      if (!sh.pipeline.mfs || sh.pipeline.mfs.length === 0) {
+        sh.pipeline.mfs = SEED_SHARED.pipeline.mfs;
+      }
       // Channel icon auto-detect map
       const CHANNEL_ICONS: Record<string, string> = {
         "Email": "\u2709\uFE0F", "SMS": "\uD83D\uDCF1", "In-App": "\uD83D\uDD14", "On-Site": "\uD83C\uDF10",
