@@ -6,7 +6,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ response: "ANTHROPIC_API_KEY not configured. Add it to your environment to enable AI features." }, { status: 200 });
   }
 
-  const { system, message } = await req.json();
+  const { system, message, messages: conversationMessages } = await req.json();
+
+  // Build messages array: either a full conversation history or a single message
+  const apiMessages = conversationMessages
+    ? conversationMessages.map((m: { role: string; text: string }) => ({ role: m.role, content: m.text }))
+    : [{ role: "user", content: message }];
 
   try {
     const res = await fetch("https://api.anthropic.com/v1/messages", {
@@ -20,7 +25,7 @@ export async function POST(req: NextRequest) {
         model: "claude-sonnet-4-20250514",
         max_tokens: 1024,
         system: system || "You are a helpful marketing assistant.",
-        messages: [{ role: "user", content: message }],
+        messages: apiMessages,
       }),
     });
 

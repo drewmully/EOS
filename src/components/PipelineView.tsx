@@ -70,9 +70,14 @@ export function PipelineView({ shared, updateShared, activeUser }: Props) {
   const [aiAdvice, setAiAdvice] = useState<string>("");
   const [aiLoading, setAiLoading] = useState(false);
   const [showAiChat, setShowAiChat] = useState(false);
-  const [chatMessages, setChatMessages] = useState<{ role: "user" | "assistant"; text: string }[]>([]);
+  const [chatMessagesByPipeline, setChatMessagesByPipeline] = useState<Record<PipelineType, { role: "user" | "assistant"; text: string }[]>>({ mully: [], mfs: [] });
   const [chatInput, setChatInput] = useState("");
   const [chatLoading, setChatLoading] = useState(false);
+
+  const chatMessages = chatMessagesByPipeline[activePipeline];
+  const setChatMessages = useCallback((updater: (prev: { role: "user" | "assistant"; text: string }[]) => { role: "user" | "assistant"; text: string }[]) => {
+    setChatMessagesByPipeline((prev) => ({ ...prev, [activePipeline]: updater(prev[activePipeline]) }));
+  }, [activePipeline]);
 
   const deals = shared.pipeline?.[activePipeline] || [];
 
@@ -171,20 +176,22 @@ export function PipelineView({ shared, updateShared, activeUser }: Props) {
     if (!chatInput.trim()) return;
     const msg = chatInput.trim();
     setChatInput("");
-    setChatMessages((prev) => [...prev, { role: "user", text: msg }]);
+    const updatedMessages = [...chatMessages, { role: "user" as const, text: msg }];
+    setChatMessages(() => updatedMessages);
     setChatLoading(true);
-    const allDeals = [...(shared.pipeline?.mully || []), ...(shared.pipeline?.mfs || [])];
-    const summary = allDeals.map((d) => {
+    const pipelineDeals = shared.pipeline?.[activePipeline] || [];
+    const pipelineLabel = activePipeline === "mully" ? "Mully Golf Outings" : "MFS 3PL Clients";
+    const summary = pipelineDeals.map((d) => {
       const notes = d.notes.map((n) => `  [${n.date}] ${n.author}: ${n.text}`).join("\n");
-      return `${d.company} (${d.pipeline === "mully" ? "Mully Golf" : "MFS 3PL"}) — Stage: ${d.stage}, Value: $${d.value}, Owner: ${d.dealOwner}, Account: ${d.accountOwner}, Hot: ${d.starred}, Last activity: ${d.lastActivity}\n  Contact: ${d.contact.name} (${d.contact.title}) — ${d.contact.email}\n${notes ? "  Notes:\n" + notes : ""}`;
+      return `${d.company} — Stage: ${d.stage}, Value: $${d.value}, Owner: ${d.dealOwner}, Account: ${d.accountOwner}, Hot: ${d.starred}, Last activity: ${d.lastActivity}\n  Contact: ${d.contact.name} (${d.contact.title}) — ${d.contact.email}\n${notes ? "  Notes:\n" + notes : ""}`;
     }).join("\n\n");
     try {
       const res = await fetch("/api/ai", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          system: `You are a sharp sales strategist. You have full context on the user's pipeline. Be specific, reference companies by name, and give actionable advice. Keep responses concise (3-5 sentences max).\n\nPIPELINE DATA:\n${summary}`,
-          message: msg,
+          system: `You are a sharp sales strategist advising on the "${pipelineLabel}" pipeline. You have full context on this pipeline's deals. Be specific, reference companies by name, and give actionable advice. Keep responses concise (3-5 sentences max). Do NOT use markdown bold (**text**) — just use plain text.\n\nPIPELINE DATA:\n${summary}`,
+          messages: updatedMessages,
         }),
       });
       const data = await res.json();
@@ -193,7 +200,7 @@ export function PipelineView({ shared, updateShared, activeUser }: Props) {
       setChatMessages((prev) => [...prev, { role: "assistant", text: "Error connecting to AI." }]);
     }
     setChatLoading(false);
-  }, [chatInput, shared.pipeline]);
+  }, [chatInput, chatMessages, setChatMessages, shared.pipeline, activePipeline]);
 
   // Drag and drop
   const dragDeal = useRef<string | null>(null);
@@ -219,7 +226,7 @@ export function PipelineView({ shared, updateShared, activeUser }: Props) {
         <div className="flex items-center gap-2">
           <button
             onClick={addDeal}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-900 text-white text-xs font-medium hover:bg-gray-800 cursor-pointer transition-colors"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-gray-900 text-white text-xs font-medium hover:bg-gray-800 cursor-pointer transition-colors"
           >
             <IconPlus className="w-3 h-3" /> Add Deal
           </button>
@@ -276,6 +283,7 @@ export function PipelineView({ shared, updateShared, activeUser }: Props) {
         <AiChatPanel
           messages={chatMessages} input={chatInput} setInput={setChatInput}
           onSend={sendChat} loading={chatLoading} onClose={() => setShowAiChat(false)}
+          pipelineLabel={activePipeline === "mully" ? "Mully Golf" : "MFS 3PL"}
         />
       )}
     </div>
@@ -308,10 +316,10 @@ function AiAdvisorBar({ advice, loading, onRefresh, onChat }: { advice: string; 
           )}
         </div>
         <div className="flex items-center gap-1.5 flex-shrink-0">
-          <button onClick={onRefresh} disabled={loading} className="px-2.5 py-1 rounded-md text-[11px] font-medium text-indigo-600 bg-white border border-indigo-200 hover:bg-indigo-50 cursor-pointer transition-colors disabled:opacity-50">
+          <button onClick={onRefresh} disabled={loading} className="px-3 py-1.5 rounded-md text-[11px] font-medium text-indigo-600 bg-white border border-indigo-200 hover:bg-indigo-50 cursor-pointer transition-colors disabled:opacity-50">
             Refresh
           </button>
-          <button onClick={onChat} className="px-2.5 py-1 rounded-md text-[11px] font-medium text-white bg-indigo-600 hover:bg-indigo-700 cursor-pointer transition-colors">
+          <button onClick={onChat} className="px-3 py-1.5 rounded-md text-[11px] font-medium text-white bg-indigo-600 hover:bg-indigo-700 cursor-pointer transition-colors">
             Chat
           </button>
         </div>
@@ -329,7 +337,7 @@ function PipelineToggle({ active, onChange }: { active: PipelineType; onChange: 
           key={key}
           onClick={() => onChange(key)}
           className={[
-            "px-4 py-1.5 rounded-md text-xs font-semibold cursor-pointer transition-all duration-150",
+            "px-5 py-2 rounded-md text-xs font-semibold cursor-pointer transition-all duration-150",
             active === key ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700",
           ].join(" ")}
         >
@@ -348,7 +356,7 @@ function ViewToggle({ active, onChange }: { active: "kanban" | "table"; onChange
         <button
           key={mode}
           onClick={() => onChange(mode)}
-          className={["px-2.5 py-1.5 rounded-md text-xs cursor-pointer transition-all", active === mode ? "bg-white text-gray-900 shadow-sm" : "text-gray-400"].join(" ")}
+          className={["px-3 py-2 rounded-md text-xs cursor-pointer transition-all", active === mode ? "bg-white text-gray-900 shadow-sm" : "text-gray-400"].join(" ")}
           title={mode === "kanban" ? "Board" : "Table"}
         >
           {mode === "kanban" ? (
@@ -377,9 +385,9 @@ function KpiStrip({ kpis }: { kpis: { active: number; hot: number; proposalSent:
     { label: "Hotlist Volume", value: fmtMoney(kpis.hotlistValue), color: "#D97706", prefix: "\u2605 " },
   ];
   return (
-    <div className="grid grid-cols-6 gap-2" style={{ marginBottom: 12 }}>
+    <div className="grid grid-cols-6 gap-2.5" style={{ marginBottom: 14 }}>
       {items.map((item) => (
-        <div key={item.label} className="rounded-lg bg-white border border-gray-100 text-center" style={{ padding: "10px 6px" }}>
+        <div key={item.label} className="rounded-lg bg-white border border-gray-100 text-center" style={{ padding: "11px 7px" }}>
           <div className="text-lg font-bold leading-none" style={{ color: item.color }}>
             {item.prefix || ""}{item.value}
           </div>
@@ -409,13 +417,13 @@ function SearchFilterBar({
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search deals..."
-          className="w-full pl-8 pr-3 py-1.5 rounded-lg border border-gray-200 text-xs text-gray-700 focus:outline-none focus:border-gray-400 bg-white"
+          className="w-full pl-8 pr-3 py-2 rounded-lg border border-gray-200 text-xs text-gray-700 focus:outline-none focus:border-gray-400 bg-white"
         />
       </div>
       <select
         value={stageFilter}
         onChange={(e) => setStageFilter(e.target.value as DealStage | "all")}
-        className="px-2.5 py-1.5 rounded-lg border border-gray-200 text-[11px] text-gray-600 bg-white cursor-pointer focus:outline-none"
+        className="px-3 py-2 rounded-lg border border-gray-200 text-[11px] text-gray-600 bg-white cursor-pointer focus:outline-none"
       >
         <option value="all">All Stages</option>
         {ALL_STAGES.map((s) => <option key={s} value={s}>{s}</option>)}
@@ -423,7 +431,7 @@ function SearchFilterBar({
       <select
         value={ownerFilter}
         onChange={(e) => setOwnerFilter(e.target.value)}
-        className="px-2.5 py-1.5 rounded-lg border border-gray-200 text-[11px] text-gray-600 bg-white cursor-pointer focus:outline-none"
+        className="px-3 py-2 rounded-lg border border-gray-200 text-[11px] text-gray-600 bg-white cursor-pointer focus:outline-none"
       >
         <option value="all">All Owners</option>
         {USERS.map((u) => <option key={u.id} value={u.name}>{u.name}</option>)}
@@ -431,7 +439,7 @@ function SearchFilterBar({
       <button
         onClick={() => setHotOnly(!hotOnly)}
         className={[
-          "px-2.5 py-1.5 rounded-lg border text-[11px] font-medium cursor-pointer transition-all flex-shrink-0",
+          "px-3 py-2 rounded-lg border text-[11px] font-medium cursor-pointer transition-all flex-shrink-0",
           hotOnly ? "bg-amber-50 border-amber-300 text-amber-700" : "bg-white border-gray-200 text-gray-400 hover:border-amber-300 hover:text-amber-600",
         ].join(" ")}
       >
@@ -453,7 +461,7 @@ function KanbanBoard({
   onToggleStar: (id: string) => void;
 }) {
   return (
-    <div className="flex gap-2 overflow-x-auto pb-4" style={{ minHeight: 320 }}>
+    <div className="flex gap-2.5 overflow-x-auto pb-4 rounded-xl" style={{ minHeight: 320, background: "#F9FAFB", padding: "14px 12px" }}>
       {ALL_STAGES.map((stage) => {
         const stageDeals = deals.filter((d) => d.stage === stage);
         const isExit = DEAL_EXIT_STAGES.includes(stage);
@@ -480,7 +488,7 @@ function KanbanBoard({
             </div>
 
             {/* Cards */}
-            <div className="flex-1 p-1.5 flex flex-col gap-1.5">
+            <div className="flex-1 p-1.5 flex flex-col gap-2">
               {stageDeals.map((deal) => {
                 const days = daysSince(deal.lastActivity);
                 const staleClass = days >= 14 ? "text-red-500" : days >= 7 ? "text-amber-500" : "text-gray-400";
@@ -493,7 +501,7 @@ function KanbanBoard({
                     onDragStart={() => onDragStart(deal.id)}
                     onClick={() => onSelect(deal.id)}
                     className="bg-white rounded-md border border-gray-100 cursor-pointer hover:shadow-md hover:-translate-y-0.5 transition-all duration-150"
-                    style={{ padding: "8px 10px" }}
+                    style={{ padding: "9px 11px" }}
                   >
                     {/* Star + company */}
                     <div className="flex items-start gap-1">
@@ -704,12 +712,12 @@ function DealDetailPanel({
               {deal.stage !== "Not Interested" && deal.stage !== "Parking Lot" && (
                 <>
                   {DEAL_STAGES.indexOf(deal.stage) < DEAL_STAGES.length - 1 && (
-                    <button onClick={() => { const idx = DEAL_STAGES.indexOf(deal.stage); if (idx >= 0 && idx < DEAL_STAGES.length - 1) onUpdate((d) => { d.stage = DEAL_STAGES[idx + 1]; }); }} className="text-[10px] px-2 py-0.5 rounded bg-emerald-50 text-emerald-600 font-medium cursor-pointer hover:bg-emerald-100 transition-colors">
+                    <button onClick={() => { const idx = DEAL_STAGES.indexOf(deal.stage); if (idx >= 0 && idx < DEAL_STAGES.length - 1) onUpdate((d) => { d.stage = DEAL_STAGES[idx + 1]; }); }} className="text-[10px] px-2.5 py-1 rounded bg-emerald-50 text-emerald-600 font-medium cursor-pointer hover:bg-emerald-100 transition-colors">
                       Advance &rarr;
                     </button>
                   )}
-                  <button onClick={() => onUpdate((d) => { d.stage = "Parking Lot"; })} className="text-[10px] px-2 py-0.5 rounded bg-gray-100 text-gray-500 font-medium cursor-pointer hover:bg-gray-200 transition-colors">Park</button>
-                  <button onClick={() => onUpdate((d) => { d.stage = "Not Interested"; })} className="text-[10px] px-2 py-0.5 rounded bg-red-50 text-red-500 font-medium cursor-pointer hover:bg-red-100 transition-colors">Lost</button>
+                  <button onClick={() => onUpdate((d) => { d.stage = "Parking Lot"; })} className="text-[10px] px-2.5 py-1 rounded bg-gray-100 text-gray-500 font-medium cursor-pointer hover:bg-gray-200 transition-colors">Park</button>
+                  <button onClick={() => onUpdate((d) => { d.stage = "Not Interested"; })} className="text-[10px] px-2.5 py-1 rounded bg-red-50 text-red-500 font-medium cursor-pointer hover:bg-red-100 transition-colors">Lost</button>
                 </>
               )}
             </div>
@@ -766,7 +774,7 @@ function DealDetailPanel({
             <div className="flex gap-1.5 mt-1.5">
               <input value={newLinkLabel} onChange={(e) => setNewLinkLabel(e.target.value)} placeholder="Label" className="flex-1 px-2 py-1 rounded border border-gray-200 text-[11px] focus:outline-none" />
               <input value={newLinkUrl} onChange={(e) => setNewLinkUrl(e.target.value)} placeholder="URL" className="flex-1 px-2 py-1 rounded border border-gray-200 text-[11px] focus:outline-none" />
-              <button onClick={addLink} className="px-2 py-1 rounded bg-gray-100 text-gray-600 text-[11px] font-medium hover:bg-gray-200 cursor-pointer">Add</button>
+              <button onClick={addLink} className="px-2.5 py-1.5 rounded bg-gray-100 text-gray-600 text-[11px] font-medium hover:bg-gray-200 cursor-pointer">Add</button>
             </div>
           </div>
 
@@ -775,7 +783,7 @@ function DealDetailPanel({
             <label className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 block mb-1.5">Notes</label>
             <div className="mb-2.5">
               <textarea value={newNote} onChange={(e) => setNewNote(e.target.value)} placeholder="Add a note..." rows={2} className="w-full px-2.5 py-1.5 rounded-lg border border-gray-200 text-xs focus:outline-none focus:border-gray-400 resize-none" />
-              <button onClick={addNote} disabled={!newNote.trim()} className="mt-1 px-3 py-1 rounded-lg bg-gray-900 text-white text-[11px] font-medium hover:bg-gray-800 cursor-pointer transition-colors disabled:opacity-40">Add Note</button>
+              <button onClick={addNote} disabled={!newNote.trim()} className="mt-1 px-3.5 py-1.5 rounded-lg bg-gray-900 text-white text-[11px] font-medium hover:bg-gray-800 cursor-pointer transition-colors disabled:opacity-40">Add Note</button>
             </div>
             {deal.notes.map((note) => {
               const authorUser = USERS.find((u) => u.id === note.author);
@@ -803,13 +811,26 @@ function DealDetailPanel({
   );
 }
 
+/* ── Render bold markdown ── */
+function renderFormattedText(text: string): React.ReactNode {
+  // Split on **bold** patterns
+  const parts = text.split(/(\*\*[^*]+\*\*)/g);
+  return parts.map((part, i) => {
+    if (part.startsWith("**") && part.endsWith("**")) {
+      return <strong key={i}>{part.slice(2, -2)}</strong>;
+    }
+    return part;
+  });
+}
+
 /* ── AI Chat Panel ── */
 function AiChatPanel({
-  messages, input, setInput, onSend, loading, onClose,
+  messages, input, setInput, onSend, loading, onClose, pipelineLabel,
 }: {
   messages: { role: "user" | "assistant"; text: string }[];
   input: string; setInput: (s: string) => void;
   onSend: () => void; loading: boolean; onClose: () => void;
+  pipelineLabel: string;
 }) {
   const bottomRef = useRef<HTMLDivElement>(null);
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
@@ -821,21 +842,21 @@ function AiChatPanel({
         <div className="flex items-center justify-between px-4 py-2.5 border-b border-gray-100">
           <div>
             <span className="text-sm font-semibold text-gray-900">Sales Advisor Chat</span>
-            <p className="text-[10px] text-gray-400">Ask about your pipeline, strategy, next steps</p>
+            <p className="text-[10px] text-gray-400">{pipelineLabel} &middot; Ask about your pipeline, strategy, next steps</p>
           </div>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600 cursor-pointer"><IconX className="w-4 h-4" /></button>
         </div>
         <div className="flex-1 overflow-y-auto px-4 py-3">
           {messages.length === 0 && (
             <div className="text-center text-xs text-gray-400 mt-8">
-              <p className="mb-1">Ask me anything about your pipeline.</p>
+              <p className="mb-1">Ask me anything about your {pipelineLabel} pipeline.</p>
               <p className="text-[11px] text-gray-300">e.g. &ldquo;What should I prioritize this week?&rdquo;</p>
             </div>
           )}
           {messages.map((msg, i) => (
             <div key={i} className={`mb-2.5 ${msg.role === "user" ? "text-right" : ""}`}>
               <div className={["inline-block max-w-[85%] rounded-lg px-3 py-1.5 text-xs leading-relaxed", msg.role === "user" ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-700"].join(" ")}>
-                {msg.text}
+                {renderFormattedText(msg.text)}
               </div>
             </div>
           ))}
