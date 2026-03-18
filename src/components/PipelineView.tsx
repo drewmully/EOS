@@ -137,40 +137,50 @@ export function PipelineView({ shared, updateShared, activeUser }: Props) {
     [updateShared, activePipeline, selectedDeal]
   );
 
-  // AI Advisor
-  const fetchAdvice = useCallback(async () => {
+  // AI Advisor — toggle-aware: reads only the active pipeline's deals
+  const fetchAdvice = useCallback(async (pipeline?: PipelineType) => {
+    const p = pipeline || activePipeline;
     setAiLoading(true);
-    const allDeals = [...(shared.pipeline?.mully || []), ...(shared.pipeline?.mfs || [])];
-    const summary = allDeals.map((d) => {
+    const pipelineDeals = shared.pipeline?.[p] || [];
+    const pipelineLabel = p === "mully" ? "Mully Golf Outings" : "MFS 3PL Clients";
+    const businessContext = p === "mully"
+      ? "Mully Golf Outings — premium corporate golf experience events, charity tournaments, and sponsor activations"
+      : "MFS 3PL — third-party logistics client acquisition, warehouse/fulfillment services for e-commerce and retail brands";
+    const summary = pipelineDeals.map((d) => {
       const lastNote = d.notes[d.notes.length - 1];
-      return `${d.company} (${d.pipeline === "mully" ? "Mully Golf" : "MFS 3PL"}) — Stage: ${d.stage}, Value: $${d.value}, Deal Owner: ${d.dealOwner || "unassigned"}, Days since activity: ${daysSince(d.lastActivity)}, Hot: ${d.starred ? "YES" : "no"}${lastNote ? `, Last note: "${lastNote.text}"` : ""}`;
+      return `${d.company} — Stage: ${d.stage}, Value: $${d.value}, Deal Owner: ${d.dealOwner || "unassigned"}, Days since activity: ${daysSince(d.lastActivity)}, Hot: ${d.starred ? "YES" : "no"}${lastNote ? `, Last note: "${lastNote.text}"` : ""}`;
     }).join("\n");
     try {
       const res = await fetch("/api/ai", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          system: `You are a sharp, concise sales strategist advising a small business with two sales initiatives:\n1. Mully Golf Outings — premium corporate golf experience events\n2. MFS — new 3PL (third-party logistics) client acquisition\n\nAnalyze the pipeline data and give ONE high-impact, specific recommendation. Reference actual company names and stages. 2-3 sentences max. Be motivating and actionable. No fluff.`,
-          message: `Here is our current pipeline:\n\n${summary}\n\nWhat's the single most impactful thing we should do today?`,
+          system: `You are a sharp, concise sales strategist advising on the "${pipelineLabel}" pipeline.\nBusiness: ${businessContext}\n\nAnalyze the pipeline data and give ONE high-impact, specific recommendation. Reference actual company names, stages, and days since last activity. 2-3 sentences max. Be motivating and actionable. No fluff. Do NOT use markdown bold (**text**) — just use plain text.`,
+          message: `Here is our current ${pipelineLabel} pipeline (${pipelineDeals.length} deals):\n\n${summary}\n\nWhat's the single most impactful thing we should do today for ${pipelineLabel}?`,
         }),
       });
       const data = await res.json();
       setAiAdvice(data.response || "Unable to get advice right now.");
-      try { localStorage.setItem("pipeline-advice-date", new Date().toISOString().slice(0, 10)); localStorage.setItem("pipeline-advice", data.response); } catch { /* */ }
+      try {
+        localStorage.setItem(`pipeline-advice-${p}`, data.response);
+        localStorage.setItem(`pipeline-advice-date-${p}`, new Date().toISOString().slice(0, 10));
+      } catch { /* */ }
     } catch {
       setAiAdvice("Could not connect to AI advisor. Check your API key.");
     }
     setAiLoading(false);
-  }, [shared.pipeline]);
+  }, [shared.pipeline, activePipeline]);
 
+  // Fetch advice on mount and when pipeline toggle changes
   useEffect(() => {
     const today = new Date().toISOString().slice(0, 10);
-    const cached = localStorage.getItem("pipeline-advice");
-    const cachedDate = localStorage.getItem("pipeline-advice-date");
+    const cached = localStorage.getItem(`pipeline-advice-${activePipeline}`);
+    const cachedDate = localStorage.getItem(`pipeline-advice-date-${activePipeline}`);
     if (cached && cachedDate === today) setAiAdvice(cached);
-    else if (deals.length > 0) fetchAdvice();
+    else if ((shared.pipeline?.[activePipeline] || []).length > 0) fetchAdvice(activePipeline);
+    else setAiAdvice("");
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [activePipeline]);
 
   const sendChat = useCallback(async () => {
     if (!chatInput.trim()) return;

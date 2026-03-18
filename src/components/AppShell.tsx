@@ -159,22 +159,8 @@ export default function AppShell() {
       if (!sh.links) sh.links = [];
       if (!sh.marketing) sh.marketing = SEED_SHARED.marketing;
       if (!sh.pipeline) sh.pipeline = SEED_SHARED.pipeline || { mully: [], mfs: [] };
-      // One-time migration: replace placeholder Mully pipeline with real outreach data
-      const hasRealOutreachData = sh.pipeline.mully.some((d) =>
-        ["Pro-Am Tour at Pebble Beach", "NECHV Chipping In", "MNTC Golf Sponsor", "ESPYS Celebrity Golf Classic"].includes(d.company)
-      );
-      if (!hasRealOutreachData) {
-        console.log("[EOS] Seeding Mully pipeline with outreach data...");
-        sh.pipeline.mully = SEED_SHARED.pipeline.mully;
-      }
-      // One-time migration: seed marketing data from spreadsheet if campaigns are empty
-      const hasCampaignContent = sh.marketing.stages.some((s) =>
-        s.channels.some((ch) => (ch.campaigns || []).some((camp) => camp.content.length > 0))
-      );
-      if (!hasCampaignContent) {
-        console.log("[EOS] Seeding marketing data from spreadsheet...");
-        sh.marketing = SEED_SHARED.marketing;
-      }
+      if (!sh.pipeline.mully) sh.pipeline.mully = [];
+      if (!sh.pipeline.mfs) sh.pipeline.mfs = [];
       // Channel icon auto-detect map
       const CHANNEL_ICONS: Record<string, string> = {
         "Email": "\u2709\uFE0F", "SMS": "\uD83D\uDCF1", "In-App": "\uD83D\uDD14", "On-Site": "\uD83C\uDF10",
