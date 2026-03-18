@@ -198,10 +198,95 @@ export interface MarketingData {
   learnings: Learning[];
 }
 
+/* ── CRM Pipeline ── */
+
+export type PipelineType = "mully" | "mfs";
+
+export type DealStage =
+  | "Cold Outreach"
+  | "Following Up"
+  | "Responded"
+  | "Meeting Scheduled"
+  | "Proposal Sent"
+  | "Signed"
+  | "Paid"
+  | "Onboarding"
+  | "Parking Lot"
+  | "Not Interested";
+
+export const DEAL_STAGES: DealStage[] = [
+  "Cold Outreach",
+  "Following Up",
+  "Responded",
+  "Meeting Scheduled",
+  "Proposal Sent",
+  "Signed",
+  "Paid",
+  "Onboarding",
+];
+
+export const DEAL_EXIT_STAGES: DealStage[] = ["Parking Lot", "Not Interested"];
+
+export const STAGE_COLORS: Record<DealStage, string> = {
+  "Cold Outreach": "#6366F1",
+  "Following Up": "#8B5CF6",
+  "Responded": "#3B82F6",
+  "Meeting Scheduled": "#0EA5E9",
+  "Proposal Sent": "#F59E0B",
+  "Signed": "#10B981",
+  "Paid": "#059669",
+  "Onboarding": "#0D9488",
+  "Parking Lot": "#9CA3AF",
+  "Not Interested": "#EF4444",
+};
+
+export interface DealContact {
+  name: string;
+  title: string;
+  email: string;
+  phone: string;
+}
+
+export interface DealNote {
+  id: string;
+  date: string;       // ISO date
+  author: string;     // user id (drew/jack/joe)
+  text: string;
+}
+
+export interface DealLink {
+  id: string;
+  label: string;
+  url: string;
+}
+
+export interface Deal {
+  id: string;
+  pipeline: PipelineType;
+  company: string;
+  contact: DealContact;
+  stage: DealStage;
+  dealOwner: string;      // person who owns the relationship (Drew/Jack/Joe)
+  accountOwner: string;   // person who manages the account long-term
+  starred: boolean;       // "hot list" flag
+  value: number;          // estimated deal value in dollars
+  notes: DealNote[];
+  links: DealLink[];
+  createdDate: string;    // ISO date
+  lastActivity: string;   // ISO date — auto-updated on any edit
+  tags: string[];
+}
+
+export interface PipelineData {
+  mully: Deal[];
+  mfs: Deal[];
+}
+
 export interface SharedData {
   issuesMFS: Issue[];
   issuesMully: Issue[];
   scorecard: Scorecard;
   links: LinkItem[];
   marketing: MarketingData;
+  pipeline: PipelineData;
 }

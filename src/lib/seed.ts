@@ -1,4 +1,4 @@
-import { UserData, SharedData, ContentItem } from "./types";
+import { UserData, SharedData, ContentItem, Deal } from "./types";
 
 function uid() {
   return "id_" + Math.random().toString(36).slice(2, 9) + Date.now().toString(36);
@@ -461,5 +461,144 @@ export const SEED_SHARED: SharedData = {
       },
     ],
     learnings: [],
+  },
+
+  pipeline: {
+    mully: [
+      {
+        id: uid(), pipeline: "mully", company: "Titleist Corporate Events", stage: "Meeting Scheduled", starred: true, value: 45000,
+        contact: { name: "Brian Hastings", title: "VP Corporate Partnerships", email: "bhastings@titleist.com", phone: "508-555-0142" },
+        dealOwner: "Drew", accountOwner: "Drew",
+        notes: [
+          { id: uid(), date: "2026-03-10", author: "drew", text: "Great intro call — they host 6 corp outings/yr and want a premium partner. Sending capabilities deck." },
+          { id: uid(), date: "2026-03-15", author: "drew", text: "Meeting set for 3/22 at their HQ. Bringing sample event package." },
+        ],
+        links: [{ id: uid(), label: "Capabilities Deck", url: "https://drive.google.com/deck" }],
+        createdDate: "2026-03-05", lastActivity: "2026-03-15", tags: ["premium"],
+      },
+      {
+        id: uid(), pipeline: "mully", company: "TaylorMade Partnerships", stage: "Following Up", starred: false, value: 30000,
+        contact: { name: "Sarah Chen", title: "Events Director", email: "schen@taylormade.com", phone: "760-555-0188" },
+        dealOwner: "Drew", accountOwner: "Drew",
+        notes: [{ id: uid(), date: "2026-03-12", author: "drew", text: "Sent intro email with event photos. Following up Friday." }],
+        links: [], createdDate: "2026-03-08", lastActivity: "2026-03-12", tags: [],
+      },
+      {
+        id: uid(), pipeline: "mully", company: "Callaway Golf Days", stage: "Cold Outreach", starred: false, value: 25000,
+        contact: { name: "Mike Torres", title: "Brand Activations Mgr", email: "mtorres@callaway.com", phone: "760-555-0234" },
+        dealOwner: "Drew", accountOwner: "Joe",
+        notes: [{ id: uid(), date: "2026-03-16", author: "drew", text: "Found contact on LinkedIn. Sent connection request + cold email." }],
+        links: [], createdDate: "2026-03-16", lastActivity: "2026-03-16", tags: [],
+      },
+      {
+        id: uid(), pipeline: "mully", company: "Topgolf Corporate", stage: "Proposal Sent", starred: true, value: 60000,
+        contact: { name: "Jessica Wright", title: "Sr. Partnerships Manager", email: "jwright@topgolf.com", phone: "214-555-0177" },
+        dealOwner: "Drew", accountOwner: "Drew",
+        notes: [
+          { id: uid(), date: "2026-02-28", author: "drew", text: "Met at industry event. Huge opportunity — they want to add premium golf outings to their corporate menu." },
+          { id: uid(), date: "2026-03-08", author: "drew", text: "Discovery call went great. Sending proposal for 4-event pilot." },
+          { id: uid(), date: "2026-03-14", author: "drew", text: "Proposal sent. $60K for 4-event pilot. Waiting on their procurement team." },
+        ],
+        links: [{ id: uid(), label: "Proposal PDF", url: "https://drive.google.com/proposal-topgolf" }],
+        createdDate: "2026-02-28", lastActivity: "2026-03-14", tags: ["pilot", "high-value"],
+      },
+      {
+        id: uid(), pipeline: "mully", company: "PGA Tour Experiences", stage: "Responded", starred: false, value: 75000,
+        contact: { name: "David Park", title: "Director of Experiences", email: "dpark@pgatour.com", phone: "904-555-0199" },
+        dealOwner: "Drew", accountOwner: "Joe",
+        notes: [{ id: uid(), date: "2026-03-13", author: "drew", text: "They replied! Interested in exploring co-branded golf experiences. Want to set up a call next week." }],
+        links: [], createdDate: "2026-03-01", lastActivity: "2026-03-13", tags: ["co-brand"],
+      },
+      {
+        id: uid(), pipeline: "mully", company: "ClubCorp Events", stage: "Signed", starred: false, value: 35000,
+        contact: { name: "Amanda Liu", title: "Events Coordinator", email: "aliu@clubcorp.com", phone: "972-555-0166" },
+        dealOwner: "Drew", accountOwner: "Drew",
+        notes: [
+          { id: uid(), date: "2026-02-15", author: "drew", text: "Signed 3-event package! First outing scheduled for April 12." },
+        ],
+        links: [{ id: uid(), label: "Signed Contract", url: "https://drive.google.com/clubcorp-contract" }],
+        createdDate: "2026-01-20", lastActivity: "2026-02-15", tags: [],
+      },
+      {
+        id: uid(), pipeline: "mully", company: "Pebble Beach Resorts", stage: "Parking Lot", starred: false, value: 100000,
+        contact: { name: "Robert Kim", title: "Corporate Sales Director", email: "rkim@pebblebeach.com", phone: "831-555-0211" },
+        dealOwner: "Drew", accountOwner: "Drew",
+        notes: [{ id: uid(), date: "2026-02-20", author: "drew", text: "Interested but their 2026 calendar is full. Revisit in Q4 for 2027 planning." }],
+        links: [], createdDate: "2026-02-10", lastActivity: "2026-02-20", tags: ["whale"],
+      },
+    ] as Deal[],
+    mfs: [
+      {
+        id: uid(), pipeline: "mfs", company: "FreshDirect", stage: "Meeting Scheduled", starred: true, value: 120000,
+        contact: { name: "Karen Patel", title: "VP Supply Chain", email: "kpatel@freshdirect.com", phone: "718-555-0133" },
+        dealOwner: "Drew", accountOwner: "Joe",
+        notes: [
+          { id: uid(), date: "2026-03-10", author: "drew", text: "Intro from networking event. They're looking to switch 3PL providers. Meeting scheduled for 3/20." },
+          { id: uid(), date: "2026-03-14", author: "joe", text: "Prepped capabilities doc with cold chain specs. Drew presenting Thursday." },
+        ],
+        links: [{ id: uid(), label: "Capabilities Doc", url: "https://drive.google.com/mfs-capabilities" }],
+        createdDate: "2026-03-05", lastActivity: "2026-03-14", tags: ["cold-chain"],
+      },
+      {
+        id: uid(), pipeline: "mfs", company: "Bloom & Wild", stage: "Proposal Sent", starred: false, value: 85000,
+        contact: { name: "Tom Sanders", title: "Head of Logistics", email: "tsanders@bloomandwild.com", phone: "212-555-0178" },
+        dealOwner: "Drew", accountOwner: "Joe",
+        notes: [
+          { id: uid(), date: "2026-03-01", author: "drew", text: "Great discovery call. They need temp-controlled fulfillment for perishable flower kits." },
+          { id: uid(), date: "2026-03-11", author: "drew", text: "Proposal sent — $85K annual for fulfillment + kitting." },
+        ],
+        links: [{ id: uid(), label: "Proposal", url: "https://drive.google.com/bloom-proposal" }],
+        createdDate: "2026-02-20", lastActivity: "2026-03-11", tags: ["perishable"],
+      },
+      {
+        id: uid(), pipeline: "mfs", company: "Dollar Shave Club", stage: "Following Up", starred: false, value: 200000,
+        contact: { name: "Nina Vasquez", title: "Fulfillment Manager", email: "nvasquez@dollarshaveclub.com", phone: "310-555-0199" },
+        dealOwner: "Drew", accountOwner: "Drew",
+        notes: [{ id: uid(), date: "2026-03-08", author: "drew", text: "Cold email got a response — they're exploring regional 3PL partners. Sent follow-up with case studies." }],
+        links: [], createdDate: "2026-03-03", lastActivity: "2026-03-08", tags: ["subscription"],
+      },
+      {
+        id: uid(), pipeline: "mfs", company: "Warby Parker", stage: "Cold Outreach", starred: false, value: 150000,
+        contact: { name: "Raj Mehta", title: "Director of Operations", email: "rmehta@warbyparker.com", phone: "646-555-0222" },
+        dealOwner: "Drew", accountOwner: "Joe",
+        notes: [{ id: uid(), date: "2026-03-17", author: "drew", text: "Identified as ideal ICP match. LinkedIn DM + email sent today." }],
+        links: [], createdDate: "2026-03-17", lastActivity: "2026-03-17", tags: ["dtc"],
+      },
+      {
+        id: uid(), pipeline: "mfs", company: "Glossier", stage: "Responded", starred: true, value: 175000,
+        contact: { name: "Amy Chen", title: "Sr. Operations Manager", email: "achen@glossier.com", phone: "646-555-0188" },
+        dealOwner: "Drew", accountOwner: "Joe",
+        notes: [
+          { id: uid(), date: "2026-03-06", author: "drew", text: "Cold outreach via LinkedIn. She replied — wants to learn more about our DTC fulfillment capabilities." },
+          { id: uid(), date: "2026-03-13", author: "drew", text: "Sent detailed overview. She's sharing with their ops team. Following up next week." },
+        ],
+        links: [], createdDate: "2026-03-01", lastActivity: "2026-03-13", tags: ["beauty", "dtc"],
+      },
+      {
+        id: uid(), pipeline: "mfs", company: "Casper Logistics", stage: "Signed", starred: false, value: 95000,
+        contact: { name: "Mark Sullivan", title: "Logistics Coordinator", email: "msullivan@casper.com", phone: "646-555-0155" },
+        dealOwner: "Drew", accountOwner: "Joe",
+        notes: [
+          { id: uid(), date: "2026-02-10", author: "drew", text: "Signed! Starting with mattress accessory fulfillment. Onboarding kicked off." },
+        ],
+        links: [{ id: uid(), label: "MSA", url: "https://drive.google.com/casper-msa" }],
+        createdDate: "2026-01-15", lastActivity: "2026-02-10", tags: [],
+      },
+      {
+        id: uid(), pipeline: "mfs", company: "Allbirds", stage: "Onboarding", starred: false, value: 110000,
+        contact: { name: "Lisa Tran", title: "Fulfillment Director", email: "ltran@allbirds.com", phone: "415-555-0177" },
+        dealOwner: "Joe", accountOwner: "Joe",
+        notes: [
+          { id: uid(), date: "2026-01-28", author: "joe", text: "Contract signed. Setting up warehouse integration and inventory receiving." },
+          { id: uid(), date: "2026-02-15", author: "jack", text: "Shiphero integration live. First test shipment successful." },
+          { id: uid(), date: "2026-03-01", author: "joe", text: "Onboarding 80% complete. Full go-live targeted for 3/20." },
+        ],
+        links: [
+          { id: uid(), label: "Onboarding Checklist", url: "https://drive.google.com/allbirds-onboard" },
+          { id: uid(), label: "Integration Spec", url: "https://drive.google.com/allbirds-spec" },
+        ],
+        createdDate: "2026-01-10", lastActivity: "2026-03-01", tags: ["dtc", "apparel"],
+      },
+    ] as Deal[],
   },
 };

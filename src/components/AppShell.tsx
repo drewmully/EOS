@@ -15,6 +15,7 @@ import { IDSView } from "./IDSView";
 import { ScorecardView } from "./ScorecardView";
 import { LinksView } from "./LinksView";
 import { MarketingView } from "./MarketingView";
+import { PipelineView } from "./PipelineView";
 import { IconX } from "./ui/Icons";
 
 export default function AppShell() {
@@ -157,6 +158,7 @@ export default function AppShell() {
       if (!sh.scorecard) sh.scorecard = SEED_SHARED.scorecard;
       if (!sh.links) sh.links = [];
       if (!sh.marketing) sh.marketing = SEED_SHARED.marketing;
+      if (!sh.pipeline) sh.pipeline = SEED_SHARED.pipeline || { mully: [], mfs: [] };
       // One-time migration: seed marketing data from spreadsheet if campaigns are empty
       const hasCampaignContent = sh.marketing.stages.some((s) =>
         s.channels.some((ch) => (ch.campaigns || []).some((camp) => camp.content.length > 0))
@@ -355,7 +357,7 @@ export default function AppShell() {
                 <IconX className="w-4 h-4" />
               </button>
             </div>
-            {(["today", "rocks", "inbox", "seats", "growth", "vto", "ids", "scorecard", "marketing", "links"] as View[]).map((k) => (
+            {(["today", "rocks", "inbox", "seats", "growth", "vto", "ids", "scorecard", "marketing", "pipeline", "links"] as View[]).map((k) => (
               <button
                 key={k}
                 onClick={() => { setView(k); setMobileNav(false); }}
@@ -366,7 +368,7 @@ export default function AppShell() {
                     : "text-gray-500 hover:text-gray-700 hover:bg-gray-50",
                 ].join(" ")}
               >
-                {k === "vto" ? "V/TO" : k === "ids" ? "IDS" : k.charAt(0).toUpperCase() + k.slice(1)}
+                {k === "vto" ? "V/TO" : k === "ids" ? "IDS" : k === "pipeline" ? "Pipeline" : k.charAt(0).toUpperCase() + k.slice(1)}
               </button>
             ))}
           </div>
@@ -398,6 +400,9 @@ export default function AppShell() {
           )}
           {view === "marketing" && sharedData && (
             <MarketingView shared={sharedData} updateShared={updateShared} />
+          )}
+          {view === "pipeline" && sharedData && (
+            <PipelineView shared={sharedData} updateShared={updateShared} activeUser={activeUser} />
           )}
           {view === "links" && sharedData && (
             <LinksView shared={sharedData} updateShared={updateShared} />
