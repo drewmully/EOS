@@ -160,10 +160,10 @@ export default function AppShell() {
       if (!sh.marketing) sh.marketing = SEED_SHARED.marketing;
       if (!sh.pipeline) sh.pipeline = SEED_SHARED.pipeline || { mully: [], mfs: [] };
       // One-time migration: replace placeholder Mully pipeline with real outreach data
-      const hasPlaceholderDeals = sh.pipeline.mully.some((d) =>
-        ["Titleist Corporate Events", "TaylorMade Partnerships", "Callaway Golf Days"].includes(d.company)
+      const hasRealOutreachData = sh.pipeline.mully.some((d) =>
+        ["Pro-Am Tour at Pebble Beach", "NECHV Chipping In", "MNTC Golf Sponsor", "ESPYS Celebrity Golf Classic"].includes(d.company)
       );
-      if (hasPlaceholderDeals || sh.pipeline.mully.length === 0) {
+      if (!hasRealOutreachData) {
         console.log("[EOS] Seeding Mully pipeline with outreach data...");
         sh.pipeline.mully = SEED_SHARED.pipeline.mully;
       }
