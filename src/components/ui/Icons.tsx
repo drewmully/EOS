@@ -115,6 +115,13 @@ export const IconMarketing = IF(
   </>
 );
 
+// Pipeline / funnel icon
+export const IconPipeline = IF(
+  <>
+    <path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z" />
+  </>
+);
+
 export const IconLinks = IF(
   <>
     <path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71" />
