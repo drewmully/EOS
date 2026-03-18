@@ -465,66 +465,464 @@ export const SEED_SHARED: SharedData = {
 
   pipeline: {
     mully: [
+      /* ── Conversion Opportunities ── */
       {
-        id: uid(), pipeline: "mully", company: "Titleist Corporate Events", stage: "Meeting Scheduled", starred: true, value: 45000,
-        contact: { name: "Brian Hastings", title: "VP Corporate Partnerships", email: "bhastings@titleist.com", phone: "508-555-0142" },
-        dealOwner: "Drew", accountOwner: "Drew",
+        id: uid(), pipeline: "mully", company: "Pro-Am Tour at Pebble Beach", stage: "Proposal Sent", starred: true, value: 12000,
+        contact: { name: "Craig Tower", title: "Tournament Director", email: "", phone: "" },
+        dealOwner: "Joe", accountOwner: "Joe",
         notes: [
-          { id: uid(), date: "2026-03-10", author: "drew", text: "Great intro call — they host 6 corp outings/yr and want a premium partner. Sending capabilities deck." },
-          { id: uid(), date: "2026-03-15", author: "drew", text: "Meeting set for 3/22 at their HQ. Bringing sample event package." },
+          { id: uid(), date: "2026-03-05", author: "joe", text: "Initial contact — $60/player spend, willing to go up. More traditional event. Lean into location of event." },
+          { id: uid(), date: "2026-03-12", author: "joe", text: "Will require customization on gift boxes. Sent proposal with custom Pebble Beach-branded box options." },
         ],
-        links: [{ id: uid(), label: "Capabilities Deck", url: "https://drive.google.com/deck" }],
-        createdDate: "2026-03-05", lastActivity: "2026-03-15", tags: ["premium"],
+        links: [
+          { id: uid(), label: "Event Page", url: "https://www.pro-amtour.com/tournaments/the-pro-am-tour-at-pebble-beach" },
+          { id: uid(), label: "Pro-Am Tour Site", url: "https://www.pro-amtour.com/" },
+        ],
+        createdDate: "2026-03-01", lastActivity: "2026-03-12", tags: ["conversion", "custom-box", "premium"],
       },
       {
-        id: uid(), pipeline: "mully", company: "TaylorMade Partnerships", stage: "Following Up", starred: false, value: 30000,
-        contact: { name: "Sarah Chen", title: "Events Director", email: "schen@taylormade.com", phone: "760-555-0188" },
-        dealOwner: "Drew", accountOwner: "Drew",
-        notes: [{ id: uid(), date: "2026-03-12", author: "drew", text: "Sent intro email with event photos. Following up Friday." }],
-        links: [], createdDate: "2026-03-08", lastActivity: "2026-03-12", tags: [],
+        id: uid(), pipeline: "mully", company: "NECHV Chipping In", stage: "Proposal Sent", starred: true, value: 8000,
+        contact: { name: "Nicole Hand", title: "Event Coordinator", email: "", phone: "" },
+        dealOwner: "Joe", accountOwner: "Joe",
+        notes: [
+          { id: uid(), date: "2026-03-04", author: "joe", text: "Two events. First is priority — 10 year anniversary. $50/player spend." },
+          { id: uid(), date: "2026-03-10", author: "joe", text: "Second event is for postal workers, lower price point at $30. Sent pricing for both events." },
+        ],
+        links: [
+          { id: uid(), label: "Chipping In Event", url: "https://nechv.org/chippingin/" },
+        ],
+        createdDate: "2026-03-01", lastActivity: "2026-03-10", tags: ["conversion", "two-events", "anniversary"],
+      },
+
+      /* ── Following Up (Wave 1) ── */
+      {
+        id: uid(), pipeline: "mully", company: "MNTC Golf Sponsor", stage: "Following Up", starred: false, value: 5000,
+        contact: { name: "Julia Lauwagie", title: "", email: "julia.lauwagie@mntc.org", phone: "612-238-6132" },
+        dealOwner: "Joe", accountOwner: "Joe",
+        notes: [
+          { id: uid(), date: "2026-03-06", author: "joe", text: "Called left voicemail and emailed." },
+          { id: uid(), date: "2026-03-13", author: "joe", text: "Hit 2x — still waiting on response." },
+        ],
+        links: [
+          { id: uid(), label: "Sponsor Info", url: "https://www.mntc.org/wp-content/uploads/2025/11/26_SponsorInsert_Golf_Final.pdf" },
+        ],
+        createdDate: "2026-03-03", lastActivity: "2026-03-13", tags: ["wave-1"],
       },
       {
-        id: uid(), pipeline: "mully", company: "Callaway Golf Days", stage: "Cold Outreach", starred: false, value: 25000,
-        contact: { name: "Mike Torres", title: "Brand Activations Mgr", email: "mtorres@callaway.com", phone: "760-555-0234" },
+        id: uid(), pipeline: "mully", company: "UIW Alumni Swing", stage: "Following Up", starred: false, value: 5000,
+        contact: { name: "Susan Lavenan", title: "", email: "slavenan@uiwtx.edu", phone: "210-829-6076" },
+        dealOwner: "Joe", accountOwner: "Joe",
+        notes: [
+          { id: uid(), date: "2026-03-05", author: "joe", text: "Spoke on the phone and requested lookbook. Sent lookbook." },
+          { id: uid(), date: "2026-03-12", author: "joe", text: "Waiting on response after lookbook send." },
+        ],
+        links: [
+          { id: uid(), label: "Sponsor Packages", url: "https://www.uiw.edu/alumni/_docs/2026-swing-sponsorship-packages.pdf" },
+        ],
+        createdDate: "2026-03-02", lastActivity: "2026-03-12", tags: ["wave-1", "lookbook-sent"],
+      },
+      {
+        id: uid(), pipeline: "mully", company: "Wayland Golf Classic", stage: "Following Up", starred: false, value: 4000,
+        contact: { name: "Tyler J. Ratajczak", title: "", email: "tratajczak@wayland.org", phone: "920-356-2120" },
+        dealOwner: "Joe", accountOwner: "Joe",
+        notes: [
+          { id: uid(), date: "2026-03-04", author: "joe", text: "Left voicemail and sent email." },
+          { id: uid(), date: "2026-03-11", author: "joe", text: "Hit 2x — still waiting on response." },
+        ],
+        links: [
+          { id: uid(), label: "Sponsorship Form", url: "https://resources.finalsite.net/images/v1764967732/waylandorg/tpdmebwa2pn1cr1asicv/2026SponsorshipForm.pdf" },
+        ],
+        createdDate: "2026-03-01", lastActivity: "2026-03-11", tags: ["wave-1"],
+      },
+      {
+        id: uid(), pipeline: "mully", company: "ALS Pro-Am", stage: "Following Up", starred: false, value: 6000,
+        contact: { name: "", title: "", email: "", phone: "518-482-4433" },
+        dealOwner: "Joe", accountOwner: "Joe",
+        notes: [
+          { id: uid(), date: "2026-03-07", author: "joe", text: "Called and spoke with an EA who is passing info along to \"Joe\"." },
+          { id: uid(), date: "2026-03-14", author: "joe", text: "Sent email. Waiting on response." },
+        ],
+        links: [
+          { id: uid(), label: "Event Site", url: "https://www.alsproam.org/" },
+        ],
+        createdDate: "2026-03-03", lastActivity: "2026-03-14", tags: ["wave-1"],
+      },
+
+      /* ── Responded (Wave 1) ── */
+      {
+        id: uid(), pipeline: "mully", company: "First Tee SE Wisconsin", stage: "Responded", starred: true, value: 5000,
+        contact: { name: "David Cohn", title: "", email: "dcohn@firstteesew.org", phone: "414-443-3575" },
+        dealOwner: "Joe", accountOwner: "Joe",
+        notes: [
+          { id: uid(), date: "2026-03-05", author: "joe", text: "Called and spoke with David. In the process of landing on a gifting provider." },
+          { id: uid(), date: "2026-03-10", author: "joe", text: "Sent lookbook. Hit 2x — waiting on decision." },
+        ],
+        links: [
+          { id: uid(), label: "Tee to Green Event", url: "https://firstteesoutheastwisconsin.org/events/teetogreen/" },
+        ],
+        createdDate: "2026-03-01", lastActivity: "2026-03-10", tags: ["wave-1", "lookbook-sent", "hot-lead"],
+      },
+      {
+        id: uid(), pipeline: "mully", company: "Gary Koch Pro-Am", stage: "Responded", starred: false, value: 8000,
+        contact: { name: "Ava Forney", title: "", email: "AForney@mvpholdings.com", phone: "813-321-7781" },
+        dealOwner: "Joe", accountOwner: "Joe",
+        notes: [
+          { id: uid(), date: "2026-03-06", author: "joe", text: "Left a message and sent email." },
+          { id: uid(), date: "2026-03-12", author: "joe", text: "Ava passed along to \"swag\" committee — under initial review." },
+        ],
+        links: [
+          { id: uid(), label: "Event Site", url: "https://www.garykochproam.org/" },
+        ],
+        createdDate: "2026-03-02", lastActivity: "2026-03-12", tags: ["wave-1", "committee-review"],
+      },
+
+      /* ── Cold Outreach (Wave 1) ── */
+      {
+        id: uid(), pipeline: "mully", company: "StacheStrong Golf", stage: "Cold Outreach", starred: false, value: 4000,
+        contact: { name: "Colin Gerner", title: "", email: "", phone: "" },
+        dealOwner: "Joe", accountOwner: "Joe",
+        notes: [
+          { id: uid(), date: "2026-03-08", author: "joe", text: "Reached out via LinkedIn message." },
+        ],
+        links: [
+          { id: uid(), label: "Sponsor Info", url: "https://stachestrong.org/wp-content/uploads/2024/03/Golf-Sponsors-26.pdf" },
+        ],
+        createdDate: "2026-03-08", lastActivity: "2026-03-08", tags: ["wave-1"],
+      },
+      {
+        id: uid(), pipeline: "mully", company: "Michigan Medicine EOM Golf", stage: "Cold Outreach", starred: false, value: 6000,
+        contact: { name: "Scotty Passink", title: "", email: "spassink@umich.edu", phone: "734-320-2655" },
         dealOwner: "Drew", accountOwner: "Joe",
-        notes: [{ id: uid(), date: "2026-03-16", author: "drew", text: "Found contact on LinkedIn. Sent connection request + cold email." }],
-        links: [], createdDate: "2026-03-16", lastActivity: "2026-03-16", tags: [],
-      },
-      {
-        id: uid(), pipeline: "mully", company: "Topgolf Corporate", stage: "Proposal Sent", starred: true, value: 60000,
-        contact: { name: "Jessica Wright", title: "Sr. Partnerships Manager", email: "jwright@topgolf.com", phone: "214-555-0177" },
-        dealOwner: "Drew", accountOwner: "Drew",
         notes: [
-          { id: uid(), date: "2026-02-28", author: "drew", text: "Met at industry event. Huge opportunity — they want to add premium golf outings to their corporate menu." },
-          { id: uid(), date: "2026-03-08", author: "drew", text: "Discovery call went great. Sending proposal for 4-event pilot." },
-          { id: uid(), date: "2026-03-14", author: "drew", text: "Proposal sent. $60K for 4-event pilot. Waiting on their procurement team." },
+          { id: uid(), date: "2026-03-10", author: "joe", text: "Drew should reach out — personal UM connection." },
         ],
-        links: [{ id: uid(), label: "Proposal PDF", url: "https://drive.google.com/proposal-topgolf" }],
-        createdDate: "2026-02-28", lastActivity: "2026-03-14", tags: ["pilot", "high-value"],
+        links: [
+          { id: uid(), label: "Sponsor Packet", url: "https://www.michiganmedicine.org/sites/default/files/2025-11/2026-EOM_Sponsor_Packet_FINAL.pdf" },
+        ],
+        createdDate: "2026-03-10", lastActivity: "2026-03-10", tags: ["wave-1", "drew-connection"],
       },
       {
-        id: uid(), pipeline: "mully", company: "PGA Tour Experiences", stage: "Responded", starred: false, value: 75000,
-        contact: { name: "David Park", title: "Director of Experiences", email: "dpark@pgatour.com", phone: "904-555-0199" },
-        dealOwner: "Drew", accountOwner: "Joe",
-        notes: [{ id: uid(), date: "2026-03-13", author: "drew", text: "They replied! Interested in exploring co-branded golf experiences. Want to set up a call next week." }],
-        links: [], createdDate: "2026-03-01", lastActivity: "2026-03-13", tags: ["co-brand"],
-      },
-      {
-        id: uid(), pipeline: "mully", company: "ClubCorp Events", stage: "Signed", starred: false, value: 35000,
-        contact: { name: "Amanda Liu", title: "Events Coordinator", email: "aliu@clubcorp.com", phone: "972-555-0166" },
-        dealOwner: "Drew", accountOwner: "Drew",
+        id: uid(), pipeline: "mully", company: "NJ Golf Foundation Classic", stage: "Cold Outreach", starred: false, value: 5000,
+        contact: { name: "Chris Hunt", title: "", email: "njgolffoundation1@gmail.com", phone: "(732) 465-1212" },
+        dealOwner: "Joe", accountOwner: "Joe",
         notes: [
-          { id: uid(), date: "2026-02-15", author: "drew", text: "Signed 3-event package! First outing scheduled for April 12." },
+          { id: uid(), date: "2026-03-09", author: "joe", text: "Left a voicemail and sent email." },
         ],
-        links: [{ id: uid(), label: "Signed Contract", url: "https://drive.google.com/clubcorp-contract" }],
-        createdDate: "2026-01-20", lastActivity: "2026-02-15", tags: [],
+        links: [
+          { id: uid(), label: "Golf Classic", url: "https://www.njgolffoundation.org/njgfgolfclassic" },
+        ],
+        createdDate: "2026-03-09", lastActivity: "2026-03-09", tags: ["wave-1"],
+      },
+
+      /* ── Cold Outreach (Wave 2 — Celebrity Golf Events) ── */
+      {
+        id: uid(), pipeline: "mully", company: "RMHC Temple Celebrity Golf Classic", stage: "Cold Outreach", starred: false, value: 6000,
+        contact: { name: "Shannon Gowan", title: "", email: "shannon@rhmc-temple.org", phone: "254-770-0910" },
+        dealOwner: "Joe", accountOwner: "Joe",
+        notes: [
+          { id: uid(), date: "2026-03-11", author: "joe", text: "Contacted — sent intro email about player gifting." },
+        ],
+        links: [
+          { id: uid(), label: "Event Page", url: "https://rmhc-temple.org/events/celebrity-golf-classic/" },
+        ],
+        createdDate: "2026-03-11", lastActivity: "2026-03-11", tags: ["wave-2", "celebrity"],
       },
       {
-        id: uid(), pipeline: "mully", company: "Pebble Beach Resorts", stage: "Parking Lot", starred: false, value: 100000,
-        contact: { name: "Robert Kim", title: "Corporate Sales Director", email: "rkim@pebblebeach.com", phone: "831-555-0211" },
-        dealOwner: "Drew", accountOwner: "Drew",
-        notes: [{ id: uid(), date: "2026-02-20", author: "drew", text: "Interested but their 2026 calendar is full. Revisit in Q4 for 2027 planning." }],
-        links: [], createdDate: "2026-02-10", lastActivity: "2026-02-20", tags: ["whale"],
+        id: uid(), pipeline: "mully", company: "Begin Again Foundation Golf", stage: "Cold Outreach", starred: false, value: 5000,
+        contact: { name: "Steph Lyon", title: "", email: "events@beginagainfoundation.com", phone: "" },
+        dealOwner: "Joe", accountOwner: "Joe",
+        notes: [
+          { id: uid(), date: "2026-03-11", author: "joe", text: "Sent intro email to events contact." },
+        ],
+        links: [
+          { id: uid(), label: "Event Page", url: "https://www.beginagainfoundation.com/save-the-date" },
+        ],
+        createdDate: "2026-03-11", lastActivity: "2026-03-11", tags: ["wave-2"],
+      },
+      {
+        id: uid(), pipeline: "mully", company: "The Rahm Golf", stage: "Cold Outreach", starred: false, value: 10000,
+        contact: { name: "Clarke Rheney", title: "", email: "clarke@therahmgolf.com", phone: "" },
+        dealOwner: "Joe", accountOwner: "Joe",
+        notes: [
+          { id: uid(), date: "2026-03-11", author: "joe", text: "Reached out — Jon Rahm affiliated event, premium opportunity." },
+        ],
+        links: [
+          { id: uid(), label: "Event Site", url: "https://www.therahmgolf.org/" },
+        ],
+        createdDate: "2026-03-11", lastActivity: "2026-03-11", tags: ["wave-2", "celebrity", "premium"],
+      },
+      {
+        id: uid(), pipeline: "mully", company: "TC Jay Fund Celebrity Golf Classic", stage: "Cold Outreach", starred: false, value: 6000,
+        contact: { name: "Alex Garcia", title: "", email: "alex@tcjayfund.org", phone: "" },
+        dealOwner: "Joe", accountOwner: "Joe",
+        notes: [
+          { id: uid(), date: "2026-03-12", author: "joe", text: "Contacted Alex about player gifting for their celebrity classic." },
+        ],
+        links: [
+          { id: uid(), label: "Event Page", url: "https://tcjayfund.org/signature-events/celebrity-golf-classic/" },
+        ],
+        createdDate: "2026-03-12", lastActivity: "2026-03-12", tags: ["wave-2", "celebrity"],
+      },
+      {
+        id: uid(), pipeline: "mully", company: "Muggsy Bogues Celebrity Golf Classic", stage: "Cold Outreach", starred: false, value: 7000,
+        contact: { name: "Shannon McKnight", title: "", email: "shannon@boguesfoundation.org", phone: "" },
+        dealOwner: "Joe", accountOwner: "Joe",
+        notes: [
+          { id: uid(), date: "2026-03-12", author: "joe", text: "Sent intro email about gifting packages for celebrity golf classic." },
+        ],
+        links: [
+          { id: uid(), label: "Event Page", url: "https://events.golfstatus.com/event/2025-muggsy-bogues-celebrity-golf-classic" },
+        ],
+        createdDate: "2026-03-12", lastActivity: "2026-03-12", tags: ["wave-2", "celebrity"],
+      },
+      {
+        id: uid(), pipeline: "mully", company: "Jaws Celebrity Golf", stage: "Cold Outreach", starred: false, value: 7000,
+        contact: { name: "Corinne Kolesinskas", title: "", email: "KolesinskasC@RonJaworski.com", phone: "" },
+        dealOwner: "Joe", accountOwner: "Joe",
+        notes: [
+          { id: uid(), date: "2026-03-13", author: "joe", text: "Contacted Corinne about player gifting for Ron Jaworski's celebrity golf event." },
+        ],
+        links: [
+          { id: uid(), label: "Event Site", url: "https://www.jawscelebritygolf.com/" },
+        ],
+        createdDate: "2026-03-13", lastActivity: "2026-03-13", tags: ["wave-2", "celebrity"],
+      },
+      {
+        id: uid(), pipeline: "mully", company: "Alex English Golf", stage: "Cold Outreach", starred: false, value: 5000,
+        contact: { name: "Tuera Jacobs", title: "", email: "AlexEnglishGolf@gmail.com", phone: "" },
+        dealOwner: "Joe", accountOwner: "Joe",
+        notes: [
+          { id: uid(), date: "2026-03-13", author: "joe", text: "Reached out about gifting for Alex English celebrity golf tournament." },
+        ],
+        links: [
+          { id: uid(), label: "Event Site", url: "https://alexenglishgolf.com/" },
+        ],
+        createdDate: "2026-03-13", lastActivity: "2026-03-13", tags: ["wave-2", "celebrity"],
+      },
+      {
+        id: uid(), pipeline: "mully", company: "Full Course Classic (ACFB)", stage: "Cold Outreach", starred: false, value: 6000,
+        contact: { name: "Sara Manchester", title: "", email: "sara.manchester@acfb.org", phone: "" },
+        dealOwner: "Joe", accountOwner: "Joe",
+        notes: [
+          { id: uid(), date: "2026-03-13", author: "joe", text: "Contacted Sara and Mary Lee about player gifting for the Full Course Classic." },
+        ],
+        links: [
+          { id: uid(), label: "Event Site", url: "https://www.fullcourseclassic.org/" },
+        ],
+        createdDate: "2026-03-13", lastActivity: "2026-03-13", tags: ["wave-2"],
+      },
+      {
+        id: uid(), pipeline: "mully", company: "Brian Jordan Foundation Golf", stage: "Cold Outreach", starred: false, value: 5000,
+        contact: { name: "Brian Jordan", title: "", email: "bjordan@brianjordanfoundation.com", phone: "" },
+        dealOwner: "Joe", accountOwner: "Joe",
+        notes: [
+          { id: uid(), date: "2026-03-14", author: "joe", text: "Sent intro about player gifting for Brian Jordan Foundation golf event." },
+        ],
+        links: [
+          { id: uid(), label: "Foundation Site", url: "https://www.brianjordanfoundation.com/" },
+        ],
+        createdDate: "2026-03-14", lastActivity: "2026-03-14", tags: ["wave-2", "celebrity"],
+      },
+
+      /* ── Cold Outreach (Wave 3 — Premium Celebrity Events, Jack's) ── */
+      {
+        id: uid(), pipeline: "mully", company: "Sports Museum Celebrity Golf Classic", stage: "Cold Outreach", starred: true, value: 10000,
+        contact: { name: "Carolyn Hall", title: "Development Coordinator", email: "chall5@sportsmuseum.org", phone: "617-624-1231" },
+        dealOwner: "Jack", accountOwner: "Jack",
+        notes: [
+          { id: uid(), date: "2026-03-14", author: "jack", text: "2026-06-15 at Renaissance Golf Club, Haverhill MA. Each foursome plays with a Boston sports celebrity. Priority: High." },
+          { id: uid(), date: "2026-03-14", author: "jack", text: "Next step: Send sponsor inquiry to Carolyn Hall." },
+        ],
+        links: [
+          { id: uid(), label: "Event Page", url: "https://www.sportsmuseum.org/events/celebrity-golf-classic/" },
+          { id: uid(), label: "Contact", url: "https://www.sportsmuseum.org/about/team/carolyn-hall/" },
+        ],
+        createdDate: "2026-03-14", lastActivity: "2026-03-14", tags: ["wave-3", "celebrity", "high-priority"],
+      },
+      {
+        id: uid(), pipeline: "mully", company: "ESPYS Celebrity Golf Classic", stage: "Cold Outreach", starred: true, value: 15000,
+        contact: { name: "Alec Koondel", title: "Sponsorship Contact", email: "akoondel@v.org", phone: "707-963-0611" },
+        dealOwner: "Jack", accountOwner: "Jack",
+        notes: [
+          { id: uid(), date: "2026-03-14", author: "jack", text: "2026-06-28 at Sherwood Country Club, Thousand Oaks CA. Hosted by Rob Riggle. Premium private-club event. Priority: High." },
+          { id: uid(), date: "2026-03-14", author: "jack", text: "Next step: Request sponsor package from Alec Koondel." },
+        ],
+        links: [
+          { id: uid(), label: "Event Page", url: "https://espysgolf.v.org/" },
+          { id: uid(), label: "Sponsorship", url: "https://espysgolf.v.org/sponsorship/" },
+        ],
+        createdDate: "2026-03-14", lastActivity: "2026-03-14", tags: ["wave-3", "celebrity", "high-priority", "premium"],
+      },
+      {
+        id: uid(), pipeline: "mully", company: "American Century Championship", stage: "Cold Outreach", starred: true, value: 25000,
+        contact: { name: "", title: "", email: "", phone: "" },
+        dealOwner: "Jack", accountOwner: "Jack",
+        notes: [
+          { id: uid(), date: "2026-03-14", author: "jack", text: "2026-07-08 at Edgewood Tahoe Golf Course, Stateline NV. Multi-celebrity field. Celebrity championship / sponsor activation. Priority: High." },
+          { id: uid(), date: "2026-03-14", author: "jack", text: "Researching contact. Next step: Find sponsorship/partnership contact on official ACC site." },
+        ],
+        links: [
+          { id: uid(), label: "Event Page", url: "https://americancenturychampionship.com/" },
+        ],
+        createdDate: "2026-03-14", lastActivity: "2026-03-14", tags: ["wave-3", "celebrity", "high-priority", "premium", "whale"],
+      },
+      {
+        id: uid(), pipeline: "mully", company: "CATCH Golf Classic", stage: "Cold Outreach", starred: false, value: 8000,
+        contact: { name: "Jim Hughes", title: "Executive Director", email: "jhughes@catchcharity.org", phone: "313-876-9399" },
+        dealOwner: "Jack", accountOwner: "Jack",
+        notes: [
+          { id: uid(), date: "2026-03-15", author: "jack", text: "2026-07-20 at Red Run Golf Club, Royal Oak MI. Celebrity golfer in each group. Sponsorships from $3,500 to $35,000. Priority: High." },
+          { id: uid(), date: "2026-03-15", author: "jack", text: "Next step: Email Jim Hughes for sponsorship inventory." },
+        ],
+        links: [
+          { id: uid(), label: "Event Page", url: "https://catchcharity.org/fundraising-events-2/" },
+        ],
+        createdDate: "2026-03-15", lastActivity: "2026-03-15", tags: ["wave-3", "celebrity", "high-priority"],
+      },
+      {
+        id: uid(), pipeline: "mully", company: "David Cone Celebrity Golf Classic", stage: "Cold Outreach", starred: false, value: 7000,
+        contact: { name: "Allison Lucas", title: "President", email: "", phone: "" },
+        dealOwner: "Jack", accountOwner: "Jack",
+        notes: [
+          { id: uid(), date: "2026-03-15", author: "jack", text: "2026-08-06 at Brooklake Country Club, Florham Park NJ. Ed Lucas Foundation. Priority: Medium." },
+          { id: uid(), date: "2026-03-15", author: "jack", text: "Researching contact. Allison Lucas named on foundation site but no direct public email found. Will use contact form." },
+        ],
+        links: [
+          { id: uid(), label: "Event Page", url: "https://www.theedlucasfoundation.org/golf-new" },
+          { id: uid(), label: "Foundation", url: "https://www.theedlucasfoundation.org/" },
+        ],
+        createdDate: "2026-03-15", lastActivity: "2026-03-15", tags: ["wave-3", "celebrity"],
+      },
+      {
+        id: uid(), pipeline: "mully", company: "Mike Eruzione Celebrity Classic", stage: "Cold Outreach", starred: false, value: 8000,
+        contact: { name: "Jen Dean", title: "Director of Events and Business Development", email: "jen@coolkidscampaign.org", phone: "443-466-5241" },
+        dealOwner: "Jack", accountOwner: "Jack",
+        notes: [
+          { id: uid(), date: "2026-03-15", author: "jack", text: "2026-08-23 at Tedesco Country Club, Marblehead MA. Cool Kids Campaign. Priority: High. Jen Dean also runs Dan Jansen Classic and Winter Classic." },
+          { id: uid(), date: "2026-03-15", author: "jack", text: "Next step: Request 2026 sponsor packages from Jen Dean." },
+        ],
+        links: [
+          { id: uid(), label: "Event Page", url: "https://coolkidscampaign.org/mike-eruzione-celebrity-classic/" },
+          { id: uid(), label: "Contact", url: "https://coolkidscampaign.org/our-team/" },
+        ],
+        createdDate: "2026-03-15", lastActivity: "2026-03-15", tags: ["wave-3", "celebrity", "high-priority", "cool-kids"],
+      },
+      {
+        id: uid(), pipeline: "mully", company: "Swing for a Cure Celebrity Golf", stage: "Cold Outreach", starred: false, value: 6000,
+        contact: { name: "Courtney Laughlin", title: "Executive Director", email: "courtney@thelaughlinfoundation.org", phone: "443-223-8573" },
+        dealOwner: "Jack", accountOwner: "Jack",
+        notes: [
+          { id: uid(), date: "2026-03-16", author: "jack", text: "2026-08-31 at Crofton Country Club, Crofton MD. Washington Capitals and local sports figures. Laughlin Family Foundation. Priority: Medium." },
+          { id: uid(), date: "2026-03-16", author: "jack", text: "Next step: Email Courtney Laughlin about sponsor opportunities." },
+        ],
+        links: [
+          { id: uid(), label: "Event Page", url: "https://www.thelaughlinfamilyfoundation.org/news/save-the-dates-two-signature-fundraising-events-powering-our-mission-in-2026" },
+        ],
+        createdDate: "2026-03-16", lastActivity: "2026-03-16", tags: ["wave-3", "celebrity"],
+      },
+      {
+        id: uid(), pipeline: "mully", company: "Dan Jansen Celebrity Classic", stage: "Cold Outreach", starred: false, value: 7000,
+        contact: { name: "Jen Dean", title: "Director of Events and Business Development", email: "jen@coolkidscampaign.org", phone: "443-466-5241" },
+        dealOwner: "Jack", accountOwner: "Jack",
+        notes: [
+          { id: uid(), date: "2026-03-16", author: "jack", text: "2026-10-03 at Trump National Golf Club Charlotte, Mooresville NC. Cool Kids Campaign. Priority: Medium." },
+          { id: uid(), date: "2026-03-16", author: "jack", text: "Next step: Request 2026 package and attendee profile from Jen Dean. Same contact as Eruzione events." },
+        ],
+        links: [
+          { id: uid(), label: "Event Page", url: "https://coolkidscampaign.org/dan-jansen-celebrity-classic/" },
+        ],
+        createdDate: "2026-03-16", lastActivity: "2026-03-16", tags: ["wave-3", "celebrity", "cool-kids"],
+      },
+      {
+        id: uid(), pipeline: "mully", company: "Willie Stargell Celebrity Invitational", stage: "Cold Outreach", starred: false, value: 8000,
+        contact: { name: "Meghan Tadlock", title: "Executive Director", email: "Events@WillieStargellFoundation.org", phone: "910-509-7238" },
+        dealOwner: "Jack", accountOwner: "Jack",
+        notes: [
+          { id: uid(), date: "2026-03-16", author: "jack", text: "24th annual. 2026-11-06, Wilmington NC. Celebrity invitational weekend with golf. Sponsorship opens summer 2026. Priority: Medium." },
+          { id: uid(), date: "2026-03-16", author: "jack", text: "Next step: Ask for 2026 sponsor deck when packages open." },
+        ],
+        links: [
+          { id: uid(), label: "Event Page", url: "https://www.williestargellfoundation.org/celebrity-invitational/" },
+        ],
+        createdDate: "2026-03-16", lastActivity: "2026-03-16", tags: ["wave-3", "celebrity"],
+      },
+      {
+        id: uid(), pipeline: "mully", company: "Mike Eruzione Winter Classic", stage: "Cold Outreach", starred: false, value: 8000,
+        contact: { name: "Jen Dean", title: "Director of Events and Business Development", email: "jen@coolkidscampaign.org", phone: "443-466-5241" },
+        dealOwner: "Jack", accountOwner: "Jack",
+        notes: [
+          { id: uid(), date: "2026-03-16", author: "jack", text: "2026-11-07 at LaPlaya Golf Club, Naples FL. Cool Kids Campaign. Priority: Medium. Third event with Jen Dean as contact." },
+        ],
+        links: [
+          { id: uid(), label: "Event Page", url: "https://coolkidscampaign.org/mike-eruzione-winter-classic/" },
+        ],
+        createdDate: "2026-03-16", lastActivity: "2026-03-16", tags: ["wave-3", "celebrity", "cool-kids"],
+      },
+      {
+        id: uid(), pipeline: "mully", company: "SW Florida Celebrity Golf Invitational", stage: "Cold Outreach", starred: true, value: 12000,
+        contact: { name: "Samantha Love", title: "Sponsorship Contact", email: "samantha.love@alsac.stjude.org", phone: "813-422-0559" },
+        dealOwner: "Jack", accountOwner: "Jack",
+        notes: [
+          { id: uid(), date: "2026-03-17", author: "jack", text: "2026-12-04 at Hyatt Regency Coconut Point / Saltleaf Golf Preserve, Bonita Springs FL. St. Jude Children's Research Hospital. Celebrity pairings. Priority: High." },
+          { id: uid(), date: "2026-03-17", author: "jack", text: "Next step: Reach out to Samantha Love for sponsor and hospitality options." },
+        ],
+        links: [
+          { id: uid(), label: "Event Page", url: "https://www.stjude.org/get-involved/find-an-event/dinners-and-galas/southwest-florida-celebrity-golf-invitational.html" },
+        ],
+        createdDate: "2026-03-17", lastActivity: "2026-03-17", tags: ["wave-3", "celebrity", "high-priority", "st-jude", "premium"],
+      },
+
+      /* ── Parking Lot ── */
+      {
+        id: uid(), pipeline: "mully", company: "GAAR Golf Classic", stage: "Parking Lot", starred: false, value: 4000,
+        contact: { name: "Chris Venegas", title: "", email: "", phone: "505-234-5820" },
+        dealOwner: "Joe", accountOwner: "Joe",
+        notes: [
+          { id: uid(), date: "2026-03-07", author: "joe", text: "Called and left voicemail. Sent LinkedIn message." },
+          { id: uid(), date: "2026-03-14", author: "joe", text: "No budget for this year. Follow up for next year." },
+        ],
+        links: [
+          { id: uid(), label: "Sponsor Packet", url: "https://www.gaar.com/docs/2026-gaar-sponsorship-packet-home_20251022.pdf" },
+        ],
+        createdDate: "2026-03-03", lastActivity: "2026-03-14", tags: ["wave-1", "next-year"],
+      },
+      {
+        id: uid(), pipeline: "mully", company: "Jeff Carswell Memorial Pro-Am", stage: "Parking Lot", starred: false, value: 5000,
+        contact: { name: "", title: "", email: "", phone: "" },
+        dealOwner: "Joe", accountOwner: "Joe",
+        notes: [
+          { id: uid(), date: "2026-03-08", author: "joe", text: "Outing is in April — too soon for this year. Circle back for future events." },
+        ],
+        links: [
+          { id: uid(), label: "Event Page", url: "https://www.brhcfoundation.org/home/events/jeff-carswell-memorial-pro-am-golf-tournament/" },
+        ],
+        createdDate: "2026-03-08", lastActivity: "2026-03-08", tags: ["wave-1", "too-soon"],
+      },
+
+      /* ── Not Interested ── */
+      {
+        id: uid(), pipeline: "mully", company: "Pine Rest Golf Classic", stage: "Not Interested", starred: false, value: 3000,
+        contact: { name: "Graci Alvarez", title: "", email: "", phone: "" },
+        dealOwner: "Joe", accountOwner: "Joe",
+        notes: [
+          { id: uid(), date: "2026-03-05", author: "joe", text: "Already have a vendor. Covered on outing gifts — lower budget." },
+        ],
+        links: [
+          { id: uid(), label: "Sponsor Info", url: "https://www.pinerest.org/media/Pine-Rest-Foundation-2026-Golf-Classic-Sponsorship-Flyer.pdf" },
+        ],
+        createdDate: "2026-03-02", lastActivity: "2026-03-05", tags: ["wave-1"],
+      },
+      {
+        id: uid(), pipeline: "mully", company: "Endeavor Health Golf", stage: "Not Interested", starred: false, value: 3000,
+        contact: { name: "Collier Pirietti", title: "", email: "", phone: "" },
+        dealOwner: "Joe", accountOwner: "Joe",
+        notes: [
+          { id: uid(), date: "2026-03-04", author: "joe", text: "Already have a vendor. Called (no answer) and sent email." },
+        ],
+        links: [
+          { id: uid(), label: "Event Info", url: "https://www.endeavorhealth.org/media/10428" },
+        ],
+        createdDate: "2026-03-01", lastActivity: "2026-03-04", tags: ["wave-1"],
       },
     ] as Deal[],
     mfs: [
