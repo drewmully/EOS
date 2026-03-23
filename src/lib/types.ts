@@ -200,7 +200,7 @@ export interface MarketingData {
 
 /* ── CRM Pipeline ── */
 
-export type PipelineType = "mully" | "mfs";
+export type PipelineType = "mully" | "mfs" | "affiliates" | "golf_networks" | "expanded_services";
 
 export type DealStage =
   | "Cold Outreach"
@@ -280,6 +280,9 @@ export interface Deal {
 export interface PipelineData {
   mully: Deal[];
   mfs: Deal[];
+  affiliates: Deal[];
+  golf_networks: Deal[];
+  expanded_services: Deal[];
 }
 
 export interface SharedData {
