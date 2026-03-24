@@ -359,20 +359,21 @@ const PIPELINE_LABELS: [PipelineType, string][] = [
 ];
 
 function PipelineToggle({ active, onChange }: { active: PipelineType; onChange: (p: PipelineType) => void }) {
+  const activeLabel = PIPELINE_LABELS.find(([k]) => k === active)?.[1] ?? "Select Pipeline";
   return (
-    <div className="inline-flex rounded-lg bg-gray-100 p-1">
-      {PIPELINE_LABELS.map(([key, label]) => (
-        <button
-          key={key}
-          onClick={() => onChange(key)}
-          className={[
-            "px-6 py-2.5 rounded-md text-xs font-semibold cursor-pointer transition-all duration-150",
-            active === key ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700",
-          ].join(" ")}
-        >
-          {label}
-        </button>
-      ))}
+    <div className="relative inline-block">
+      <select
+        value={active}
+        onChange={(e) => onChange(e.target.value as PipelineType)}
+        className="appearance-none bg-white border border-gray-200 rounded-lg px-4 py-2.5 pr-9 text-sm font-semibold text-gray-900 shadow-sm cursor-pointer hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 transition-all"
+      >
+        {PIPELINE_LABELS.map(([key, label]) => (
+          <option key={key} value={key}>{label}</option>
+        ))}
+      </select>
+      <svg className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+      </svg>
     </div>
   );
 }
