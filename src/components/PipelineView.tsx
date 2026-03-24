@@ -480,6 +480,143 @@ function SearchFilterBar({
 }
 
 /* ── Kanban Board ── */
+const COLUMN_PAGE_SIZE = 8;
+
+type SortMode = "activity" | "starred" | "company";
+
+function sortDeals(deals: Deal[], mode: SortMode): Deal[] {
+  const sorted = [...deals];
+  switch (mode) {
+    case "starred":
+      sorted.sort((a, b) => (b.starred ? 1 : 0) - (a.starred ? 1 : 0) || a.company.localeCompare(b.company));
+      break;
+    case "company":
+      sorted.sort((a, b) => a.company.localeCompare(b.company));
+      break;
+    case "activity":
+    default:
+      sorted.sort((a, b) => (b.lastActivity || "").localeCompare(a.lastActivity || ""));
+      break;
+  }
+  return sorted;
+}
+
+function KanbanColumn({
+  stage, deals, isExit, color, sortMode, onSortChange, expanded, onToggleExpand,
+  onDragStart, onDrop, onDragOver, onSelect, onToggleStar,
+}: {
+  stage: DealStage; deals: Deal[]; isExit: boolean; color: string;
+  sortMode: SortMode; onSortChange: (s: SortMode) => void;
+  expanded: boolean; onToggleExpand: () => void;
+  onDragStart: (id: string) => void; onDrop: (stage: DealStage) => void;
+  onDragOver: (e: React.DragEvent) => void; onSelect: (id: string) => void;
+  onToggleStar: (id: string) => void;
+}) {
+  const sorted = sortDeals(deals, sortMode);
+  const hasMore = sorted.length > COLUMN_PAGE_SIZE;
+  const visible = expanded ? sorted : sorted.slice(0, COLUMN_PAGE_SIZE);
+  const hiddenCount = sorted.length - COLUMN_PAGE_SIZE;
+
+  return (
+    <div
+      onDragOver={onDragOver}
+      onDrop={() => onDrop(stage)}
+      className="flex-shrink-0 rounded-lg bg-gray-50/80 border border-gray-100 flex flex-col"
+      style={{ width: isExit ? 140 : 170, minHeight: 200, opacity: isExit ? 0.65 : 1 }}
+    >
+      {/* Header */}
+      <div className="px-2.5 py-2" style={{ borderBottom: `2.5px solid ${color}` }}>
+        <div className="flex items-center justify-between gap-1">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 truncate leading-none">
+            {stage}
+          </span>
+          <span className="text-[9px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center text-white flex-shrink-0" style={{ background: color }}>
+            {deals.length}
+          </span>
+        </div>
+        {/* Sort control — only show for non-exit columns with multiple deals */}
+        {!isExit && deals.length > 1 && (
+          <select
+            value={sortMode}
+            onChange={(e) => onSortChange(e.target.value as SortMode)}
+            className="mt-1 w-full text-[9px] text-gray-400 bg-transparent border-none outline-none cursor-pointer p-0"
+          >
+            <option value="activity">Recent activity</option>
+            <option value="starred">Starred first</option>
+            <option value="company">A → Z</option>
+          </select>
+        )}
+      </div>
+
+      {/* Cards */}
+      <div className="flex-1 p-1.5 flex flex-col gap-2">
+        {visible.map((deal) => {
+          const days = daysSince(deal.lastActivity);
+          const staleClass = days >= 14 ? "text-red-500" : days >= 7 ? "text-amber-500" : "text-gray-400";
+          const ownerUser = USERS.find((u) => u.name === deal.dealOwner);
+
+          return (
+            <div
+              key={deal.id}
+              draggable
+              onDragStart={() => onDragStart(deal.id)}
+              onClick={() => onSelect(deal.id)}
+              className="bg-white rounded-md border border-gray-100 cursor-pointer hover:shadow-md hover:-translate-y-0.5 transition-all duration-150"
+              style={{ padding: "9px 11px" }}
+            >
+              {/* Star + company */}
+              <div className="flex items-start gap-1">
+                <button
+                  onClick={(e) => { e.stopPropagation(); onToggleStar(deal.id); }}
+                  className="cursor-pointer text-xs flex-shrink-0 mt-px"
+                  style={{ color: deal.starred ? "#F59E0B" : "#E5E7EB" }}
+                >
+                  {deal.starred ? "\u2605" : "\u2606"}
+                </button>
+                <span className="text-[12px] font-semibold text-gray-900 leading-tight line-clamp-2">{deal.company || "Untitled"}</span>
+              </div>
+              {/* Contact */}
+              {deal.contact.name && (
+                <div className="text-[10px] text-gray-400 mt-0.5 truncate" style={{ paddingLeft: 16 }}>{deal.contact.name}</div>
+              )}
+              {/* Owner + staleness + value */}
+              <div className="flex items-center justify-between mt-1.5" style={{ paddingLeft: 16 }}>
+                <div className="flex items-center gap-1.5">
+                  {ownerUser ? (
+                    <div
+                      className="w-4 h-4 rounded-full flex items-center justify-center text-white text-[7px] font-bold"
+                      style={{ background: ownerUser.color }}
+                      title={ownerUser.name}
+                    >
+                      {ownerUser.initials}
+                    </div>
+                  ) : (
+                    <span className="text-[9px] text-gray-300">&mdash;</span>
+                  )}
+                  {deal.value > 0 && (
+                    <span className="text-[10px] font-semibold text-emerald-600">{fmtMoney(deal.value)}</span>
+                  )}
+                </div>
+                <span className={`text-[9px] font-medium ${staleClass}`}>{daysLabel(deal.lastActivity)}</span>
+              </div>
+            </div>
+          );
+        })}
+
+        {/* Show more / less toggle */}
+        {hasMore && (
+          <button
+            onClick={onToggleExpand}
+            className="text-[10px] text-blue-500 hover:text-blue-700 font-medium py-1.5 cursor-pointer transition-colors"
+          >
+            {expanded ? "Show less" : `+${hiddenCount} more...`}
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function KanbanBoard({
   deals, onDragStart, onDrop, onDragOver, onSelect, onToggleStar,
 }: {
@@ -490,6 +627,9 @@ function KanbanBoard({
   onSelect: (id: string) => void;
   onToggleStar: (id: string) => void;
 }) {
+  const [sortModes, setSortModes] = useState<Record<string, SortMode>>({});
+  const [expandedCols, setExpandedCols] = useState<Record<string, boolean>>({});
+
   return (
     <div className="flex gap-2.5 overflow-x-auto pb-4 rounded-xl border border-gray-200" style={{ minHeight: 320, background: "#EEEEF2", padding: "16px 14px" }}>
       {ALL_STAGES.map((stage) => {
@@ -498,81 +638,22 @@ function KanbanBoard({
         const color = STAGE_COLORS[stage];
 
         return (
-          <div
+          <KanbanColumn
             key={stage}
+            stage={stage}
+            deals={stageDeals}
+            isExit={isExit}
+            color={color}
+            sortMode={sortModes[stage] || "activity"}
+            onSortChange={(s) => setSortModes((prev) => ({ ...prev, [stage]: s }))}
+            expanded={!!expandedCols[stage]}
+            onToggleExpand={() => setExpandedCols((prev) => ({ ...prev, [stage]: !prev[stage] }))}
+            onDragStart={onDragStart}
+            onDrop={onDrop}
             onDragOver={onDragOver}
-            onDrop={() => onDrop(stage)}
-            className="flex-shrink-0 rounded-lg bg-gray-50/80 border border-gray-100 flex flex-col"
-            style={{ width: isExit ? 140 : 170, minHeight: 200, opacity: isExit ? 0.65 : 1 }}
-          >
-            {/* Header */}
-            <div className="px-2.5 py-2" style={{ borderBottom: `2.5px solid ${color}` }}>
-              <div className="flex items-center justify-between gap-1">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 truncate leading-none">
-                  {stage}
-                </span>
-                <span className="text-[9px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center text-white flex-shrink-0" style={{ background: color }}>
-                  {stageDeals.length}
-                </span>
-              </div>
-            </div>
-
-            {/* Cards */}
-            <div className="flex-1 p-1.5 flex flex-col gap-2">
-              {stageDeals.map((deal) => {
-                const days = daysSince(deal.lastActivity);
-                const staleClass = days >= 14 ? "text-red-500" : days >= 7 ? "text-amber-500" : "text-gray-400";
-                const ownerUser = USERS.find((u) => u.name === deal.dealOwner);
-
-                return (
-                  <div
-                    key={deal.id}
-                    draggable
-                    onDragStart={() => onDragStart(deal.id)}
-                    onClick={() => onSelect(deal.id)}
-                    className="bg-white rounded-md border border-gray-100 cursor-pointer hover:shadow-md hover:-translate-y-0.5 transition-all duration-150"
-                    style={{ padding: "9px 11px" }}
-                  >
-                    {/* Star + company */}
-                    <div className="flex items-start gap-1">
-                      <button
-                        onClick={(e) => { e.stopPropagation(); onToggleStar(deal.id); }}
-                        className="cursor-pointer text-xs flex-shrink-0 mt-px"
-                        style={{ color: deal.starred ? "#F59E0B" : "#E5E7EB" }}
-                      >
-                        {deal.starred ? "\u2605" : "\u2606"}
-                      </button>
-                      <span className="text-[12px] font-semibold text-gray-900 leading-tight line-clamp-2">{deal.company || "Untitled"}</span>
-                    </div>
-                    {/* Contact */}
-                    {deal.contact.name && (
-                      <div className="text-[10px] text-gray-400 mt-0.5 truncate" style={{ paddingLeft: 16 }}>{deal.contact.name}</div>
-                    )}
-                    {/* Owner + staleness + value */}
-                    <div className="flex items-center justify-between mt-1.5" style={{ paddingLeft: 16 }}>
-                      <div className="flex items-center gap-1.5">
-                        {ownerUser ? (
-                          <div
-                            className="w-4 h-4 rounded-full flex items-center justify-center text-white text-[7px] font-bold"
-                            style={{ background: ownerUser.color }}
-                            title={ownerUser.name}
-                          >
-                            {ownerUser.initials}
-                          </div>
-                        ) : (
-                          <span className="text-[9px] text-gray-300">&mdash;</span>
-                        )}
-                        {deal.value > 0 && (
-                          <span className="text-[10px] font-semibold text-emerald-600">{fmtMoney(deal.value)}</span>
-                        )}
-                      </div>
-                      <span className={`text-[9px] font-medium ${staleClass}`}>{daysLabel(deal.lastActivity)}</span>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+            onSelect={onSelect}
+            onToggleStar={onToggleStar}
+          />
         );
       })}
     </div>

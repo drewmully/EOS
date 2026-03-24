@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { UserData, SharedData, ContentItem, Campaign, USERS } from "@/lib/types";
+import { UserData, SharedData, ContentItem, Campaign, Deal, USERS } from "@/lib/types";
 import { SEED_DATA, SEED_SHARED } from "@/lib/seed";
 import { loadUserData, saveUserData, getSupabase } from "@/lib/supabase";
 import { Sidebar, MobileHeader, MobileBottomNav, View } from "./Sidebar";
@@ -162,6 +162,13 @@ export default function AppShell() {
       }
       if (!sh.pipeline.affiliates) sh.pipeline.affiliates = [];
       if (!sh.pipeline.golf_networks) sh.pipeline.golf_networks = [];
+      // Merge seed venues into golf_networks without duplicating existing entries
+      const existingGN = new Set(sh.pipeline.golf_networks.map((d: Deal) => d.company.toLowerCase()));
+      for (const seed of SEED_SHARED.pipeline.golf_networks) {
+        if (!existingGN.has(seed.company.toLowerCase())) {
+          sh.pipeline.golf_networks.push(seed);
+        }
+      }
       if (!sh.pipeline.expanded_services) sh.pipeline.expanded_services = [];
       // Channel icon auto-detect map
       const CHANNEL_ICONS: Record<string, string> = {
