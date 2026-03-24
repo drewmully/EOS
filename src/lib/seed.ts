@@ -998,5 +998,8 @@ export const SEED_SHARED: SharedData = {
         createdDate: "2026-01-10", lastActivity: "2026-03-01", tags: ["dtc", "apparel"],
       },
     ] as Deal[],
+    affiliates: [] as Deal[],
+    golf_networks: [] as Deal[],
+    expanded_services: [] as Deal[],
   },
 };

@@ -152,7 +152,7 @@ export default function AppShell() {
       if (!sh.scorecard) sh.scorecard = SEED_SHARED.scorecard;
       if (!sh.links) sh.links = [];
       if (!sh.marketing) sh.marketing = SEED_SHARED.marketing;
-      if (!sh.pipeline) sh.pipeline = SEED_SHARED.pipeline || { mully: [], mfs: [] };
+      if (!sh.pipeline) sh.pipeline = SEED_SHARED.pipeline || { mully: [], mfs: [], affiliates: [], golf_networks: [], expanded_services: [] };
       // Seed pipeline arrays only if they are missing or empty (first-time setup)
       if (!sh.pipeline.mully || sh.pipeline.mully.length === 0) {
         sh.pipeline.mully = SEED_SHARED.pipeline.mully;
@@ -160,6 +160,9 @@ export default function AppShell() {
       if (!sh.pipeline.mfs || sh.pipeline.mfs.length === 0) {
         sh.pipeline.mfs = SEED_SHARED.pipeline.mfs;
       }
+      if (!sh.pipeline.affiliates) sh.pipeline.affiliates = [];
+      if (!sh.pipeline.golf_networks) sh.pipeline.golf_networks = [];
+      if (!sh.pipeline.expanded_services) sh.pipeline.expanded_services = [];
       // Channel icon auto-detect map
       const CHANNEL_ICONS: Record<string, string> = {
         "Email": "\u2709\uFE0F", "SMS": "\uD83D\uDCF1", "In-App": "\uD83D\uDD14", "On-Site": "\uD83C\uDF10",

@@ -70,7 +70,7 @@ export function PipelineView({ shared, updateShared, activeUser }: Props) {
   const [aiAdvice, setAiAdvice] = useState<string>("");
   const [aiLoading, setAiLoading] = useState(false);
   const [showAiChat, setShowAiChat] = useState(false);
-  const [chatMessagesByPipeline, setChatMessagesByPipeline] = useState<Record<PipelineType, { role: "user" | "assistant"; text: string }[]>>({ mully: [], mfs: [] });
+  const [chatMessagesByPipeline, setChatMessagesByPipeline] = useState<Record<PipelineType, { role: "user" | "assistant"; text: string }[]>>({ mully: [], mfs: [], affiliates: [], golf_networks: [], expanded_services: [] });
   const [chatInput, setChatInput] = useState("");
   const [chatLoading, setChatLoading] = useState(false);
 
@@ -121,7 +121,7 @@ export function PipelineView({ shared, updateShared, activeUser }: Props) {
   const addDeal = useCallback(() => {
     const d = emptyDeal(activePipeline);
     updateShared((s) => {
-      if (!s.pipeline) s.pipeline = { mully: [], mfs: [] };
+      if (!s.pipeline) s.pipeline = { mully: [], mfs: [], affiliates: [], golf_networks: [], expanded_services: [] };
       s.pipeline[activePipeline].push(d);
     });
     setSelectedDeal(d.id);
@@ -350,10 +350,18 @@ function AiAdvisorBar({ advice, loading, onRefresh, onChat }: { advice: string; 
 }
 
 /* ── Pipeline Toggle ── */
+const PIPELINE_LABELS: [PipelineType, string][] = [
+  ["mully", "Mully Golf"],
+  ["mfs", "MFS 3PL"],
+  ["affiliates", "Affiliates"],
+  ["golf_networks", "Golf Networks"],
+  ["expanded_services", "Expanded Services"],
+];
+
 function PipelineToggle({ active, onChange }: { active: PipelineType; onChange: (p: PipelineType) => void }) {
   return (
     <div className="inline-flex rounded-lg bg-gray-100 p-1">
-      {([["mully", "Mully Golf"], ["mfs", "MFS 3PL"]] as [PipelineType, string][]).map(([key, label]) => (
+      {PIPELINE_LABELS.map(([key, label]) => (
         <button
           key={key}
           onClick={() => onChange(key)}
