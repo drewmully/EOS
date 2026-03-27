@@ -76,6 +76,7 @@ export interface GrowthData {
 export interface Priority {
   text: string;
   done: boolean;
+  rockId?: string;
 }
 
 export interface UserData {
