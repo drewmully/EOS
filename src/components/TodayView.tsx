@@ -110,9 +110,28 @@ function Collapsible({
   );
 }
 
+/* ── Weekly rhythm data ── */
+const RHYTHM = [
+  { day: 0, label: "Sun", mode: "Rest", icon: "☀️", desc: "Recharge for the week ahead" },
+  { day: 1, label: "Mon", mode: "Align + Plan", icon: "🎯", desc: "Set intentions, review Rocks, assign the week\u2019s priorities" },
+  { day: 2, label: "Tue", mode: "Deep Execute", icon: "🔨", desc: "Heads-down work, deep blocks, minimal meetings" },
+  { day: 3, label: "Wed", mode: "Deep Execute", icon: "🔨", desc: "Heads-down work, deep blocks, minimal meetings" },
+  { day: 4, label: "Thu", mode: "Deep Execute", icon: "🔨", desc: "Heads-down work, deep blocks, minimal meetings" },
+  { day: 5, label: "Fri", mode: "Reflect + Recharge", icon: "✨", desc: "Light work, weekly review, celebrate progress" },
+  { day: 6, label: "Sat", mode: "Rest", icon: "☀️", desc: "Recharge for the week ahead" },
+];
+
+/* ── Energy Management popover ── */
+const ENERGY_TIPS = [
+  { number: "2", title: "Deep Work Blocks / Day", desc: "Protect your best hours for the work that matters most" },
+  { number: "0", title: "Interruptions During Blocks", desc: "Create boundaries that let deep thinking happen" },
+  { number: "1", title: "Batched Reactive Window", desc: "Group emails, messages, and requests into one slot" },
+];
+
 export function TodayView({ data, user, update, setView, setExpRock, shared }: Props) {
   const hr = new Date().getHours();
   const greeting = hr < 12 ? "morning" : hr < 17 ? "afternoon" : "evening";
+  const [energyOpen, setEnergyOpen] = useState(false);
 
   /* ── Categorize rocks ── */
   const activeRocks = data.rocks.filter((r) => r.status !== "Done");
@@ -154,6 +173,134 @@ export function TodayView({ data, user, update, setView, setExpRock, shared }: P
 
   return (
     <div className="animate-fadeIn" style={{ maxWidth: 720, margin: "0 auto" }}>
+      {/* ── Weekly Rhythm strip ── */}
+      {(() => {
+        const today = new Date().getDay();
+        const todayRhythm = RHYTHM[today];
+        return (
+          <div style={{ marginBottom: 20 }}>
+            {/* Day pills */}
+            <div className="flex items-center gap-1.5" style={{ marginBottom: 10 }}>
+              {RHYTHM.filter((r) => r.day >= 1 && r.day <= 5).map((r) => {
+                const isToday = r.day === today;
+                return (
+                  <div
+                    key={r.day}
+                    className="flex items-center gap-1.5 rounded-full transition-all duration-200"
+                    style={{
+                      padding: isToday ? "5px 14px" : "5px 10px",
+                      background: isToday
+                        ? "linear-gradient(135deg, #6B9B67 0%, #8BAF87 100%)"
+                        : "#F3F4F6",
+                      color: isToday ? "#FFFFFF" : "#9CA3AF",
+                      fontSize: 11,
+                      fontWeight: isToday ? 700 : 500,
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    <span>{r.icon}</span>
+                    <span>{r.label}</span>
+                  </div>
+                );
+              })}
+              {/* Energy Management trigger */}
+              <div className="ml-auto relative">
+                <button
+                  type="button"
+                  onClick={() => setEnergyOpen(!energyOpen)}
+                  className="flex items-center gap-1.5 rounded-full transition-all duration-150 cursor-pointer"
+                  style={{
+                    padding: "5px 12px",
+                    background: energyOpen ? "linear-gradient(135deg, #6B9B67 0%, #8BAF87 100%)" : "#F3F4F6",
+                    color: energyOpen ? "#FFFFFF" : "#9CA3AF",
+                    fontSize: 11,
+                    fontWeight: 500,
+                    border: "none",
+                  }}
+                  title="Energy Management"
+                >
+                  <span>⚡</span>
+                  <span className="hidden sm:inline">Energy</span>
+                </button>
+
+                {/* Energy popover */}
+                {energyOpen && (
+                  <>
+                    {/* Backdrop */}
+                    <div
+                      className="fixed inset-0"
+                      style={{ zIndex: 40 }}
+                      onClick={() => setEnergyOpen(false)}
+                    />
+                    {/* Panel */}
+                    <div
+                      className="absolute animate-fadeIn rounded-2xl shadow-xl border"
+                      style={{
+                        right: 0,
+                        top: "calc(100% + 8px)",
+                        width: 340,
+                        zIndex: 50,
+                        background: "#FDFCF9",
+                        borderColor: "#E8E0D0",
+                        padding: "20px",
+                      }}
+                    >
+                      <div style={{ marginBottom: 14 }}>
+                        <div className="text-sm font-bold" style={{ color: "#374151", fontFamily: "Georgia, 'Times New Roman', serif" }}>
+                          Energy Management
+                        </div>
+                        <p className="text-[11px] italic" style={{ color: "#7DA578", marginTop: 2 }}>
+                          Protect cognitive energy like a precious resource.
+                        </p>
+                      </div>
+                      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                        {ENERGY_TIPS.map((tip, i) => (
+                          <div
+                            key={i}
+                            className="rounded-xl flex items-center gap-4"
+                            style={{
+                              background: "linear-gradient(160deg, #7A9F77 0%, #8BAF87 40%, #9CB898 100%)",
+                              padding: "16px",
+                            }}
+                          >
+                            <div
+                              className="font-light flex-shrink-0"
+                              style={{
+                                fontSize: 32,
+                                lineHeight: 1,
+                                color: "rgba(255,255,255,0.85)",
+                                fontFamily: "Georgia, 'Times New Roman', serif",
+                                width: 36,
+                                textAlign: "center",
+                              }}
+                            >
+                              {tip.number}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="font-bold text-[12px]" style={{ color: "#FFFFFF", lineHeight: 1.3 }}>
+                                {tip.title}
+                              </div>
+                              <p className="text-[10px] mt-1" style={{ color: "rgba(255,255,255,0.65)", lineHeight: 1.4 }}>
+                                {tip.desc}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+            {/* Today's mode callout */}
+            <p className="text-[12px]" style={{ color: "#7DA578" }}>
+              <span className="font-semibold" style={{ color: "#3D6B39" }}>{todayRhythm.mode}</span>
+              {" "}<span className="italic">&mdash; {todayRhythm.desc}</span>
+            </p>
+          </div>
+        );
+      })()}
+
       {/* ── Header ── */}
       <div style={{ marginBottom: 32 }}>
         <h1
@@ -540,113 +687,6 @@ export function TodayView({ data, user, update, setView, setExpRock, shared }: P
         )}
       </Collapsible>
 
-      {/* ── Weekly Rhythm ── */}
-      <Collapsible title="Weekly Rhythm" defaultOpen={false}>
-        <p className="text-[12px] italic mb-4" style={{ color: "#7DA578" }}>
-          Structure creates calm, not rigidity.
-        </p>
-        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-          {([
-            { day: "Monday", label: "Align + Plan", desc: "Set intentions, review Rocks, assign the week\u2019s priorities", active: new Date().getDay() === 1 },
-            { day: "Tue \u2013 Thu", label: "Deep Execute", desc: "Heads-down work, deep blocks, minimal meetings", active: [2, 3, 4].includes(new Date().getDay()) },
-            { day: "Friday", label: "Reflect + Recharge", desc: "Light work, weekly review, celebrate progress", active: new Date().getDay() === 5 },
-          ] as const).map((block) => (
-            <div
-              key={block.day}
-              className="flex items-stretch rounded-xl overflow-hidden"
-              style={{
-                border: block.active ? "2px solid #8BAF87" : "1px solid rgba(0,0,0,0.06)",
-                background: "#F9FAFB",
-              }}
-            >
-              {/* Green left bar */}
-              <div
-                style={{
-                  width: 4,
-                  background: block.active
-                    ? "linear-gradient(to bottom, #6B9B67, #8BAF87)"
-                    : "#D1D5DB",
-                  flexShrink: 0,
-                }}
-              />
-              <div className="flex items-center gap-4 flex-1" style={{ padding: "14px 18px" }}>
-                {/* Day badge */}
-                <div
-                  className="rounded-lg flex items-center justify-center text-[12px] font-semibold text-white flex-shrink-0"
-                  style={{
-                    width: 90,
-                    height: 44,
-                    background: block.active
-                      ? "linear-gradient(135deg, #6B9B67 0%, #8BAF87 100%)"
-                      : "linear-gradient(135deg, #9CB898 0%, #B3C9AF 100%)",
-                  }}
-                >
-                  {block.day}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-[14px] font-bold text-gray-800">{block.label}</div>
-                  <div className="text-[12px] text-gray-500 mt-0.5">{block.desc}</div>
-                </div>
-                {block.active && (
-                  <span className="text-[10px] font-semibold uppercase tracking-wider flex-shrink-0" style={{ color: "#6B9B67" }}>
-                    Today
-                  </span>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-        <p className="text-[11px] italic mt-4" style={{ color: "#7DA578" }}>
-          &ldquo;Creates rhythm and reduces decision fatigue.&rdquo;
-        </p>
-      </Collapsible>
-
-      {/* ── Energy Management ── */}
-      <Collapsible title="Energy Management" defaultOpen={false}>
-        <p className="text-[12px] italic mb-4" style={{ color: "#7DA578" }}>
-          Protect cognitive energy like a precious resource.
-        </p>
-        <div className="grid grid-cols-1 sm:grid-cols-3" style={{ gap: 12 }}>
-          {([
-            { number: "2", title: "Deep Work\nBlocks / Day", desc: "Protect your best hours for the work that matters most" },
-            { number: "0", title: "Interruptions\nDuring Blocks", desc: "Create boundaries that let deep thinking happen" },
-            { number: "1", title: "Batched\nReactive Window", desc: "Group emails, messages, and requests into one slot" },
-          ] as const).map((card, i) => (
-            <div
-              key={i}
-              className="rounded-xl flex flex-col justify-between"
-              style={{
-                background: "linear-gradient(160deg, #7A9F77 0%, #8BAF87 40%, #9CB898 100%)",
-                padding: "24px 20px",
-                minHeight: 180,
-              }}
-            >
-              <div>
-                <div
-                  className="font-light"
-                  style={{
-                    fontSize: 48,
-                    lineHeight: 1,
-                    color: "rgba(255,255,255,0.85)",
-                    fontFamily: "Georgia, 'Times New Roman', serif",
-                  }}
-                >
-                  {card.number}
-                </div>
-                <div
-                  className="font-bold text-[13px] mt-2"
-                  style={{ color: "#FFFFFF", whiteSpace: "pre-line", lineHeight: 1.4 }}
-                >
-                  {card.title}
-                </div>
-              </div>
-              <p className="text-[11px] mt-3" style={{ color: "rgba(255,255,255,0.7)", lineHeight: 1.5 }}>
-                {card.desc}
-              </p>
-            </div>
-          ))}
-        </div>
-      </Collapsible>
     </div>
   );
 }
